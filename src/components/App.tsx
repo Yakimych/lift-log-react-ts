@@ -1,10 +1,11 @@
 import * as React from "react";
+import { RouteProps } from "react-router-dom";
 import { LiftLog } from "./../types/LiftTypes";
 import "./App.css";
 import LiftLogContainer from "./LiftLogContainer";
 
-class App extends React.Component<any, LiftLog> {
-  constructor(props: any) {
+class App extends React.Component<RouteProps, LiftLog> {
+  constructor(props: RouteProps) {
     super(props);
     this.state = {
       name: `Loading board ${this.getBoardIdentifier(this.props)}...`,
@@ -42,8 +43,12 @@ class App extends React.Component<any, LiftLog> {
     );
   }
 
-  private getBoardIdentifier = (props: any) =>
-    props.location.pathname.substr(1);
+  private getBoardIdentifier = (props: RouteProps) => {
+    if (!!props.location) {
+      return props.location.pathname.substr(1);
+    }
+    return "";
+  };
 }
 
 export default App;

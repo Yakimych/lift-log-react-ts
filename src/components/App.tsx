@@ -6,7 +6,10 @@ import LiftLogContainer from "./LiftLogContainer";
 class App extends React.Component<any, LiftLog> {
   constructor(props: any) {
     super(props);
-    this.state = { name: "Loading...", entries: [] };
+    this.state = {
+      name: `Loading board ${this.getBoardIdentifier(this.props)}...`,
+      entries: []
+    };
     this.state.entries.push({
       date: new Date("2018-01-01"),
       name: "Bob",
@@ -30,12 +33,17 @@ class App extends React.Component<any, LiftLog> {
     return (
       <div className="App">
         <header className="App-header">
-          <h1 className="App-title">{this.state.name}</h1>
+          <h1 className="App-title">
+            {this.state.name} (Board Id: {this.getBoardIdentifier(this.props)})
+          </h1>
         </header>
         <LiftLogContainer entries={this.state.entries} />
       </div>
     );
   }
+
+  private getBoardIdentifier = (props: any) =>
+    props.location.pathname.substr(1);
 }
 
 export default App;

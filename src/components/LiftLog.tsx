@@ -16,13 +16,13 @@ const LiftLog = () => {
           date={new Date("2018-01-01")}
           name={"Bob"}
           weightLifted={80}
-          reps={"3x5"}
+          reps={Array(3).fill({ number: 5 })}
         />
         <LiftRow
           date={new Date("2018-01-02")}
           name={"Alice"}
           weightLifted={60}
-          reps={"5-5-3"}
+          reps={[{ number: 5 }, { number: 5 }, { number: 3 }]}
         />
       </div>
     </div>

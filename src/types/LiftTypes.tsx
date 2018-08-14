@@ -9,4 +9,9 @@ type LiftLogEntry = {
   reps: Rep[];
 };
 
-export { LiftLogEntry, Rep };
+type LiftLog = {
+  name: string;
+  entries: LiftLogEntry[];
+};
+
+export { LiftLog, LiftLogEntry, Rep };

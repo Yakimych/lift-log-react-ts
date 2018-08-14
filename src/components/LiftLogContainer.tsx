@@ -1,8 +1,13 @@
 import * as React from "react";
+import { LiftLogEntry } from "./../types/LiftTypes";
 import "./LiftLog.css";
 import LiftRow from "./LiftRow";
 
-const LiftLog = () => {
+type Props = {
+  entries: LiftLogEntry[];
+};
+
+const LiftLogContainer = (props: Props) => {
   return (
     <div className="mt-3 mb-3 p-2 box-shadow lift-log-container">
       <div className="row">
@@ -12,21 +17,12 @@ const LiftLog = () => {
         <h6 className="col">Sets/Reps</h6>
       </div>
       <div className="lifts">
-        <LiftRow
-          date={new Date("2018-01-01")}
-          name={"Bob"}
-          weightLifted={80}
-          reps={Array(3).fill({ number: 5 })}
-        />
-        <LiftRow
-          date={new Date("2018-01-02")}
-          name={"Alice"}
-          weightLifted={60}
-          reps={[{ number: 5 }, { number: 5 }, { number: 3 }]}
-        />
+        {props.entries.map(liftLogEntry => (
+          <LiftRow {...liftLogEntry} />
+        ))}
       </div>
     </div>
   );
 };
 
-export default LiftLog;
+export default LiftLogContainer;

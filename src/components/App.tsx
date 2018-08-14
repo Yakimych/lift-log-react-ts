@@ -1,16 +1,38 @@
 import * as React from "react";
+import { LiftLog } from "./../types/LiftTypes";
 import "./App.css";
-import LiftLog from "./LiftLog";
+import LiftLogContainer from "./LiftLogContainer";
 
-class App extends React.Component {
+class App extends React.Component<any, LiftLog> {
+  constructor(props: any) {
+    super(props);
+    this.state = { name: "Loading...", entries: [] };
+    this.state.entries.push({
+      date: new Date("2018-01-01"),
+      name: "Bob",
+      weightLifted: 80,
+      reps: Array(3).fill({ number: 5 })
+    });
+    this.state.entries.push({
+      date: new Date("2018-01-02"),
+      name: "Alice",
+      weightLifted: 60,
+      reps: [{ number: 5 }, { number: 5 }, { number: 3 }]
+    });
+  }
+
+  public componentDidMount() {
+    // TODO: Fetch name and entries from service
+    this.setState({ ...this.state, name: "Bench Press: Road to 100" });
+  }
+
   public render() {
     return (
       <div className="App">
         <header className="App-header">
-          <h1 className="App-title">Bench Press: Road to 100</h1>
-          {/* TODO: Fetch from the API */}
+          <h1 className="App-title">{this.state.name}</h1>
         </header>
-        <LiftLog />
+        <LiftLogContainer entries={this.state.entries} />
       </div>
     );
   }

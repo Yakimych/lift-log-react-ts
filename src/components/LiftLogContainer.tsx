@@ -17,8 +17,8 @@ const LiftLogContainer = (props: Props) => {
         <h6 className="col">Sets/Reps</h6>
       </div>
       <div className="lifts">
-        {props.entries.map(liftLogEntry => (
-          <LiftRow {...liftLogEntry} />
+        {props.entries.map((liftLogEntry, index) => (
+          <LiftRow {...liftLogEntry} key={index} />
         ))}
       </div>
     </div>

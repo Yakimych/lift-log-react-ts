@@ -11,6 +11,7 @@ type LiftLogEntry = {
 
 type LiftLog = {
   name: string;
+  title: string;
   entries: LiftLogEntry[];
 };
 

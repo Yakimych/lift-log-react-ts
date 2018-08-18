@@ -1,16 +1,21 @@
 import * as React from "react";
 import { RouteProps } from "react-router-dom";
 import LiftLogService from "./../services/LiftLogService";
-import { LiftLog } from "./../types/LiftTypes";
+import { LiftLogEntry } from "./../types/LiftTypes";
 import "./App.css";
 import LiftLogContainer from "./LiftLogContainer";
 
-class App extends React.Component<RouteProps, LiftLog> {
+type State = {
+  headerText: string;
+  logEntries: LiftLogEntry[];
+};
+
+class App extends React.Component<RouteProps, State> {
   constructor(props: RouteProps) {
     super(props);
     this.state = {
-      name: `Loading board ${this.getBoardIdentifier(this.props)}...`,
-      entries: []
+      headerText: `Loading board ${this.getBoardIdentifier(this.props)}...`,
+      logEntries: []
     };
   }
 
@@ -20,8 +25,8 @@ class App extends React.Component<RouteProps, LiftLog> {
     liftLogService.getLiftLog(boardIdentifier).then(liftLog =>
       this.setState({
         ...this.state,
-        name: liftLog.name,
-        entries: liftLog.entries
+        headerText: liftLog.title,
+        logEntries: liftLog.entries
       })
     );
   }
@@ -30,9 +35,9 @@ class App extends React.Component<RouteProps, LiftLog> {
     return (
       <div className="App">
         <header className="App-header">
-          <h1 className="App-title">{this.state.name}</h1>
+          <h1 className="App-title">{this.state.headerText}</h1>
         </header>
-        <LiftLogContainer entries={this.state.entries} />
+        <LiftLogContainer entries={this.state.logEntries} />
       </div>
     );
   }

@@ -1,3 +1,4 @@
+import axios, { AxiosResponse } from "axios";
 import { LiftLog, LiftLogEntry } from "./../types/LiftTypes";
 
 type ApiRep = {
@@ -13,40 +14,24 @@ type ApiLiftLogEntry = {
 };
 
 type ApiLiftLog = {
-  id: string;
-  logName: string;
+  name: string;
+  title: string;
   entries: ApiLiftLogEntry[];
 };
 
-// In-memory version
-const liftLog: ApiLiftLog = {
-  id: "anturapd",
-  logName: "Bench Press: Road to 100",
-  entries: [
-    {
-      date: "2018-01-01",
-      name: "Bob",
-      weightLifted: 80,
-      reps: Array(3).fill({ number: 5 })
-    },
-    {
-      date: "2018-01-02",
-      name: "Alice",
-      weightLifted: 60,
-      reps: [{ number: 5 }, { number: 5 }, { number: 3 }]
-    }
-  ]
-};
-
 class LiftLogService {
-  public getLiftLog(boardId: string): Promise<LiftLog> {
-    return new Promise(resolve => {
-      resolve(this.toLiftLog(liftLog));
-    });
+  private liftLogsUrl = "http://localhost:5000/api/liftlogs";
+
+  public getLiftLog(logName: string): Promise<LiftLog> {
+    return axios
+      .get(this.getLogUrl(logName))
+      .then((result: AxiosResponse<ApiLiftLog>) => this.toLiftLog(result.data));
   }
+  private getLogUrl = (logName: string) => `${this.liftLogsUrl}/${logName}`;
 
   private toLiftLog = (apiLiftLog: ApiLiftLog): LiftLog => ({
-    name: apiLiftLog.logName,
+    name: apiLiftLog.name,
+    title: apiLiftLog.title,
     entries: apiLiftLog.entries.map(this.toLiftLogEntry)
   });
 

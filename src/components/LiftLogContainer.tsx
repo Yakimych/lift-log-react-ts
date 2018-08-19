@@ -1,10 +1,12 @@
 import * as React from "react";
 import { LiftLogEntry } from "./../types/LiftTypes";
+import AddLogEntry from "./AddLogEntry";
 import "./LiftLog.css";
 import LiftRow from "./LiftRow";
 
 type Props = {
   entries: LiftLogEntry[];
+  onAddEntry: (entry: LiftLogEntry) => void;
 };
 
 const LiftLogContainer = (props: Props) => {
@@ -21,6 +23,7 @@ const LiftLogContainer = (props: Props) => {
           <LiftRow {...liftLogEntry} key={index} />
         ))}
       </div>
+      <AddLogEntry onAddEntry={props.onAddEntry} />
     </div>
   );
 };

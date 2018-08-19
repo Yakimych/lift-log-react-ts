@@ -11,24 +11,20 @@ type State = {
 };
 
 class App extends React.Component<RouteProps, State> {
+  private readonly liftLogService = new LiftLogService();
+  private readonly logName: string;
+
   constructor(props: RouteProps) {
     super(props);
+    this.logName = this.getLogNameFromRoute(props);
     this.state = {
-      headerText: `Loading board ${this.getBoardIdentifier(this.props)}...`,
+      headerText: `Loading board ${this.logName}...`,
       logEntries: []
     };
   }
 
   public componentDidMount() {
-    const liftLogService = new LiftLogService();
-    const boardIdentifier = this.getBoardIdentifier(this.props);
-    liftLogService.getLiftLog(boardIdentifier).then(liftLog =>
-      this.setState({
-        ...this.state,
-        headerText: liftLog.title,
-        logEntries: liftLog.entries
-      })
-    );
+    this.reloadLifts();
   }
 
   public render() {
@@ -37,12 +33,31 @@ class App extends React.Component<RouteProps, State> {
         <header className="App-header">
           <h1 className="App-title">{this.state.headerText}</h1>
         </header>
-        <LiftLogContainer entries={this.state.logEntries} />
+        <LiftLogContainer
+          entries={this.state.logEntries}
+          onAddEntry={(entry: LiftLogEntry) => this.handleAddEntry(entry)}
+        />
       </div>
     );
   }
 
-  private getBoardIdentifier = (props: RouteProps) => {
+  private reloadLifts() {
+    this.liftLogService.getLiftLog(this.logName).then(liftLog =>
+      this.setState({
+        ...this.state,
+        headerText: liftLog.title,
+        logEntries: liftLog.entries
+      })
+    );
+  }
+
+  private handleAddEntry = (entry: LiftLogEntry) => {
+    this.liftLogService
+      .addEntry(this.logName, entry)
+      .then(() => this.reloadLifts());
+  };
+
+  private getLogNameFromRoute = (props: RouteProps) => {
     if (!!props.location) {
       return props.location.pathname.substr(1);
     }

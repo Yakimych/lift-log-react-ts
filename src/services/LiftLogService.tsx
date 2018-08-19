@@ -1,9 +1,9 @@
 import axios, { AxiosResponse } from "axios";
-import { LiftLog, LiftLogEntry } from "./../types/LiftTypes";
+import { LiftLog, LiftLogEntry, Rep } from "./../types/LiftTypes";
 
 type ApiRep = {
   number: number;
-  rpe: number;
+  rpe: number | null;
 };
 
 type ApiLiftLogEntry = {
@@ -27,12 +27,30 @@ class LiftLogService {
       .get(this.getLogUrl(logName))
       .then((result: AxiosResponse<ApiLiftLog>) => this.toLiftLog(result.data));
   }
+
+  public addEntry(logName: string, entry: LiftLogEntry): Promise<any> {
+    return axios.post(this.addEntryUrl(logName), this.toApiLiftLogEntry(entry));
+  }
+
   private getLogUrl = (logName: string) => `${this.liftLogsUrl}/${logName}`;
+  private addEntryUrl = (logName: string) => `${this.getLogUrl(logName)}/lifts`;
 
   private toLiftLog = (apiLiftLog: ApiLiftLog): LiftLog => ({
     name: apiLiftLog.name,
     title: apiLiftLog.title,
     entries: apiLiftLog.entries.map(this.toLiftLogEntry)
+  });
+
+  private toApiLiftLogEntry = (entry: LiftLogEntry): ApiLiftLogEntry => ({
+    date: entry.date.toISOString(),
+    name: entry.name,
+    weightLifted: entry.weightLifted,
+    reps: entry.reps.map(this.toApiRep)
+  });
+
+  private toApiRep = (rep: Rep): ApiRep => ({
+    number: rep.number,
+    rpe: null
   });
 
   private toLiftLogEntry = (

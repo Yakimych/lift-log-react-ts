@@ -1,4 +1,5 @@
 .lift-log-container {
-  width: 800px;
+  min-width: 400px;
+  max-width: 800px;
   margin-left: 20px;
 }

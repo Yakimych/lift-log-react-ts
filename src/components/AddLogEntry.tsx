@@ -4,6 +4,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { LiftLogEntry, Rep } from "../types/LiftTypes";
 import "./AddLogEntry.css";
+import AddReps from "./AddReps";
 
 type Props = {
   onAddEntry: (entry: LiftLogEntry) => void;
@@ -13,7 +14,7 @@ type State = {
   name: string;
   date: moment.Moment;
   weightLifted: number;
-  repsString: string;
+  reps: number[];
 };
 
 class AddLogEntry extends React.Component<Props, State> {
@@ -23,7 +24,7 @@ class AddLogEntry extends React.Component<Props, State> {
       date: moment(),
       name: "",
       weightLifted: 0,
-      repsString: ""
+      reps: [5, 5, 5]
     };
   }
 
@@ -53,14 +54,8 @@ class AddLogEntry extends React.Component<Props, State> {
               onBlur={this.handleWeigthLiftedChanged}
             />
           </span>
-          <span className="col">
-            <input
-              type="text"
-              placeholder="E.g. 3x5 or 5-5-4"
-              onBlur={this.handleRepsChanged}
-            />
-          </span>
         </div>
+        <AddReps onValueChange={this.handleRepsChanged} />
         <button
           className="btn btn-primary btn-add-entry"
           onClick={() => this.addLogEntry()}
@@ -89,27 +84,14 @@ class AddLogEntry extends React.Component<Props, State> {
     this.setState({ weightLifted });
   };
 
-  private handleRepsChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // validate
-    this.setState({ repsString: e.target.value });
-  };
-
-  private parseReps(repsString: string): Rep[] {
-    if (repsString.indexOf("x") !== -1) {
-      const [sets, reps] = repsString.split("x");
-      return Array(Number(sets)).fill({ number: Number(reps) });
-    }
-
-    const repsArray = repsString.split("-");
-    return repsArray.map(r => ({ number: Number(r) }));
-  }
+  private handleRepsChanged = (reps: number[]) => this.setState({ reps });
 
   private addLogEntry = () => {
     const newEntry: LiftLogEntry = {
       date: this.state.date.toDate(),
       name: this.state.name,
       weightLifted: this.state.weightLifted,
-      reps: this.parseReps(this.state.repsString)
+      reps: this.state.reps.map(r => ({ number: r }))
     };
 
     this.props.onAddEntry(newEntry);

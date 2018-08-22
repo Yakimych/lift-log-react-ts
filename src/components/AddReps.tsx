@@ -102,50 +102,66 @@ class AddReps extends React.Component<Props, State> {
   };
 
   private handleAddSetClick = () => {
-    if (this.state.mode === InputMode.CustomReps) {
-      // TODO: Simpler way to duplicate the last element?
-      const reps = [
-        ...this.state.reps,
-        this.state.reps[this.state.reps.length - 1]
-      ];
-      this.setState({ mode: InputMode.CustomReps, reps }, () =>
-        this.props.onValueChange(this.getReps())
-      );
-    }
+    this.setState(
+      (prevState: State) => {
+        if (prevState.mode === InputMode.CustomReps) {
+          const reps = [
+            ...prevState.reps,
+            prevState.reps[prevState.reps.length - 1]
+          ];
+          return { mode: InputMode.CustomReps, reps };
+        }
+        return prevState;
+      },
+      () => this.props.onValueChange(this.getReps())
+    );
   };
 
   private handleRepValueChanged = (
     e: React.ChangeEvent<HTMLInputElement>,
     index: number
   ) => {
-    if (this.state.mode === InputMode.CustomReps) {
-      // TODO: Simpler way to change an element with index?
-      const reps = this.state.reps.slice();
-      // reps[index] = e.target.value;
-      reps[index] = this.toValidPositiveInteger(e.target.value);
-      this.setState({ mode: InputMode.CustomReps, reps }, () =>
-        this.props.onValueChange(this.getReps())
-      );
-    }
+    const newValue = this.toValidPositiveInteger(e.target.value);
+    this.setState(
+      prevState => {
+        if (prevState.mode === InputMode.CustomReps) {
+          const reps = prevState.reps.map(
+            (oldValue, i) => (i === index ? newValue : oldValue)
+          );
+          return { mode: InputMode.CustomReps, reps };
+        }
+        return prevState;
+      },
+      () => this.props.onValueChange(this.getReps())
+    );
   };
 
   private handleRemoveSetClick = (index: number) => {
-    if (this.state.mode === InputMode.CustomReps) {
-      // TODO: Simpler way to delete an element?
-      const reps = this.state.reps.filter((e, i) => i !== index);
-      this.setState({ mode: InputMode.CustomReps, reps }, () =>
-        this.props.onValueChange(this.getReps())
-      );
-    }
+    this.setState(
+      prevState => {
+        if (prevState.mode === InputMode.CustomReps) {
+          const reps = prevState.reps.filter((e, i) => i !== index);
+          return { mode: InputMode.CustomReps, reps };
+        }
+        return prevState;
+      },
+      () => this.props.onValueChange(this.getReps())
+    );
   };
 
   private handleCustomClick = () => {
-    if (this.state.mode === InputMode.SetsReps) {
-      const reps = Array(this.state.numberOfSets).fill(this.state.numberOfReps);
-      this.setState({ mode: InputMode.CustomReps, reps }, () =>
-        this.props.onValueChange(this.getReps())
-      );
-    }
+    this.setState(
+      prevState => {
+        if (this.state.mode === InputMode.SetsReps) {
+          const reps = Array(this.state.numberOfSets).fill(
+            this.state.numberOfReps
+          );
+          return { mode: InputMode.CustomReps, reps };
+        }
+        return prevState;
+      },
+      () => this.props.onValueChange(this.getReps())
+    );
   };
 
   private handleStandardClick = () => {
@@ -157,13 +173,10 @@ class AddReps extends React.Component<Props, State> {
 
   private getReps(): number[] {
     if (this.state.mode === InputMode.SetsReps) {
-      // tslint:disable-next-line:no-debugger
-      // debugger;
       return Array(Number(this.state.numberOfSets)).fill(
         Number(this.state.numberOfReps)
       );
     } else {
-      // if (this.state.mode === InputMode.CustomReps) {
       return this.state.reps;
     }
   }

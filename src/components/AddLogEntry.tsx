@@ -89,11 +89,7 @@ class AddLogEntry extends React.Component<Props, State> {
     this.setState({ weightLifted });
   };
 
-  private handleRepsChanged = (reps: number[]) => {
-    // tslint:disable-next-line:no-console
-    console.log(reps);
-    this.setState({ reps });
-  };
+  private handleRepsChanged = (reps: number[]) => this.setState({ reps });
 
   // private parseReps(repsString: string): Rep[] {
   //   if (repsString.indexOf("x") !== -1) {

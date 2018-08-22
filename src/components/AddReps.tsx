@@ -38,15 +38,13 @@ class AddReps extends React.Component<Props, State> {
         {this.state.mode === InputMode.SetsReps ? (
           <div>
             <input
-              type="number"
-              min={1}
+              type="text"
               value={this.state.numberOfSets}
               onChange={this.handleSetsChanged}
             />
             x
             <input
-              type="number"
-              min={1}
+              type="text"
               value={this.state.numberOfReps}
               onChange={this.handleRepsChanged}
             />
@@ -57,19 +55,14 @@ class AddReps extends React.Component<Props, State> {
             <div className="custom-reps">
               <button onClick={this.handleStandardClick}>Standard</button>
               {this.state.reps.map((rep, index) => (
-                <div key={"div_" + index}>
+                <div key={index}>
                   <input
-                    type="number"
-                    key={"input_" + index}
-                    min={1}
+                    type="text"
                     value={rep}
                     onChange={e => this.handleRepValueChanged(e, index)}
                   />
                   {index !== 0 ? (
-                    <button
-                      key={"button_" + index}
-                      onClick={() => this.handleRemoveSetClick(index)}
-                    >
+                    <button onClick={() => this.handleRemoveSetClick(index)}>
                       x
                     </button>
                   ) : null}
@@ -83,13 +76,16 @@ class AddReps extends React.Component<Props, State> {
     );
   }
 
+  private toValidPositiveInteger(numericString: string) {
+    const validInt = Number(numericString.replace(/[^0-9]+/g, ""));
+    return validInt < 1 ? 1 : validInt;
+  }
+
   private handleSetsChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // !
-    // TODO: e.target.Value is a string if typed in manually
     this.setState(
       {
         mode: InputMode.SetsReps,
-        numberOfSets: Number(e.target.value)
+        numberOfSets: this.toValidPositiveInteger(e.target.value)
       } as State,
       () => this.props.onValueChange(this.getReps())
     );
@@ -97,7 +93,10 @@ class AddReps extends React.Component<Props, State> {
 
   private handleRepsChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
     this.setState(
-      { mode: InputMode.SetsReps, numberOfReps: e.target.value },
+      {
+        mode: InputMode.SetsReps,
+        numberOfReps: this.toValidPositiveInteger(e.target.value)
+      },
       () => this.props.onValueChange(this.getReps())
     );
   };
@@ -123,7 +122,7 @@ class AddReps extends React.Component<Props, State> {
       // TODO: Simpler way to change an element with index?
       const reps = this.state.reps.slice();
       // reps[index] = e.target.value;
-      reps[index] = Number(e.target.value);
+      reps[index] = this.toValidPositiveInteger(e.target.value);
       this.setState({ mode: InputMode.CustomReps, reps }, () =>
         this.props.onValueChange(this.getReps())
       );

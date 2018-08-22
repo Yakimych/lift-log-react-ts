@@ -76,45 +76,40 @@ class AddReps extends React.Component<Props, State> {
     );
   }
 
+  private setStateAndEmitEvent = (
+    state: ((prevState: State) => void) | State
+  ) => this.setState(state, () => this.props.onValueChange(this.getReps()));
+
   private toValidPositiveInteger(numericString: string) {
     const validInt = Number(numericString.replace(/[^0-9]+/g, ""));
     return validInt < 1 ? 1 : validInt;
   }
 
   private handleSetsChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState(
-      {
-        mode: InputMode.SetsReps,
-        numberOfSets: this.toValidPositiveInteger(e.target.value)
-      } as State,
-      () => this.props.onValueChange(this.getReps())
-    );
+    this.setStateAndEmitEvent({
+      mode: InputMode.SetsReps,
+      numberOfSets: this.toValidPositiveInteger(e.target.value)
+    } as State);
   };
 
   private handleRepsChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState(
-      {
-        mode: InputMode.SetsReps,
-        numberOfReps: this.toValidPositiveInteger(e.target.value)
-      },
-      () => this.props.onValueChange(this.getReps())
-    );
+    this.setStateAndEmitEvent({
+      mode: InputMode.SetsReps,
+      numberOfReps: this.toValidPositiveInteger(e.target.value)
+    } as State);
   };
 
   private handleAddSetClick = () => {
-    this.setState(
-      (prevState: State) => {
-        if (prevState.mode === InputMode.CustomReps) {
-          const reps = [
-            ...prevState.reps,
-            prevState.reps[prevState.reps.length - 1]
-          ];
-          return { mode: InputMode.CustomReps, reps };
-        }
-        return prevState;
-      },
-      () => this.props.onValueChange(this.getReps())
-    );
+    this.setStateAndEmitEvent((prevState: State) => {
+      if (prevState.mode === InputMode.CustomReps) {
+        const reps = [
+          ...prevState.reps,
+          prevState.reps[prevState.reps.length - 1]
+        ];
+        return { mode: InputMode.CustomReps, reps };
+      }
+      return prevState;
+    });
   };
 
   private handleRepValueChanged = (
@@ -122,53 +117,41 @@ class AddReps extends React.Component<Props, State> {
     index: number
   ) => {
     const newValue = this.toValidPositiveInteger(e.target.value);
-    this.setState(
-      prevState => {
-        if (prevState.mode === InputMode.CustomReps) {
-          const reps = prevState.reps.map(
-            (oldValue, i) => (i === index ? newValue : oldValue)
-          );
-          return { mode: InputMode.CustomReps, reps };
-        }
-        return prevState;
-      },
-      () => this.props.onValueChange(this.getReps())
-    );
+    this.setStateAndEmitEvent(prevState => {
+      if (prevState.mode === InputMode.CustomReps) {
+        const reps = prevState.reps.map(
+          (oldValue, i) => (i === index ? newValue : oldValue)
+        );
+        return { mode: InputMode.CustomReps, reps };
+      }
+      return prevState;
+    });
   };
 
   private handleRemoveSetClick = (index: number) => {
-    this.setState(
-      prevState => {
-        if (prevState.mode === InputMode.CustomReps) {
-          const reps = prevState.reps.filter((e, i) => i !== index);
-          return { mode: InputMode.CustomReps, reps };
-        }
-        return prevState;
-      },
-      () => this.props.onValueChange(this.getReps())
-    );
+    this.setStateAndEmitEvent(prevState => {
+      if (prevState.mode === InputMode.CustomReps) {
+        const reps = prevState.reps.filter((e, i) => i !== index);
+        return { mode: InputMode.CustomReps, reps };
+      }
+      return prevState;
+    });
   };
 
   private handleCustomClick = () => {
-    this.setState(
-      prevState => {
-        if (this.state.mode === InputMode.SetsReps) {
-          const reps = Array(this.state.numberOfSets).fill(
-            this.state.numberOfReps
-          );
-          return { mode: InputMode.CustomReps, reps };
-        }
-        return prevState;
-      },
-      () => this.props.onValueChange(this.getReps())
-    );
+    this.setStateAndEmitEvent(prevState => {
+      if (this.state.mode === InputMode.SetsReps) {
+        const reps = Array(this.state.numberOfSets).fill(
+          this.state.numberOfReps
+        );
+        return { mode: InputMode.CustomReps, reps };
+      }
+      return prevState;
+    });
   };
 
   private handleStandardClick = () => {
-    this.setState({ mode: InputMode.SetsReps }, () =>
-      // TODO: Is there a way it gets called every time setState is called?
-      this.props.onValueChange(this.getReps())
-    );
+    this.setStateAndEmitEvent({ mode: InputMode.SetsReps } as State);
   };
 
   private getReps(): number[] {

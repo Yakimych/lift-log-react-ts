@@ -11,7 +11,6 @@ type State = {
   name: string;
   date: string;
   weightLifted: number;
-  // repsString: string;
   reps: number[];
 };
 
@@ -22,7 +21,6 @@ class AddLogEntry extends React.Component<Props, State> {
       date: "",
       name: "",
       weightLifted: 0,
-      // repsString: "",
       reps: [5, 5, 5]
     };
   }
@@ -53,13 +51,6 @@ class AddLogEntry extends React.Component<Props, State> {
               onBlur={this.handleWeigthLiftedChanged}
             />
           </span>
-          {/* <span className="col">
-            <input
-              type="text"
-              placeholder="E.g. 3x5 or 5-5-4"
-              onBlur={this.handleRepsChanged}
-            />
-          </span> */}
         </div>
         <AddReps onValueChange={this.handleRepsChanged} />
         <button
@@ -91,22 +82,11 @@ class AddLogEntry extends React.Component<Props, State> {
 
   private handleRepsChanged = (reps: number[]) => this.setState({ reps });
 
-  // private parseReps(repsString: string): Rep[] {
-  //   if (repsString.indexOf("x") !== -1) {
-  //     const [sets, reps] = repsString.split("x");
-  //     return Array(Number(sets)).fill({ number: Number(reps) });
-  //   }
-
-  //   const repsArray = repsString.split("-");
-  //   return repsArray.map(r => ({ number: Number(r) }));
-  // }
-
   private addLogEntry = () => {
     const newEntry = {
       date: new Date(this.state.date),
       name: this.state.name,
       weightLifted: this.state.weightLifted,
-      // reps: this.parseReps(this.state.repsString)
       reps: this.state.reps.map(r => ({ number: r }))
     };
 

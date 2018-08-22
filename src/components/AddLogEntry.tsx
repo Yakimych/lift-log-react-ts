@@ -1,4 +1,7 @@
+import * as moment from "moment";
 import * as React from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import { LiftLogEntry, Rep } from "../types/LiftTypes";
 import "./AddLogEntry.css";
 
@@ -8,7 +11,7 @@ type Props = {
 
 type State = {
   name: string;
-  date: string;
+  date: moment.Moment;
   weightLifted: number;
   repsString: string;
 };
@@ -16,7 +19,12 @@ type State = {
 class AddLogEntry extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = { date: "", name: "", weightLifted: 0, repsString: "" };
+    this.state = {
+      date: moment(),
+      name: "",
+      weightLifted: 0,
+      repsString: ""
+    };
   }
 
   public render() {
@@ -24,10 +32,10 @@ class AddLogEntry extends React.Component<Props, State> {
       <div className="add-log-entry">
         <div className="row">
           <span className="col">
-            <input
-              type="text"
-              placeholder="Date"
-              onBlur={this.handleDateChanged}
+            <DatePicker
+              dateFormat="YYYY-MM-DD"
+              selected={this.state.date}
+              onChange={this.handleDateChanged}
             />
           </span>
           <span className="col">
@@ -63,9 +71,10 @@ class AddLogEntry extends React.Component<Props, State> {
     );
   }
 
-  private handleDateChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // validate date
-    this.setState({ date: e.target.value });
+  private handleDateChanged = (date: moment.Moment | null) => {
+    if (date !== null) {
+      this.setState({ date });
+    }
   };
 
   private handleNameChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -96,8 +105,8 @@ class AddLogEntry extends React.Component<Props, State> {
   }
 
   private addLogEntry = () => {
-    const newEntry = {
-      date: new Date(this.state.date),
+    const newEntry: LiftLogEntry = {
+      date: this.state.date.toDate(),
       name: this.state.name,
       weightLifted: this.state.weightLifted,
       reps: this.parseReps(this.state.repsString)

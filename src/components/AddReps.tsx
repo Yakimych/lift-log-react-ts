@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Set } from "../types/LiftTypes";
 
 enum InputMode {
   SetsReps,
@@ -13,7 +14,7 @@ type State = {
 };
 
 type Props = {
-  onValueChange: (reps: number[]) => void;
+  onValueChange: (reps: Set[]) => void;
 };
 
 class AddReps extends React.Component<Props, State> {
@@ -29,39 +30,65 @@ class AddReps extends React.Component<Props, State> {
 
   public render() {
     return (
-      <div>
-        <span>{this.getRepsString()}</span>
-        <div className={!this.showSetsReps() ? "hidden" : ""}>
-          <input
-            type="text"
-            value={this.state.numberOfSets}
-            onChange={this.handleSetsChanged}
-          />
-          x
-          <input
-            type="text"
-            value={this.state.numberOfReps}
-            onChange={this.handleRepsChanged}
-          />
-          <button onClick={this.handleCustomClick}>Custom</button>
-        </div>
-        <div className={!this.showCustomReps() ? "hidden" : "custom-reps"}>
-          <button onClick={this.handleStandardClick}>Standard</button>
-          {this.state.customReps.map((rep, index) => (
-            <div key={index}>
+      <div className="col">
+        <div className="form-control-sm">{this.getRepsString()}</div>
+
+        {/* <div
+          className="col"
+          style={{ width: "100%", flex: "1 1 auto", display: "flex" }}
+        > */}
+        <div className="d-flex">
+          {this.showSetsReps() ? (
+            <React.Fragment>
               <input
+                className="form-control form-control-sm log-entry-input--set-rep"
                 type="text"
-                value={rep}
-                onChange={e => this.handleRepValueChanged(e, index)}
+                value={this.state.numberOfSets}
+                onChange={this.handleSetsChanged}
               />
-              {index !== 0 ? (
-                <button onClick={() => this.handleRemoveSetClick(index)}>
-                  x
-                </button>
-              ) : null}
+              x
+              <input
+                className="form-control form-control-sm log-entry-input--set-rep"
+                type="text"
+                value={this.state.numberOfReps}
+                onChange={this.handleRepsChanged}
+              />
+              <button
+                className="btn btn-light btn-sm btn-add-entry"
+                onClick={this.handleCustomClick}
+              >
+                Custom
+              </button>
+            </React.Fragment>
+          ) : (
+            <div className="d-flex flex-wrap">
+              <button
+                className="btn btn-light btn-sm btn-add-entry"
+                onClick={this.handleStandardClick}
+              >
+                Standard
+              </button>
+              <div className="d-flex justify-content-space-between flex-wrap">
+                {this.state.customReps.map((rep, index) => (
+                  <div key={index} className="d-flex ">
+                    <input
+                      className="form-control form-control-sm log-entry-input--set-rep"
+                      type="text"
+                      value={rep}
+                      onChange={e => this.handleRepValueChanged(e, index)}
+                    />
+                    {index !== 0 ? (
+                      <button onClick={() => this.handleRemoveSetClick(index)}>
+                        x
+                      </button>
+                    ) : null}
+                  </div>
+                ))}
+              </div>
+
+              <button onClick={this.handleAddSetClick}>+</button>
             </div>
-          ))}
-          <button onClick={this.handleAddSetClick}>+</button>
+          )}
         </div>
       </div>
     );
@@ -132,7 +159,7 @@ class AddReps extends React.Component<Props, State> {
 
   private handleCustomClick = () => {
     this.setStateAndEmitEvent((prevState: State) => {
-      if (this.state.mode === InputMode.SetsReps) {
+      if (prevState.mode === InputMode.SetsReps) {
         const reps =
           prevState.customReps.length === 0
             ? Array(this.state.numberOfSets).fill(this.state.numberOfReps)
@@ -148,15 +175,18 @@ class AddReps extends React.Component<Props, State> {
 
   private showSetsReps = () => this.state.mode === InputMode.SetsReps;
 
-  private showCustomReps = () => this.state.mode === InputMode.CustomReps;
+  private getRepsString = (): string =>
+    this.getReps()
+      .map(r => r.reps)
+      .join("-");
 
-  private getRepsString = (): string => this.getReps().join("-");
-
-  private getReps(): number[] {
+  private getReps(): Set[] {
     if (this.state.mode === InputMode.SetsReps) {
-      return Array(this.state.numberOfSets).fill(this.state.numberOfReps);
+      return Array(this.state.numberOfSets)
+        .fill(this.state.numberOfReps)
+        .map(reps => ({ reps }));
     } else {
-      return this.state.customReps;
+      return this.state.customReps.map(reps => ({ reps }));
     }
   }
 }

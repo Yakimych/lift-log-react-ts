@@ -2,7 +2,7 @@ import * as moment from "moment";
 import * as React from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { LiftLogEntry, Rep } from "../types/LiftTypes";
+import { LiftLogEntry, Set } from "../types/LiftTypes";
 import "./AddLogEntry.css";
 import AddReps from "./AddReps";
 
@@ -14,7 +14,7 @@ type State = {
   name: string;
   date: moment.Moment;
   weightLifted: number;
-  reps: number[];
+  sets: Set[];
 };
 
 class AddLogEntry extends React.Component<Props, State> {
@@ -24,7 +24,7 @@ class AddLogEntry extends React.Component<Props, State> {
       date: moment(),
       name: "",
       weightLifted: 0,
-      reps: [5, 5, 5]
+      sets: [{ reps: 5 }, { reps: 5 }, { reps: 5 }]
     };
   }
 
@@ -32,30 +32,35 @@ class AddLogEntry extends React.Component<Props, State> {
     return (
       <div className="add-log-entry">
         <div className="row">
-          <span className="col">
+          <div className="col">
             <DatePicker
               dateFormat="YYYY-MM-DD"
               selected={this.state.date}
               onChange={this.handleDateChanged}
+              className="form-control form-control-sm log-entry-input"
             />
-          </span>
-          <span className="col">
+          </div>
+          <div className="col">
             <input
+              className="form-control form-control-sm log-entry-input"
               type="text"
               placeholder="Name"
               maxLength={50}
               onBlur={this.handleNameChanged}
             />
-          </span>
-          <span className="col">
+          </div>
+          <div className="col">
             <input
+              className="form-control form-control-sm log-entry-input"
               type="text"
               placeholder="Weight"
               onBlur={this.handleWeigthLiftedChanged}
             />
-          </span>
+          </div>
+          <div className="col">
+            <AddReps onValueChange={this.handleRepsChanged} />
+          </div>
         </div>
-        <AddReps onValueChange={this.handleRepsChanged} />
         <button
           className="btn btn-primary btn-add-entry"
           onClick={() => this.addLogEntry()}
@@ -84,14 +89,14 @@ class AddLogEntry extends React.Component<Props, State> {
     this.setState({ weightLifted });
   };
 
-  private handleRepsChanged = (reps: number[]) => this.setState({ reps });
+  private handleRepsChanged = (sets: Set[]) => this.setState({ sets });
 
   private addLogEntry = () => {
     const newEntry: LiftLogEntry = {
       date: this.state.date.toDate(),
       name: this.state.name,
       weightLifted: this.state.weightLifted,
-      reps: this.state.reps.map(r => ({ number: r }))
+      sets: this.state.sets
     };
 
     this.props.onAddEntry(newEntry);

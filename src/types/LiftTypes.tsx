@@ -1,12 +1,12 @@
-type Rep = {
-  number: number;
+type Set = {
+  reps: number;
 };
 
 type LiftLogEntry = {
   date: Date;
   name: string;
   weightLifted: number;
-  reps: Rep[];
+  sets: Set[];
 };
 
 type LiftLog = {
@@ -15,4 +15,4 @@ type LiftLog = {
   entries: LiftLogEntry[];
 };
 
-export { LiftLog, LiftLogEntry, Rep };
+export { LiftLog, LiftLogEntry, Set };

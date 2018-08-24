@@ -104,7 +104,7 @@ class AddReps extends React.Component<Props, State> {
           mode: InputMode.SetsReps,
           numberOfSets,
           numberOfReps,
-          customSets: this.getSetsFromNumberSetsReps(numberOfSets, numberOfReps)
+          customSets: []
         }
       : {
           mode: InputMode.CustomReps,

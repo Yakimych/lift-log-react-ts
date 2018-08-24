@@ -44,12 +44,15 @@ class CustomSetsInput extends React.Component<Props, {}> {
           size="sm"
           className="mt-2"
           onClick={this.handleAddSetClick}
+          disabled={this.isAddSetDisabled()}
         >
           <Octicon icon={getIconByName("plus")} />
         </Button>
       </React.Fragment>
     );
   }
+
+  private isAddSetDisabled = () => this.props.customSets.length === 30;
 
   private handleAddSetClick = () => {
     const { customSets, onChange } = this.props;

@@ -1,0 +1,15 @@
+.set-rep-input {
+  width: 40px !important;
+}
+
+.custom-sets-input-group {
+  display: flex;
+  align-items: center;
+}
+.custom-sets-input-group:first-child {
+  padding-right: 20px;
+}
+.custom-sets-input-group .remove-icon-wrapper {
+  width: 21px;
+  height: 100%;
+}

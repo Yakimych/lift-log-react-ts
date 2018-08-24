@@ -16,3 +16,31 @@
 .hidden {
   display: none;
 }
+
+.log-entry-input {
+  margin: 10px 0;
+}
+
+.remove-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #dc3545;
+  background-color: transparent;
+}
+
+.remove-icon-wrapper:hover {
+  color: #bd2130;
+  background-color: #f8f9fa;
+}
+
+.btn:focus,
+.btn:active {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.btn-primary--lighter:hover {
+  background-color: #449eff;
+}

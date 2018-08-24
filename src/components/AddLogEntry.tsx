@@ -2,9 +2,11 @@ import * as moment from "moment";
 import * as React from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { Button } from "reactstrap";
 import { LiftLogEntry, Set } from "../types/LiftTypes";
+import { formatSets } from "../utils/LiftUtils";
 import "./AddLogEntry.css";
-import AddReps from "./AddReps";
+import AddRepsModal from "./AddRepsModal";
 
 type Props = {
   onAddEntry: (entry: LiftLogEntry) => void;
@@ -15,6 +17,8 @@ type State = {
   date: moment.Moment;
   weightLifted: number;
   sets: Set[];
+  editingSets: Set[];
+  isAddRepsModalOpen: boolean;
 };
 
 class AddLogEntry extends React.Component<Props, State> {
@@ -24,18 +28,21 @@ class AddLogEntry extends React.Component<Props, State> {
       date: moment(),
       name: "",
       weightLifted: 0,
-      sets: [{ reps: 5 }, { reps: 5 }, { reps: 5 }]
+      sets: Array<Set>(3).fill({ reps: 5 }),
+      editingSets: [],
+      isAddRepsModalOpen: false
     };
   }
 
   public render() {
+    const { date, sets, isAddRepsModalOpen } = this.state;
     return (
       <div className="add-log-entry">
         <div className="row">
           <div className="col">
             <DatePicker
               dateFormat="YYYY-MM-DD"
-              selected={this.state.date}
+              selected={date}
               onChange={this.handleDateChanged}
               className="form-control form-control-sm log-entry-input"
             />
@@ -57,8 +64,11 @@ class AddLogEntry extends React.Component<Props, State> {
               onBlur={this.handleWeigthLiftedChanged}
             />
           </div>
-          <div className="col">
-            <AddReps onValueChange={this.handleRepsChanged} />
+          <div className="col d-flex align-items-center">
+            <span className="mr-2">{formatSets(sets)}</span>
+            <Button size="sm" color="primary" onClick={this.toggleAddRepsModal}>
+              Edit
+            </Button>
           </div>
         </div>
         <button
@@ -67,9 +77,30 @@ class AddLogEntry extends React.Component<Props, State> {
         >
           Add
         </button>
+        <AddRepsModal
+          onValueChange={this.handleRepsChanged}
+          initialSets={sets}
+          isOpen={isAddRepsModalOpen}
+          toggle={this.toggleAddRepsModal}
+          onSave={this.saveRepsChanges}
+        />
       </div>
     );
   }
+
+  private toggleAddRepsModal = () => {
+    this.setState((prevState: State) => ({
+      isAddRepsModalOpen: !prevState.isAddRepsModalOpen,
+      editingSets: prevState.sets.slice()
+    }));
+  };
+
+  private saveRepsChanges = () => {
+    this.setState((prevState: State) => ({
+      sets: prevState.editingSets.slice(),
+      isAddRepsModalOpen: false
+    }));
+  };
 
   private handleDateChanged = (date: moment.Moment | null) => {
     if (date !== null) {
@@ -89,7 +120,8 @@ class AddLogEntry extends React.Component<Props, State> {
     this.setState({ weightLifted });
   };
 
-  private handleRepsChanged = (sets: Set[]) => this.setState({ sets });
+  private handleRepsChanged = (sets: Set[]) =>
+    this.setState({ editingSets: sets });
 
   private addLogEntry = () => {
     const newEntry: LiftLogEntry = {

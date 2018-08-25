@@ -52,10 +52,7 @@ class AddReps extends React.Component<Props, State> {
   }
 
   private handleSetsRepsChange = (numberOfSets: number, numberOfReps: number) =>
-    this.setStateAndEmitEvent({
-      numberOfSets,
-      numberOfReps
-    });
+    this.setStateAndEmitEvent({ numberOfSets, numberOfReps });
 
   private handleCustomSetsChange = (customSets: Set[]) =>
     this.setStateAndEmitEvent({ customSets } as State);
@@ -74,26 +71,23 @@ class AddReps extends React.Component<Props, State> {
         return {
           mode: InputMode.CustomReps,
           customSets: sets
-        };
+        } as State;
       });
     }
   };
 
-  private isSetsRepsMode() {
-    return this.state.mode === InputMode.SetsReps;
-  }
+  private isSetsRepsMode = () => this.state.mode === InputMode.SetsReps;
 
-  private getSetsFromNumberSetsReps(sets: number, reps: number): Set[] {
-    return Array<Set>(sets).fill({ reps });
-  }
+  private getSetsFromNumberSetsReps = (sets: number, reps: number): Set[] =>
+    Array<Set>(sets).fill({ reps });
 
-  private getSets(): Set[] {
+  private getSets = (): Set[] => {
     const { numberOfSets, numberOfReps, customSets } = this.state;
 
     return this.isSetsRepsMode()
       ? this.getSetsFromNumberSetsReps(numberOfSets, numberOfReps)
       : customSets;
-  }
+  };
 
   private getInitialState(initialSets: Set[]): State {
     const numberOfSets = initialSets.length || 5;

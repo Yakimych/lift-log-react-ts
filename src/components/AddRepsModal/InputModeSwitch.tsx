@@ -17,7 +17,7 @@ type ButtonProps = {
   onClick: (mode: InputMode) => void;
 };
 
-class InputModeButton extends React.Component<ButtonProps, {}> {
+class InputModeButton extends React.Component<ButtonProps> {
   public render() {
     const active = this.props.buttonMode === this.props.currentMode;
     return (

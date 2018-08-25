@@ -21,6 +21,11 @@
   margin: 10px 0;
 }
 
+.cross-icon-wrapper {
+  color: gray;
+  padding: 5px;
+}
+
 .remove-icon-wrapper {
   display: flex;
   align-items: center;

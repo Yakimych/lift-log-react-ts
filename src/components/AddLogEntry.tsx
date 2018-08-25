@@ -17,8 +17,8 @@ type State = {
   date: moment.Moment;
   weightLifted: number;
   sets: Set[];
-  editingSets: Set[];
-  isAddRepsModalOpen: boolean;
+  setsUnderEdit: Set[];
+  addRepsModalIsOpen: boolean;
 };
 
 class AddLogEntry extends React.Component<Props, State> {
@@ -29,13 +29,13 @@ class AddLogEntry extends React.Component<Props, State> {
       name: "",
       weightLifted: 0,
       sets: Array<Set>(3).fill({ reps: 5 }),
-      editingSets: [],
-      isAddRepsModalOpen: false
+      setsUnderEdit: [],
+      addRepsModalIsOpen: false
     };
   }
 
   public render() {
-    const { date, sets, isAddRepsModalOpen } = this.state;
+    const { date, sets, addRepsModalIsOpen } = this.state;
     return (
       <div className="add-log-entry">
         <div className="row">
@@ -80,7 +80,7 @@ class AddLogEntry extends React.Component<Props, State> {
         <AddRepsModal
           onValueChange={this.handleRepsChanged}
           initialSets={sets}
-          isOpen={isAddRepsModalOpen}
+          isOpen={addRepsModalIsOpen}
           toggle={this.toggleAddRepsModal}
           onSave={this.saveRepsChanges}
         />
@@ -90,15 +90,15 @@ class AddLogEntry extends React.Component<Props, State> {
 
   private toggleAddRepsModal = () => {
     this.setState((prevState: State) => ({
-      isAddRepsModalOpen: !prevState.isAddRepsModalOpen,
-      editingSets: prevState.sets.slice()
+      addRepsModalIsOpen: !prevState.addRepsModalIsOpen,
+      setsUnderEdit: prevState.sets.slice()
     }));
   };
 
   private saveRepsChanges = () => {
     this.setState((prevState: State) => ({
-      sets: prevState.editingSets.slice(),
-      isAddRepsModalOpen: false
+      sets: prevState.setsUnderEdit.slice(),
+      addRepsModalIsOpen: false
     }));
   };
 
@@ -121,7 +121,7 @@ class AddLogEntry extends React.Component<Props, State> {
   };
 
   private handleRepsChanged = (sets: Set[]) =>
-    this.setState({ editingSets: sets });
+    this.setState({ setsUnderEdit: sets });
 
   private addLogEntry = () => {
     const newEntry: LiftLogEntry = {

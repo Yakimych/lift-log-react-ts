@@ -1,6 +1,6 @@
 import Octicon, { getIconByName } from "@githubprimer/octicons-react";
 import * as React from "react";
-import { toValidPositiveInteger } from "../../utils/NumberUtils";
+import { toValidRepSet } from "../../utils/LiftUtils";
 
 type Props = {
   numberOfSets: number;
@@ -8,7 +8,7 @@ type Props = {
   onChange: (sets: number, reps: number) => void;
 };
 
-class SetsRepsInput extends React.Component<Props, {}> {
+class SetsRepsInput extends React.Component<Props> {
   public render() {
     const { numberOfSets, numberOfReps } = this.props;
     return (
@@ -19,7 +19,7 @@ class SetsRepsInput extends React.Component<Props, {}> {
           value={numberOfSets}
           onChange={this.handleSetsChanged}
         />
-        <span style={{ color: "gray", padding: 5 }}>
+        <span className="cross-icon-wrapper">
           <Octicon icon={getIconByName("x")} />
         </span>
         <input
@@ -33,12 +33,12 @@ class SetsRepsInput extends React.Component<Props, {}> {
   }
 
   private handleSetsChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const numberOfSets = toValidPositiveInteger(e.target.value);
+    const numberOfSets = toValidRepSet(e.target.value);
     this.props.onChange(numberOfSets, this.props.numberOfReps);
   };
 
   private handleRepsChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const numberOfReps = toValidPositiveInteger(e.target.value);
+    const numberOfReps = toValidRepSet(e.target.value);
     this.props.onChange(this.props.numberOfSets, numberOfReps);
   };
 }

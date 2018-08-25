@@ -12,7 +12,7 @@ type Props = {
   onSave: () => void;
 };
 
-class AddRepsModal extends React.Component<Props, {}> {
+class AddRepsModal extends React.Component<Props> {
   public render() {
     const { isOpen, toggle, onSave } = this.props;
     return (

@@ -3,14 +3,14 @@ import * as React from "react";
 import { Button } from "reactstrap";
 import { Input, InputGroup, InputGroupAddon } from "reactstrap";
 import { Set } from "../../types/LiftTypes";
-import { toValidPositiveInteger } from "../../utils/NumberUtils";
+import { MAX_REP_SET_VALUE, toValidRepSet } from "../../utils/LiftUtils";
 
 type Props = {
   onChange: (reps: Set[]) => void;
   customSets: Set[];
 };
 
-class CustomSetsInput extends React.Component<Props, {}> {
+class CustomSetsInput extends React.Component<Props> {
   public render() {
     return (
       <React.Fragment>
@@ -52,7 +52,8 @@ class CustomSetsInput extends React.Component<Props, {}> {
     );
   }
 
-  private isAddSetDisabled = () => this.props.customSets.length === 30;
+  private isAddSetDisabled = () =>
+    this.props.customSets.length >= MAX_REP_SET_VALUE;
 
   private handleAddSetClick = () => {
     const { customSets, onChange } = this.props;
@@ -66,7 +67,7 @@ class CustomSetsInput extends React.Component<Props, {}> {
   ) => {
     const { customSets, onChange } = this.props;
 
-    const newRepsValue = toValidPositiveInteger(e.target.value);
+    const newRepsValue = toValidRepSet(e.target.value);
     const reps = customSets.map(
       (value, i) => (i === index ? { ...value, reps: newRepsValue } : value)
     );

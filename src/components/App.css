@@ -16,3 +16,37 @@
 .hidden {
   display: none;
 }
+
+.log-entry-input {
+  margin: 10px 0;
+}
+
+.cross-icon-wrapper {
+  color: gray;
+  padding: 5px;
+}
+
+.remove-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #dc3545;
+  background-color: transparent;
+}
+
+.remove-icon-wrapper:hover {
+  color: #bd2130;
+  background-color: #f8f9fa;
+}
+
+/* id of the body is used to override bootstrap rules */
+#lift-log-app-body .btn:focus,
+#lift-log-app-body .btn:active {
+  outline: none;
+  box-shadow: none;
+}
+
+.btn-primary--lighter:hover {
+  background-color: #449eff;
+}

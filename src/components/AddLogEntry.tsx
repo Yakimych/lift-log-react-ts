@@ -2,9 +2,15 @@ import * as moment from "moment";
 import * as React from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { LiftLogEntry, Rep } from "../types/LiftTypes";
+import { Button } from "reactstrap";
+import { LiftLogEntry, Set } from "../types/LiftTypes";
+import {
+  DEFAULT_REP_VALUE,
+  DEFAULT_SET_VALUE,
+  formatSets
+} from "../utils/LiftUtils";
 import "./AddLogEntry.css";
-import AddReps from "./AddReps";
+import AddRepsModal from "./AddRepsModal";
 
 type Props = {
   onAddEntry: (entry: LiftLogEntry) => void;
@@ -14,7 +20,9 @@ type State = {
   name: string;
   date: moment.Moment;
   weightLifted: number;
-  reps: number[];
+  sets: Set[];
+  setsUnderEdit: Set[];
+  addRepsModalIsOpen: boolean;
 };
 
 class AddLogEntry extends React.Component<Props, State> {
@@ -24,47 +32,79 @@ class AddLogEntry extends React.Component<Props, State> {
       date: moment(),
       name: "",
       weightLifted: 0,
-      reps: [5, 5, 5]
+      sets: Array<Set>(DEFAULT_SET_VALUE).fill({ reps: DEFAULT_REP_VALUE }),
+      setsUnderEdit: [],
+      addRepsModalIsOpen: false
     };
   }
 
   public render() {
+    const { date, sets, addRepsModalIsOpen } = this.state;
     return (
       <div className="add-log-entry">
         <div className="row">
-          <span className="col">
+          <div className="col">
             <DatePicker
               dateFormat="YYYY-MM-DD"
-              selected={this.state.date}
+              selected={date}
               onChange={this.handleDateChanged}
+              className="form-control form-control-sm log-entry-input"
             />
-          </span>
-          <span className="col">
+          </div>
+          <div className="col">
             <input
+              className="form-control form-control-sm log-entry-input"
               type="text"
               placeholder="Name"
               maxLength={50}
               onBlur={this.handleNameChanged}
             />
-          </span>
-          <span className="col">
+          </div>
+          <div className="col">
             <input
+              className="form-control form-control-sm log-entry-input"
               type="text"
               placeholder="Weight"
               onBlur={this.handleWeigthLiftedChanged}
             />
-          </span>
+          </div>
+          <div className="col d-flex align-items-center">
+            <span className="mr-2">{formatSets(sets)}</span>
+            <Button size="sm" color="primary" onClick={this.toggleAddRepsModal}>
+              Edit
+            </Button>
+          </div>
         </div>
-        <AddReps onValueChange={this.handleRepsChanged} />
         <button
           className="btn btn-primary btn-add-entry"
           onClick={() => this.addLogEntry()}
         >
           Add
         </button>
+        <AddRepsModal
+          onValueChange={this.handleRepsChanged}
+          initialSets={sets}
+          isOpen={addRepsModalIsOpen}
+          toggle={this.toggleAddRepsModal}
+          onSave={this.saveRepsChanges}
+        />
       </div>
     );
   }
+
+  private toggleAddRepsModal = () => {
+    this.setState((prevState: State) => ({
+      addRepsModalIsOpen: !prevState.addRepsModalIsOpen,
+      setsUnderEdit: prevState.sets.slice()
+    }));
+  };
+
+  private saveRepsChanges = () => {
+    this.setState((prevState: State) => ({
+      sets: prevState.setsUnderEdit.slice(),
+      addRepsModalIsOpen: false
+    }));
+  };
 
   private handleDateChanged = (date: moment.Moment | null) => {
     if (date !== null) {
@@ -84,14 +124,15 @@ class AddLogEntry extends React.Component<Props, State> {
     this.setState({ weightLifted });
   };
 
-  private handleRepsChanged = (reps: number[]) => this.setState({ reps });
+  private handleRepsChanged = (sets: Set[]) =>
+    this.setState({ setsUnderEdit: sets });
 
   private addLogEntry = () => {
     const newEntry: LiftLogEntry = {
       date: this.state.date.toDate(),
       name: this.state.name,
       weightLifted: this.state.weightLifted,
-      reps: this.state.reps.map(r => ({ number: r }))
+      sets: this.state.sets
     };
 
     this.props.onAddEntry(newEntry);

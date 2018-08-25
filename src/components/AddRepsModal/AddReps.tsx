@@ -1,11 +1,6 @@
 import * as React from "react";
 import { Set } from "../../types/LiftTypes";
-import {
-  allRepsAreEqual,
-  DEFAULT_REP_VALUE,
-  DEFAULT_SET_VALUE,
-  formatSets
-} from "../../utils/LiftUtils";
+import { allRepsAreEqual, formatSets } from "../../utils/LiftUtils";
 import CustomSetsInput from "./CustomSetsInput";
 import InputModeSwitch, { InputMode } from "./InputModeSwitch";
 import SetsRepsInput from "./SetsRepsInput";
@@ -95,10 +90,8 @@ class AddReps extends React.Component<Props, State> {
   };
 
   private getInitialState(initialSets: Set[]): State {
-    const isEmpty = initialSets.length === 0;
-
-    const numberOfSets = isEmpty ? DEFAULT_SET_VALUE : initialSets.length;
-    const numberOfReps = isEmpty ? DEFAULT_REP_VALUE : initialSets[0].reps;
+    const numberOfSets = initialSets.length;
+    const numberOfReps = initialSets[0].reps;
 
     return allRepsAreEqual(initialSets)
       ? {

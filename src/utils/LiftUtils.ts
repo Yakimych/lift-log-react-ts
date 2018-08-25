@@ -15,7 +15,8 @@ export const allRepsAreEqual = (sets: Set[]) =>
 
 export const formatSets = (sets: Set[]) => {
   if (allRepsAreEqual(sets)) {
-    return `${sets.length}x${sets[0].reps}`;
+    const reps = sets.length > 0 ? sets[0].reps : 0;
+    return `${sets.length}x${reps}`;
   }
   return sets.map(s => s.reps).join("-");
 };

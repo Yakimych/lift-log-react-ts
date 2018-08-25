@@ -40,10 +40,11 @@
   background-color: #f8f9fa;
 }
 
-.btn:focus,
-.btn:active {
-  outline: none !important;
-  box-shadow: none !important;
+/* id of the body is used to override bootstrap rules */
+#lift-log-app-body .btn:focus,
+#lift-log-app-body .btn:active {
+  outline: none;
+  box-shadow: none;
 }
 
 .btn-primary--lighter:hover {

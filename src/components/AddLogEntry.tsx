@@ -4,7 +4,11 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Button } from "reactstrap";
 import { LiftLogEntry, Set } from "../types/LiftTypes";
-import { formatSets } from "../utils/LiftUtils";
+import {
+  DEFAULT_REP_VALUE,
+  DEFAULT_SET_VALUE,
+  formatSets
+} from "../utils/LiftUtils";
 import "./AddLogEntry.css";
 import AddRepsModal from "./AddRepsModal";
 
@@ -28,7 +32,7 @@ class AddLogEntry extends React.Component<Props, State> {
       date: moment(),
       name: "",
       weightLifted: 0,
-      sets: Array<Set>(3).fill({ reps: 5 }),
+      sets: Array<Set>(DEFAULT_SET_VALUE).fill({ reps: DEFAULT_REP_VALUE }),
       setsUnderEdit: [],
       addRepsModalIsOpen: false
     };

@@ -1,8 +1,8 @@
 import axios, { AxiosResponse } from "axios";
 import { LiftLog, LiftLogEntry, Set } from "./../types/LiftTypes";
 
-type ApiRep = {
-  number: number;
+type ApiSet = {
+  numberOfReps: number;
   rpe: number | null;
 };
 
@@ -10,7 +10,7 @@ type ApiLiftLogEntry = {
   date: string;
   name: string;
   weightLifted: number;
-  reps: ApiRep[];
+  sets: ApiSet[];
 };
 
 type ApiLiftLog = {
@@ -45,11 +45,11 @@ class LiftLogService {
     date: entry.date.toISOString(),
     name: entry.name,
     weightLifted: entry.weightLifted,
-    reps: entry.sets.map(this.toApiRep)
+    sets: entry.sets.map(this.toApiSet)
   });
 
-  private toApiRep = (set: Set): ApiRep => ({
-    number: set.reps,
+  private toApiSet = (set: Set): ApiSet => ({
+    numberOfReps: set.reps,
     rpe: null
   });
 
@@ -59,7 +59,7 @@ class LiftLogService {
     date: new Date(apiLiftLogEntry.date),
     name: apiLiftLogEntry.name,
     weightLifted: apiLiftLogEntry.weightLifted,
-    sets: apiLiftLogEntry.reps.map(rep => ({ reps: rep.number }))
+    sets: apiLiftLogEntry.sets.map(set => ({ reps: set.numberOfReps }))
   });
 }
 

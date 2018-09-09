@@ -1,9 +1,7 @@
 import * as React from "react";
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
-
 import { LiftLogEntryReps } from "../../types/LiftTypes";
 import AddReps from "./AddReps";
-// import RepsInfo from "./RepsInfo";
 import "./style.css";
 
 type Props = {

@@ -1,9 +1,14 @@
 import * as React from "react";
-import { Set } from "../../types/LiftTypes";
-import { InputMode, LiftLogEntryReps } from "../../types/LiftTypes";
+import {
+  InputMode,
+  LiftInfo,
+  LiftLogEntryReps,
+  Set
+} from "../../types/LiftTypes";
 import { formatRepsSets } from "../../utils/LiftUtils";
 import CustomSetsInput from "./CustomSetsInput";
 import InputModeSwitch from "./InputModeSwitch";
+import LiftInfoContainer from "./LiftInfo";
 import SetsRepsInput from "./SetsRepsInput";
 
 type Props = {
@@ -40,9 +45,15 @@ class AddReps extends React.Component<Props, {}> {
             />
           )}
         </div>
+        <LiftInfoContainer
+          onLiftInfoChange={this.onLiftInfoChange}
+          liftInfo={this.props.liftLogReps}
+        />
       </div>
     );
   }
+  private onLiftInfoChange = (liftInfo: LiftInfo) =>
+    this.props.onLiftLogRepsChange(liftInfo as LiftLogEntryReps);
 
   private handleSetsRepsChange = (numberOfSets: number, numberOfReps: number) =>
     this.props.onLiftLogRepsChange({

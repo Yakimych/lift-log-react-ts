@@ -1,10 +1,6 @@
 import * as React from "react";
 import { Button, ButtonGroup } from "reactstrap";
-
-export enum InputMode {
-  SetsReps,
-  CustomReps
-}
+import { InputMode } from "../../types/LiftTypes";
 
 type Props = {
   mode: InputMode;

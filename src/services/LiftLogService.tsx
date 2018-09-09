@@ -11,6 +11,7 @@ type ApiLiftLogEntry = {
   name: string;
   weightLifted: number;
   sets: ApiSet[];
+  comment: string;
 };
 
 type ApiLiftLog = {
@@ -45,7 +46,8 @@ class LiftLogService {
     date: entry.date.toISOString(),
     name: entry.name,
     weightLifted: entry.weightLifted,
-    sets: entry.sets.map(this.toApiSet)
+    sets: entry.sets.map(this.toApiSet),
+    comment: entry.comment
   });
 
   private toApiSet = (set: Set): ApiSet => ({
@@ -59,7 +61,8 @@ class LiftLogService {
     date: new Date(apiLiftLogEntry.date),
     name: apiLiftLogEntry.name,
     weightLifted: apiLiftLogEntry.weightLifted,
-    sets: apiLiftLogEntry.sets.map(set => ({ reps: set.numberOfReps }))
+    sets: apiLiftLogEntry.sets.map(set => ({ reps: set.numberOfReps })),
+    comment: apiLiftLogEntry.comment
   });
 }
 

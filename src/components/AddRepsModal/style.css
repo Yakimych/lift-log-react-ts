@@ -16,3 +16,8 @@
   width: 21px;
   height: 100%;
 }
+
+/* negative left and right margins */
+.mx--1 {
+  margin: 0 -0.25rem;
+}

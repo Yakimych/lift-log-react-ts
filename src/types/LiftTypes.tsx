@@ -2,8 +2,14 @@ type Set = {
   reps: number;
 };
 
+type LiftInfoLink = {
+  text: string;
+  url: string;
+};
+
 type LiftInfo = {
   comment: string;
+  links: LiftInfoLink[];
 };
 
 type LiftLogEntry = {
@@ -40,5 +46,6 @@ export {
   LiftLogEntryReps,
   SetsRepsInput,
   LiftInfo,
-  InputMode
+  InputMode,
+  LiftInfoLink
 };

@@ -32,28 +32,7 @@ type State = {
 };
 
 class AddLogEntry extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-
-    const liftLogReps = {
-      mode: InputMode.SetsReps,
-      numberOfReps: DEFAULT_REP_VALUE,
-      numberOfSets: DEFAULT_SET_VALUE,
-      customSets: this.getDefaultSets(),
-      comment: ""
-    };
-    this.state = {
-      date: moment(),
-      name: "",
-      weightLifted: 0,
-      liftLogReps,
-      liftLogRepsUnderEdit: { ...liftLogReps },
-      addRepsModalIsOpen: false
-    };
-  }
-  public getDefaultSets() {
-    return Array<Set>(DEFAULT_SET_VALUE).fill({ reps: DEFAULT_REP_VALUE });
-  }
+  public state = this.getDefaultState();
   public render() {
     const {
       date,
@@ -114,6 +93,28 @@ class AddLogEntry extends React.Component<Props, State> {
     );
   }
 
+  private getDefaultSets() {
+    return Array<Set>(DEFAULT_SET_VALUE).fill({ reps: DEFAULT_REP_VALUE });
+  }
+  private getDefaultState() {
+    const liftLogReps: LiftLogEntryReps = {
+      mode: InputMode.SetsReps,
+      numberOfReps: DEFAULT_REP_VALUE,
+      numberOfSets: DEFAULT_SET_VALUE,
+      customSets: this.getDefaultSets(),
+      links: [],
+      comment: ""
+    };
+    return {
+      date: moment(),
+      name: "",
+      weightLifted: 0,
+      liftLogReps,
+      liftLogRepsUnderEdit: { ...liftLogReps },
+      addRepsModalIsOpen: false
+    };
+  }
+
   private toggleAddRepsModal = () => {
     this.setState((prevState: State) => ({
       addRepsModalIsOpen: !prevState.addRepsModalIsOpen,
@@ -155,17 +156,21 @@ class AddLogEntry extends React.Component<Props, State> {
     }));
 
   private addLogEntry = () => {
-    const { comment } = this.state.liftLogReps;
+    const { comment, links } = this.state.liftLogReps;
 
     const newEntry: LiftLogEntry = {
       date: this.state.date.toDate(),
       name: this.state.name,
       weightLifted: this.state.weightLifted,
       sets: getSets(this.state.liftLogReps),
-      comment
+      comment,
+      links: links.filter(link => !!link.url)
     };
 
     this.props.onAddEntry(newEntry);
+
+    // reset state after the entry has been added.
+    this.setState(this.getDefaultState());
   };
 }
 

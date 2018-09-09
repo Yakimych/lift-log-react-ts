@@ -25,7 +25,7 @@ class AddReps extends React.Component<Props, {}> {
       mode
     } = this.props.liftLogReps;
     return (
-      <div>
+      <div className="px-1">
         <div className="d-flex">
           <InputModeSwitch mode={mode} onChange={this.handleInputModeChange} />
           <div className="lead ml-4">

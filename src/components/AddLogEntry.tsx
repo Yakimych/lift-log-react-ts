@@ -96,6 +96,7 @@ class AddLogEntry extends React.Component<Props, State> {
   private getDefaultSets() {
     return Array<Set>(DEFAULT_SET_VALUE).fill({ reps: DEFAULT_REP_VALUE });
   }
+  
   private getDefaultState() {
     const liftLogReps: LiftLogEntryReps = {
       mode: InputMode.SetsReps,

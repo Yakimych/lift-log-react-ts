@@ -3,7 +3,7 @@ import { LiftInfo } from "../../../types/LiftTypes";
 import Comment from "./Comment";
 import Links from "./Links";
 
-type Prop = {
+type Props = {
   liftInfo: LiftInfo;
   onLiftInfoChange: (info: LiftInfo) => void;
 };
@@ -12,13 +12,11 @@ type State = {
   hasComment: boolean;
 };
 
-class LiftInfoContainer extends React.Component<Prop, State> {
-  constructor(props: Prop) {
-    super(props);
-    this.state = {
-      hasComment: !!props.liftInfo.comment
-    };
-  }
+class LiftInfoContainer extends React.Component<Props, State> {
+  public state = {
+    hasComment: !!this.props.liftInfo.comment
+  };
+
   public render() {
     return (
       <div className="d-flex flex-column align-items-start">
@@ -37,6 +35,7 @@ class LiftInfoContainer extends React.Component<Prop, State> {
       </div>
     );
   }
+
   private onLinkChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     index: number
@@ -44,7 +43,7 @@ class LiftInfoContainer extends React.Component<Prop, State> {
     const value = e.target.value;
     const name = e.target.name;
     const links = this.props.liftInfo.links.map(
-      (link, ind) => (ind !== index ? link : { ...link, [name]: value })
+      (link, i) => (i !== index ? link : { ...link, [name]: value })
     );
     this.props.onLiftInfoChange({ links } as LiftInfo);
   };
@@ -55,7 +54,7 @@ class LiftInfoContainer extends React.Component<Prop, State> {
   };
 
   private onLinkRemove = (index: number) => {
-    const links = this.props.liftInfo.links.filter((_, ind) => ind !== index);
+    const links = this.props.liftInfo.links.filter((_, i) => i !== index);
     this.props.onLiftInfoChange({ links } as LiftInfo);
   };
 

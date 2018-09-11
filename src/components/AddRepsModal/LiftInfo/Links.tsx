@@ -10,7 +10,7 @@ import {
 } from "reactstrap";
 import { LiftInfoLink } from "../../../types/LiftTypes";
 
-type Prop = {
+type Props = {
   onLinkAdd: () => void;
   onLinkRemove: (index: number) => void;
   onLinkChange: (
@@ -23,7 +23,7 @@ type Prop = {
 const LINK_ELEMENT_HEIGHT = 40;
 const MAX_LINKS_NUMBER = 3;
 
-const Links = (props: Prop) => {
+const Links = (props: Props) => {
   const { links, onLinkChange, onLinkAdd, onLinkRemove } = props;
   const linksContainerHeight = links.length * LINK_ELEMENT_HEIGHT;
   const canAddMoreLinks = links.length < MAX_LINKS_NUMBER;
@@ -35,11 +35,11 @@ const Links = (props: Prop) => {
         className="pt-1 mx--1"
         height={linksContainerHeight}
       >
-        {links.map((link, ind) => (
+        {links.map((link, index) => (
           <div
             className="d-flex align-items-start px-1"
             style={{ height: LINK_ELEMENT_HEIGHT }}
-            key={ind}
+            key={`${link.text}_${link.url}`}
           >
             <Input
               bsSize="sm"
@@ -49,7 +49,7 @@ const Links = (props: Prop) => {
               maxLength={20}
               placeholder="Display text"
               type="text"
-              onBlur={e => onLinkChange(e, ind)}
+              onBlur={e => onLinkChange(e, index)}
             />
             <InputGroup>
               <Input
@@ -59,12 +59,12 @@ const Links = (props: Prop) => {
                 maxLength={200}
                 placeholder="Url"
                 type="text"
-                onBlur={e => onLinkChange(e, ind)}
+                onBlur={e => onLinkChange(e, index)}
               />
               <InputGroupAddon addonType="append">
                 <div
                   className="input-group-text remove-icon-wrapper"
-                  onClick={() => onLinkRemove(ind)}
+                  onClick={() => onLinkRemove(index)}
                 >
                   <Octicon icon={getIconByName("x")} />
                 </div>

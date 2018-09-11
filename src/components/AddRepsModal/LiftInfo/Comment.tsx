@@ -2,14 +2,14 @@ import * as React from "react";
 import AnimateHeight from "react-animate-height";
 import { Button, Fade, Input } from "reactstrap";
 
-type Prop = {
+type Props = {
   hasComment: boolean;
   onCommentChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onCommentToggle: () => void;
   commentValue: string;
 };
 
-const Comment = (props: Prop) => {
+const Comment = (props: Props) => {
   const { hasComment, onCommentToggle, onCommentChange, commentValue } = props;
 
   return (

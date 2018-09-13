@@ -1,27 +1,33 @@
 import * as React from "react";
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
-import { Set } from "../../types/LiftTypes";
+import { LiftLogEntryReps } from "../../types/LiftTypes";
 import AddReps from "./AddReps";
 import "./style.css";
 
 type Props = {
-  initialSets: Set[];
   isOpen: boolean;
   toggle: () => void;
-  onValueChange: (sets: Set[]) => void;
+  onLiftLogRepsChange: (liftLogReps: LiftLogEntryReps) => void;
   onSave: () => void;
+  liftLogReps: LiftLogEntryReps;
 };
 
 class AddRepsModal extends React.Component<Props> {
   public render() {
-    const { isOpen, toggle, onSave } = this.props;
+    const {
+      isOpen,
+      toggle,
+      onSave,
+      onLiftLogRepsChange,
+      liftLogReps
+    } = this.props;
     return (
       <Modal isOpen={isOpen} toggle={toggle}>
         <ModalHeader toggle={toggle}>Input sets and reps</ModalHeader>
         <ModalBody>
           <AddReps
-            onValueChange={this.props.onValueChange}
-            initialSets={this.props.initialSets}
+            onLiftLogRepsChange={onLiftLogRepsChange}
+            liftLogReps={liftLogReps}
           />
         </ModalBody>
         <ModalFooter>

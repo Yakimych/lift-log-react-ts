@@ -1,30 +1,37 @@
 import * as React from "react";
-import { Set } from "../../types/LiftTypes";
-import { allRepsAreEqual, formatSets } from "../../utils/LiftUtils";
+import {
+  InputMode,
+  LiftInfo,
+  LiftLogEntryReps,
+  Set
+} from "../../types/LiftTypes";
+import { formatRepsSets } from "../../utils/LiftUtils";
 import CustomSetsInput from "./CustomSetsInput";
-import InputModeSwitch, { InputMode } from "./InputModeSwitch";
+import InputModeSwitch from "./InputModeSwitch";
+import LiftInfoContainer from "./LiftInfo";
 import SetsRepsInput from "./SetsRepsInput";
 
-type State = {
-  mode: InputMode;
-  numberOfSets: number;
-  numberOfReps: number;
-  customSets: Set[];
-};
-
 type Props = {
-  onValueChange: (sets: Set[]) => void;
-  initialSets: Set[];
+  onLiftLogRepsChange: (liftLogReps: LiftLogEntryReps) => void;
+  liftLogReps: LiftLogEntryReps;
 };
 
-class AddReps extends React.Component<Props, State> {
-  public state: State = this.getInitialState(this.props.initialSets);
-
+class AddReps extends React.Component<Props, {}> {
   public render() {
-    const { numberOfSets, numberOfReps, customSets, mode } = this.state;
+    const {
+      numberOfSets,
+      numberOfReps,
+      customSets,
+      mode
+    } = this.props.liftLogReps;
     return (
-      <div>
-        <InputModeSwitch mode={mode} onChange={this.handleInputModeChange} />
+      <div className="px-1">
+        <div className="d-flex">
+          <InputModeSwitch mode={mode} onChange={this.handleInputModeChange} />
+          <div className="lead ml-4">
+            {formatRepsSets(this.props.liftLogReps)}
+          </div>
+        </div>
         <div className="my-3">
           {this.isSetsRepsMode() ? (
             <SetsRepsInput
@@ -38,75 +45,49 @@ class AddReps extends React.Component<Props, State> {
             />
           )}
         </div>
-        <div className="lead">{formatSets(this.getSets())}</div>
+        <LiftInfoContainer
+          onLiftInfoChange={this.onLiftInfoChange}
+          liftInfo={this.props.liftLogReps}
+        />
       </div>
     );
   }
-
-  private setStateAndEmitEvent<K extends keyof State>(
-    state:
-      | ((prevState: State) => Pick<State, K> | State)
-      | (Pick<State, K> | State)
-  ) {
-    return this.setState(state, () => this.props.onValueChange(this.getSets()));
-  }
+  private onLiftInfoChange = (liftInfo: LiftInfo) =>
+    this.props.onLiftLogRepsChange(liftInfo as LiftLogEntryReps);
 
   private handleSetsRepsChange = (numberOfSets: number, numberOfReps: number) =>
-    this.setStateAndEmitEvent({ numberOfSets, numberOfReps });
+    this.props.onLiftLogRepsChange({
+      numberOfSets,
+      numberOfReps
+    } as LiftLogEntryReps);
 
   private handleCustomSetsChange = (customSets: Set[]) =>
-    this.setStateAndEmitEvent({ customSets } as State);
+    this.props.onLiftLogRepsChange({ customSets } as LiftLogEntryReps);
 
   private handleInputModeChange = (mode: InputMode) => {
     if (mode === InputMode.SetsReps) {
-      this.setStateAndEmitEvent({ mode: InputMode.SetsReps } as State);
+      this.props.onLiftLogRepsChange({
+        mode: InputMode.SetsReps
+      } as LiftLogEntryReps);
     } else {
-      this.setStateAndEmitEvent((prevState: State) => {
-        const { numberOfSets, numberOfReps, customSets } = prevState;
-        const sets =
-          customSets.length === 0
-            ? this.getSetsFromNumberSetsReps(numberOfSets, numberOfReps)
-            : customSets;
+      const { numberOfSets, numberOfReps, customSets } = this.props.liftLogReps;
+      const sets =
+        customSets.length === 0
+          ? this.getSetsFromNumberSetsReps(numberOfSets, numberOfReps)
+          : customSets;
 
-        return {
-          mode: InputMode.CustomReps,
-          customSets: sets
-        } as State;
-      });
+      this.props.onLiftLogRepsChange({
+        mode: InputMode.CustomReps,
+        customSets: sets
+      } as LiftLogEntryReps);
     }
   };
 
-  private isSetsRepsMode = () => this.state.mode === InputMode.SetsReps;
+  private isSetsRepsMode = () =>
+    this.props.liftLogReps.mode === InputMode.SetsReps;
 
   private getSetsFromNumberSetsReps = (sets: number, reps: number): Set[] =>
     Array<Set>(sets).fill({ reps });
-
-  private getSets = (): Set[] => {
-    const { numberOfSets, numberOfReps, customSets } = this.state;
-
-    return this.isSetsRepsMode()
-      ? this.getSetsFromNumberSetsReps(numberOfSets, numberOfReps)
-      : customSets;
-  };
-
-  private getInitialState(initialSets: Set[]): State {
-    const numberOfSets = initialSets.length;
-    const numberOfReps = initialSets[0].reps;
-
-    return allRepsAreEqual(initialSets)
-      ? {
-          mode: InputMode.SetsReps,
-          numberOfSets,
-          numberOfReps,
-          customSets: []
-        }
-      : {
-          mode: InputMode.CustomReps,
-          numberOfSets,
-          numberOfReps,
-          customSets: initialSets.slice()
-        };
-  }
 }
 
 export default AddReps;

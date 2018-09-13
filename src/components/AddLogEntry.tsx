@@ -3,11 +3,17 @@ import * as React from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Button } from "reactstrap";
-import { LiftLogEntry, Set } from "../types/LiftTypes";
+import {
+  InputMode,
+  LiftLogEntry,
+  LiftLogEntryReps,
+  Set
+} from "../types/LiftTypes";
 import {
   DEFAULT_REP_VALUE,
   DEFAULT_SET_VALUE,
-  formatSets
+  formatRepsSets,
+  getSets
 } from "../utils/LiftUtils";
 import "./AddLogEntry.css";
 import AddRepsModal from "./AddRepsModal";
@@ -20,26 +26,21 @@ type State = {
   name: string;
   date: moment.Moment;
   weightLifted: number;
-  sets: Set[];
-  setsUnderEdit: Set[];
   addRepsModalIsOpen: boolean;
+  liftLogReps: LiftLogEntryReps;
+  liftLogRepsUnderEdit: LiftLogEntryReps;
 };
 
 class AddLogEntry extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      date: moment(),
-      name: "",
-      weightLifted: 0,
-      sets: Array<Set>(DEFAULT_SET_VALUE).fill({ reps: DEFAULT_REP_VALUE }),
-      setsUnderEdit: [],
-      addRepsModalIsOpen: false
-    };
-  }
-
+  public state = this.getDefaultState();
   public render() {
-    const { date, sets, addRepsModalIsOpen } = this.state;
+    const {
+      date,
+      addRepsModalIsOpen,
+      liftLogRepsUnderEdit,
+      liftLogReps
+    } = this.state;
+
     return (
       <div className="add-log-entry">
         <div className="row">
@@ -69,7 +70,7 @@ class AddLogEntry extends React.Component<Props, State> {
             />
           </div>
           <div className="col d-flex align-items-center">
-            <span className="mr-2">{formatSets(sets)}</span>
+            <span className="mr-2">{formatRepsSets(liftLogReps)}</span>
             <Button size="sm" color="primary" onClick={this.toggleAddRepsModal}>
               Edit
             </Button>
@@ -82,8 +83,8 @@ class AddLogEntry extends React.Component<Props, State> {
           Add
         </button>
         <AddRepsModal
-          onValueChange={this.handleRepsChanged}
-          initialSets={sets}
+          onLiftLogRepsChange={this.handleLiftLogRepsChanged}
+          liftLogReps={liftLogRepsUnderEdit}
           isOpen={addRepsModalIsOpen}
           toggle={this.toggleAddRepsModal}
           onSave={this.saveRepsChanges}
@@ -92,16 +93,39 @@ class AddLogEntry extends React.Component<Props, State> {
     );
   }
 
+  private getDefaultSets() {
+    return Array<Set>(DEFAULT_SET_VALUE).fill({ reps: DEFAULT_REP_VALUE });
+  }
+  
+  private getDefaultState() {
+    const liftLogReps: LiftLogEntryReps = {
+      mode: InputMode.SetsReps,
+      numberOfReps: DEFAULT_REP_VALUE,
+      numberOfSets: DEFAULT_SET_VALUE,
+      customSets: this.getDefaultSets(),
+      links: [],
+      comment: ""
+    };
+    return {
+      date: moment(),
+      name: "",
+      weightLifted: 0,
+      liftLogReps,
+      liftLogRepsUnderEdit: { ...liftLogReps },
+      addRepsModalIsOpen: false
+    };
+  }
+
   private toggleAddRepsModal = () => {
     this.setState((prevState: State) => ({
       addRepsModalIsOpen: !prevState.addRepsModalIsOpen,
-      setsUnderEdit: prevState.sets.slice()
+      liftLogRepsUnderEdit: { ...prevState.liftLogReps }
     }));
   };
 
   private saveRepsChanges = () => {
     this.setState((prevState: State) => ({
-      sets: prevState.setsUnderEdit.slice(),
+      liftLogReps: { ...prevState.liftLogRepsUnderEdit },
       addRepsModalIsOpen: false
     }));
   };
@@ -124,18 +148,30 @@ class AddLogEntry extends React.Component<Props, State> {
     this.setState({ weightLifted });
   };
 
-  private handleRepsChanged = (sets: Set[]) =>
-    this.setState({ setsUnderEdit: sets });
+  private handleLiftLogRepsChanged = (liftLogReps: LiftLogEntryReps) =>
+    this.setState(prevState => ({
+      liftLogRepsUnderEdit: {
+        ...prevState.liftLogRepsUnderEdit,
+        ...liftLogReps
+      }
+    }));
 
   private addLogEntry = () => {
+    const { comment, links } = this.state.liftLogReps;
+
     const newEntry: LiftLogEntry = {
       date: this.state.date.toDate(),
       name: this.state.name,
       weightLifted: this.state.weightLifted,
-      sets: this.state.sets
+      sets: getSets(this.state.liftLogReps),
+      comment,
+      links: links.filter(link => !!link.url)
     };
 
     this.props.onAddEntry(newEntry);
+
+    // reset state after the entry has been added.
+    this.setState(this.getDefaultState());
   };
 }
 

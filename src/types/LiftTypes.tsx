@@ -2,12 +2,36 @@ type Set = {
   reps: number;
 };
 
+type LiftInfoLink = {
+  text: string;
+  url: string;
+};
+
+type LiftInfo = {
+  comment: string;
+  links: LiftInfoLink[];
+};
+
 type LiftLogEntry = {
   date: Date;
   name: string;
   weightLifted: number;
   sets: Set[];
+} & LiftInfo;
+
+enum InputMode {
+  SetsReps,
+  CustomReps
+}
+
+type SetsRepsInput = {
+  mode: InputMode;
+  numberOfSets: number;
+  numberOfReps: number;
+  customSets: Set[];
 };
+
+type LiftLogEntryReps = SetsRepsInput & LiftInfo;
 
 type LiftLog = {
   name: string;
@@ -15,4 +39,13 @@ type LiftLog = {
   entries: LiftLogEntry[];
 };
 
-export { LiftLog, LiftLogEntry, Set };
+export {
+  LiftLog,
+  LiftLogEntry,
+  Set,
+  LiftLogEntryReps,
+  SetsRepsInput,
+  LiftInfo,
+  InputMode,
+  LiftInfoLink
+};

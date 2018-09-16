@@ -22,7 +22,7 @@ type ApiLiftLog = {
 };
 
 class LiftLogService {
-  private liftLogsUrl = "http://localhost:5000/api/liftlogs";
+  private liftLogsUrl = `${process.env.REACT_APP_API_BASE_URL}/liftlogs`;
 
   public getLiftLog(logName: string): Promise<LiftLog> {
     return axios

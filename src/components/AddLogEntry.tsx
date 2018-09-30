@@ -75,7 +75,7 @@ class AddLogEntry extends React.Component<Props, State> {
           liftLogReps={liftLogReps}
           isOpen={addRepsModalIsOpen}
           toggle={this.toggleAddRepsModal}
-          onSave={this.saveRepsChanges}
+          onSave={this.addLogEntry}
         />
       </div>
     );
@@ -111,17 +111,6 @@ class AddLogEntry extends React.Component<Props, State> {
     this.setState((prevState: State) => ({
       addRepsModalIsOpen: !prevState.addRepsModalIsOpen
     }));
-  };
-
-  private saveRepsChanges = () => {
-    this.setState(
-      (prevState: State) => ({
-        addRepsModalIsOpen: false
-      }),
-      this.addLogEntry
-    );
-    // this.setState({ })
-    // liftLogReps: this.getDefaultLogEntryReps(),
   };
 
   private handleDateChanged = (date: moment.Moment | null) => {

@@ -72,16 +72,10 @@ class AddLogEntry extends React.Component<Props, State> {
           <div className="col d-flex align-items-center">
             <span className="mr-2">{formatRepsSets(liftLogReps)}</span>
             <Button size="sm" color="primary" onClick={this.toggleAddRepsModal}>
-              Edit
+              Add
             </Button>
           </div>
         </div>
-        <button
-          className="btn btn-primary btn-add-entry"
-          onClick={() => this.addLogEntry()}
-        >
-          Add
-        </button>
         <AddRepsModal
           onLiftLogRepsChange={this.handleLiftLogRepsChanged}
           liftLogReps={liftLogRepsUnderEdit}
@@ -128,10 +122,14 @@ class AddLogEntry extends React.Component<Props, State> {
   };
 
   private saveRepsChanges = () => {
-    this.setState((prevState: State) => ({
-      liftLogReps: { ...prevState.liftLogRepsUnderEdit },
-      addRepsModalIsOpen: false
-    }));
+    this.setState(
+      (prevState: State) => ({
+        // TODO: Do we still need liftLogRepsUnderEdit?
+        liftLogReps: { ...prevState.liftLogRepsUnderEdit },
+        addRepsModalIsOpen: false
+      }),
+      this.addLogEntry
+    );
   };
 
   private handleDateChanged = (date: moment.Moment | null) => {
@@ -164,7 +162,7 @@ class AddLogEntry extends React.Component<Props, State> {
     const { comment, links } = this.state.liftLogReps;
 
     const newEntry: LiftLogEntry = {
-      date: this.state.date.toDate(),
+      date: this.state.date,
       name: this.state.name,
       weightLifted: this.state.weightLifted,
       sets: getSets(this.state.liftLogReps),

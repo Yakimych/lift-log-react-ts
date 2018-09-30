@@ -28,18 +28,12 @@ type State = {
   weightLifted: number;
   addRepsModalIsOpen: boolean;
   liftLogReps: LiftLogEntryReps;
-  liftLogRepsUnderEdit: LiftLogEntryReps;
 };
 
 class AddLogEntry extends React.Component<Props, State> {
   public state = this.getDefaultState();
   public render() {
-    const {
-      date,
-      addRepsModalIsOpen,
-      liftLogRepsUnderEdit,
-      liftLogReps
-    } = this.state;
+    const { date, addRepsModalIsOpen, liftLogReps } = this.state;
 
     return (
       <div className="add-log-entry">
@@ -78,7 +72,7 @@ class AddLogEntry extends React.Component<Props, State> {
         </div>
         <AddRepsModal
           onLiftLogRepsChange={this.handleLiftLogRepsChanged}
-          liftLogReps={liftLogRepsUnderEdit}
+          liftLogReps={liftLogReps}
           isOpen={addRepsModalIsOpen}
           toggle={this.toggleAddRepsModal}
           onSave={this.saveRepsChanges}
@@ -109,27 +103,25 @@ class AddLogEntry extends React.Component<Props, State> {
       name: "",
       weightLifted: 0,
       liftLogReps,
-      liftLogRepsUnderEdit: { ...liftLogReps },
       addRepsModalIsOpen: false
     };
   }
 
   private toggleAddRepsModal = () => {
     this.setState((prevState: State) => ({
-      addRepsModalIsOpen: !prevState.addRepsModalIsOpen,
-      liftLogRepsUnderEdit: { ...prevState.liftLogReps }
+      addRepsModalIsOpen: !prevState.addRepsModalIsOpen
     }));
   };
 
   private saveRepsChanges = () => {
     this.setState(
       (prevState: State) => ({
-        // TODO: Do we still need liftLogRepsUnderEdit?
-        liftLogReps: { ...prevState.liftLogRepsUnderEdit },
         addRepsModalIsOpen: false
       }),
       this.addLogEntry
     );
+    // this.setState({ })
+    // liftLogReps: this.getDefaultLogEntryReps(),
   };
 
   private handleDateChanged = (date: moment.Moment | null) => {
@@ -150,12 +142,9 @@ class AddLogEntry extends React.Component<Props, State> {
     this.setState({ weightLifted });
   };
 
-  private handleLiftLogRepsChanged = (liftLogReps: LiftLogEntryReps) =>
-    this.setState(prevState => ({
-      liftLogRepsUnderEdit: {
-        ...prevState.liftLogRepsUnderEdit,
-        ...liftLogReps
-      }
+  private handleLiftLogRepsChanged = (liftLogReps: Partial<LiftLogEntryReps>) =>
+    this.setState((prevState: State) => ({
+      liftLogReps: { ...prevState.liftLogReps, ...liftLogReps }
     }));
 
   private addLogEntry = () => {
@@ -176,7 +165,6 @@ class AddLogEntry extends React.Component<Props, State> {
     const liftLogReps = this.getDefaultLogEntryReps();
     this.setState({
       liftLogReps,
-      liftLogRepsUnderEdit: liftLogReps,
       addRepsModalIsOpen: false
     });
   };

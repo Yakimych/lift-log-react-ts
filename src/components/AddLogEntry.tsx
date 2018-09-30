@@ -96,9 +96,9 @@ class AddLogEntry extends React.Component<Props, State> {
   private getDefaultSets() {
     return Array<Set>(DEFAULT_SET_VALUE).fill({ reps: DEFAULT_REP_VALUE });
   }
-  
-  private getDefaultState() {
-    const liftLogReps: LiftLogEntryReps = {
+
+  private getDefaultLogEntryReps(): LiftLogEntryReps {
+    return {
       mode: InputMode.SetsReps,
       numberOfReps: DEFAULT_REP_VALUE,
       numberOfSets: DEFAULT_SET_VALUE,
@@ -106,6 +106,10 @@ class AddLogEntry extends React.Component<Props, State> {
       links: [],
       comment: ""
     };
+  }
+
+  private getDefaultState(): State {
+    const liftLogReps = this.getDefaultLogEntryReps();
     return {
       date: moment(),
       name: "",
@@ -170,8 +174,13 @@ class AddLogEntry extends React.Component<Props, State> {
 
     this.props.onAddEntry(newEntry);
 
-    // reset state after the entry has been added.
-    this.setState(this.getDefaultState());
+    // reset liftLogReps and make sure the dialog is closed
+    const liftLogReps = this.getDefaultLogEntryReps();
+    this.setState({
+      liftLogReps,
+      liftLogRepsUnderEdit: liftLogReps,
+      addRepsModalIsOpen: false
+    });
   };
 }
 

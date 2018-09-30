@@ -24,9 +24,12 @@ const LiftLogContainer = (props: Props) => {
       </div>
       <AddLogEntry onAddEntry={props.onAddEntry} />
       <div className="lifts">
-        {props.entries.sort(byDateNewestFirst).map((liftLogEntry, index) => (
-          <LiftRow {...liftLogEntry} key={index} />
-        ))}
+        {props.entries
+          .concat()
+          .sort(byDateNewestFirst)
+          .map((liftLogEntry, index) => (
+            <LiftRow {...liftLogEntry} key={index} />
+          ))}
       </div>
     </div>
   );

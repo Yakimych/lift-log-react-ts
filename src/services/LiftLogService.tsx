@@ -1,4 +1,5 @@
 import axios, { AxiosResponse } from "axios";
+import * as moment from "moment";
 import { LiftInfoLink, LiftLog, LiftLogEntry, Set } from "./../types/LiftTypes";
 
 type ApiSet = {
@@ -60,7 +61,7 @@ class LiftLogService {
   private toLiftLogEntry = (
     apiLiftLogEntry: ApiLiftLogEntry
   ): LiftLogEntry => ({
-    date: new Date(apiLiftLogEntry.date),
+    date: moment(apiLiftLogEntry.date),
     name: apiLiftLogEntry.name,
     weightLifted: apiLiftLogEntry.weightLifted,
     sets: apiLiftLogEntry.sets.map(set => ({ reps: set.numberOfReps })),

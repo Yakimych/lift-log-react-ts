@@ -1,3 +1,4 @@
+import * as moment from "moment";
 import * as React from "react";
 import { LiftLogEntry } from "./../types/LiftTypes";
 import AddLogEntry from "./AddLogEntry";
@@ -9,6 +10,9 @@ type Props = {
   onAddEntry: (entry: LiftLogEntry) => void;
 };
 
+const byDateNewestFirst = (entry: LiftLogEntry, otherEntry: LiftLogEntry) =>
+  moment.utc(otherEntry.date).diff(moment.utc(entry.date));
+
 const LiftLogContainer = (props: Props) => {
   return (
     <div className="mt-3 mb-3 p-2 box-shadow lift-log-container">
@@ -18,12 +22,12 @@ const LiftLogContainer = (props: Props) => {
         <h6 className="col">Weight lifted (kg)</h6>
         <h6 className="col">Sets/Reps</h6>
       </div>
+      <AddLogEntry onAddEntry={props.onAddEntry} />
       <div className="lifts">
-        {props.entries.map((liftLogEntry, index) => (
+        {props.entries.sort(byDateNewestFirst).map((liftLogEntry, index) => (
           <LiftRow {...liftLogEntry} key={index} />
         ))}
       </div>
-      <AddLogEntry onAddEntry={props.onAddEntry} />
     </div>
   );
 };

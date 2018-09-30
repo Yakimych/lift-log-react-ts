@@ -12,7 +12,7 @@ import LiftInfoContainer from "./LiftInfo";
 import SetsRepsInput from "./SetsRepsInput";
 
 type Props = {
-  onLiftLogRepsChange: (liftLogReps: LiftLogEntryReps) => void;
+  onLiftLogRepsChange: (liftLogReps: Partial<LiftLogEntryReps>) => void;
   liftLogReps: LiftLogEntryReps;
 };
 
@@ -59,7 +59,7 @@ class AddReps extends React.Component<Props, {}> {
     this.props.onLiftLogRepsChange({
       numberOfSets,
       numberOfReps
-    } as LiftLogEntryReps);
+    });
 
   private handleCustomSetsChange = (customSets: Set[]) =>
     this.props.onLiftLogRepsChange({ customSets } as LiftLogEntryReps);

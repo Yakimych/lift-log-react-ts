@@ -6,14 +6,24 @@ import { LiftLogEntry } from "./../types/LiftTypes";
 import "./App.css";
 import LiftLogContainer from "./LiftLogContainer";
 
-type State = {
-  isLoading: boolean;
-  networkErrorOccured: boolean;
-  // TODO: DU?
+type LoadingState = {
+  isLoading: true;
+};
+
+type ErrorState = {
+  isLoading: false;
+  networkErrorOccured: true;
   errorMessage: string;
+};
+
+type SuccessState = {
+  isLoading: false;
+  networkErrorOccured: false;
   headerText: string;
   logEntries: LiftLogEntry[];
 };
+
+type State = LoadingState | ErrorState | SuccessState;
 
 class App extends React.Component<RouteProps, State> {
   private readonly liftLogService = new LiftLogService();
@@ -23,11 +33,7 @@ class App extends React.Component<RouteProps, State> {
     super(props);
     this.logName = this.getLogNameFromRoute(props);
     this.state = {
-      isLoading: true,
-      networkErrorOccured: false,
-      errorMessage: "",
-      headerText: `Loading board ${this.logName}...`,
-      logEntries: []
+      isLoading: true
     };
   }
 
@@ -40,9 +46,7 @@ class App extends React.Component<RouteProps, State> {
       <div className="App">
         <header className="App-header">
           <h1 className="App-title">
-            {this.state.networkErrorOccured
-              ? this.state.errorMessage
-              : this.state.headerText}
+            {this.getHeaderText(this.state, this.logName)}
           </h1>
         </header>
         {this.state.isLoading || this.state.networkErrorOccured ? null : (
@@ -53,6 +57,16 @@ class App extends React.Component<RouteProps, State> {
         )}
       </div>
     );
+  }
+
+  private getHeaderText(state: State, logName: string) {
+    if (state.isLoading) {
+      return `Loading board ${logName}...`;
+    } else if (state.networkErrorOccured) {
+      return state.errorMessage;
+    } else {
+      return state.headerText;
+    }
   }
 
   private reloadLifts() {
@@ -68,17 +82,18 @@ class App extends React.Component<RouteProps, State> {
         })
       )
       .catch((error: AxiosError) => {
-        this.setState({
-          ...this.state,
-          isLoading: false,
-          networkErrorOccured: true
-        });
         if (!!error.response && error.response.status === 404) {
           this.setState({
+            ...this.state,
+            isLoading: false,
+            networkErrorOccured: true,
             errorMessage: `Board ${this.logName} does not exist`
           });
         } else {
           this.setState({
+            ...this.state,
+            isLoading: false,
+            networkErrorOccured: true,
             errorMessage: `An unexpected network error has occured`
           });
         }

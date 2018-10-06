@@ -87,7 +87,7 @@ class AddReps extends React.Component<Props, {}> {
     this.props.liftLogReps.mode === InputMode.SetsReps;
 
   private getSetsFromNumberSetsReps = (sets: number, reps: number): Set[] =>
-    Array<Set>(sets).fill({ reps });
+    Array<Set>(sets).fill({ reps, rpe: null });
 }
 
 export default AddReps;

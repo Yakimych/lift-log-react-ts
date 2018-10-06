@@ -2,6 +2,7 @@ import * as moment from "moment";
 
 type Set = {
   reps: number;
+  rpe: number | null;
 };
 
 type LiftInfoLink = {

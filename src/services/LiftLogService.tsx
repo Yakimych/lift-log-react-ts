@@ -55,7 +55,7 @@ class LiftLogService {
 
   private toApiSet = (set: Set): ApiSet => ({
     numberOfReps: set.reps,
-    rpe: null
+    rpe: set.rpe
   });
 
   private toLiftLogEntry = (
@@ -64,7 +64,10 @@ class LiftLogService {
     date: moment(apiLiftLogEntry.date),
     name: apiLiftLogEntry.name,
     weightLifted: apiLiftLogEntry.weightLifted,
-    sets: apiLiftLogEntry.sets.map(set => ({ reps: set.numberOfReps })),
+    sets: apiLiftLogEntry.sets.map(set => ({
+      reps: set.numberOfReps,
+      rpe: set.rpe
+    })),
     comment: apiLiftLogEntry.comment,
     links: apiLiftLogEntry.links
   });

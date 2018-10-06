@@ -12,13 +12,13 @@ type LoadingState = {
 
 type ErrorState = {
   isLoading: false;
-  networkErrorOccured: true;
+  networkErrorOccurred: true;
   errorMessage: string;
 };
 
 type SuccessState = {
   isLoading: false;
-  networkErrorOccured: false;
+  networkErrorOccurred: false;
   headerText: string;
   logEntries: LiftLogEntry[];
 };
@@ -49,7 +49,7 @@ class App extends React.Component<RouteProps, State> {
             {this.getHeaderText(this.state, this.logName)}
           </h1>
         </header>
-        {this.state.isLoading || this.state.networkErrorOccured ? null : (
+        {this.state.isLoading || this.state.networkErrorOccurred ? null : (
           <LiftLogContainer
             entries={this.state.logEntries}
             onAddEntry={(entry: LiftLogEntry) => this.handleAddEntry(entry)}
@@ -62,7 +62,7 @@ class App extends React.Component<RouteProps, State> {
   private getHeaderText(state: State, logName: string) {
     if (state.isLoading) {
       return `Loading board ${logName}...`;
-    } else if (state.networkErrorOccured) {
+    } else if (state.networkErrorOccurred) {
       return state.errorMessage;
     } else {
       return state.headerText;
@@ -80,7 +80,7 @@ class App extends React.Component<RouteProps, State> {
       .then(liftLog =>
         this.setState({
           isLoading: false,
-          networkErrorOccured: false,
+          networkErrorOccurred: false,
           headerText: liftLog.title,
           logEntries: liftLog.entries
         })
@@ -89,7 +89,7 @@ class App extends React.Component<RouteProps, State> {
         const errorMessage = this.getErrorMessage(error);
         this.setState({
           isLoading: false,
-          networkErrorOccured: true,
+          networkErrorOccurred: true,
           errorMessage
         });
       });

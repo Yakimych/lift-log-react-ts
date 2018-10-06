@@ -8,26 +8,22 @@ import LiftLogContainer from "./LiftLogContainer";
 
 type LoadingState = {
   isLoading: true;
-  networkErrorOccured?: never;
 };
 
 type ErrorState = {
   isLoading: false;
   networkErrorOccured: true;
   errorMessage: string;
-  headerText?: never;
-  logEntries?: never;
 };
 
 type SuccessState = {
   isLoading: false;
   networkErrorOccured: false;
-  errorMessage?: never;
   headerText: string;
   logEntries: LiftLogEntry[];
 };
 
-type State = LoadingState | ErrorState | SuccessState;
+type State = StrictUnion<LoadingState | ErrorState | SuccessState>;
 
 class App extends React.Component<RouteProps, State> {
   private readonly liftLogService = new LiftLogService();

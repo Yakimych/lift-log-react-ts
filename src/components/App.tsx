@@ -8,17 +8,21 @@ import LiftLogContainer from "./LiftLogContainer";
 
 type LoadingState = {
   isLoading: true;
+  networkErrorOccured?: never;
 };
 
 type ErrorState = {
   isLoading: false;
   networkErrorOccured: true;
   errorMessage: string;
+  headerText?: never;
+  logEntries?: never;
 };
 
 type SuccessState = {
   isLoading: false;
   networkErrorOccured: false;
+  errorMessage?: never;
   headerText: string;
   logEntries: LiftLogEntry[];
 };
@@ -69,12 +73,16 @@ class App extends React.Component<RouteProps, State> {
     }
   }
 
+  private getErrorMessage = (error: AxiosError) =>
+    !!error.response && error.response.status === 404
+      ? `Board ${this.logName} does not exist`
+      : `An unexpected network error has occured`;
+
   private reloadLifts() {
     this.liftLogService
       .getLiftLog(this.logName)
       .then(liftLog =>
         this.setState({
-          ...this.state,
           isLoading: false,
           networkErrorOccured: false,
           headerText: liftLog.title,
@@ -82,36 +90,22 @@ class App extends React.Component<RouteProps, State> {
         })
       )
       .catch((error: AxiosError) => {
-        if (!!error.response && error.response.status === 404) {
-          this.setState({
-            ...this.state,
-            isLoading: false,
-            networkErrorOccured: true,
-            errorMessage: `Board ${this.logName} does not exist`
-          });
-        } else {
-          this.setState({
-            ...this.state,
-            isLoading: false,
-            networkErrorOccured: true,
-            errorMessage: `An unexpected network error has occured`
-          });
-        }
+        const errorMessage = this.getErrorMessage(error);
+        this.setState({
+          isLoading: false,
+          networkErrorOccured: true,
+          errorMessage
+        });
       });
   }
 
-  private handleAddEntry = (entry: LiftLogEntry) => {
+  private handleAddEntry = (entry: LiftLogEntry) =>
     this.liftLogService
       .addEntry(this.logName, entry)
       .then(() => this.reloadLifts());
-  };
 
-  private getLogNameFromRoute = (props: RouteProps) => {
-    if (!!props.location) {
-      return props.location.pathname.substr(1);
-    }
-    return "";
-  };
+  private getLogNameFromRoute = (props: RouteProps) =>
+    !!props.location ? props.location.pathname.substr(1) : "";
 }
 
 export default App;

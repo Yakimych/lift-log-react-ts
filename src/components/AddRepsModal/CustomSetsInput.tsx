@@ -1,7 +1,6 @@
 import Octicon, { getIconByName } from "@githubprimer/octicons-react";
 import * as React from "react";
-import { Button } from "reactstrap";
-import { Input, InputGroup, InputGroupAddon } from "reactstrap";
+import { Button, Input, InputGroup, InputGroupAddon } from "reactstrap";
 import { Set } from "../../types/LiftTypes";
 import {
   formatSet,

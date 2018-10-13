@@ -1,6 +1,6 @@
 import Octicon, { getIconByName } from "@githubprimer/octicons-react";
 import * as React from "react";
-import { toValidRepSet } from "../../utils/LiftUtils";
+import { toValidNumberOfReps } from "../../utils/LiftUtils";
 
 type Props = {
   numberOfSets: number;
@@ -33,12 +33,12 @@ class SetsRepsInput extends React.Component<Props> {
   }
 
   private handleSetsChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const numberOfSets = toValidRepSet(e.target.value);
+    const numberOfSets = toValidNumberOfReps(e.target.value);
     this.props.onChange(numberOfSets, this.props.numberOfReps);
   };
 
   private handleRepsChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const numberOfReps = toValidRepSet(e.target.value);
+    const numberOfReps = toValidNumberOfReps(e.target.value);
     this.props.onChange(this.props.numberOfSets, numberOfReps);
   };
 }

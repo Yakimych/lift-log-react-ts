@@ -1,28 +1,40 @@
 import Octicon, { getIconByName } from "@githubprimer/octicons-react";
 import * as React from "react";
-import { Button } from "reactstrap";
-import { Input, InputGroup, InputGroupAddon } from "reactstrap";
+import { Button, Input, InputGroup, InputGroupAddon } from "reactstrap";
 import { Set } from "../../types/LiftTypes";
-import { MAX_REP_SET_VALUE, toValidRepSet } from "../../utils/LiftUtils";
+import {
+  formatSet,
+  MAX_REP_SET_VALUE,
+  toValidSet
+} from "../../utils/LiftUtils";
 
 type Props = {
-  onChange: (reps: Set[]) => void;
+  onChange: (sets: Set[]) => void;
   customSets: Set[];
 };
 
-class CustomSetsInput extends React.Component<Props> {
+type State = {
+  customSets: string[];
+};
+
+class CustomSetsInput extends React.Component<Props, State> {
+  public state: Readonly<State> = {
+    customSets: this.props.customSets.map(formatSet)
+  };
+
   public render() {
     return (
       <React.Fragment>
         <div className="d-flex flex-wrap">
-          {this.props.customSets.map((value, index) => (
+          {this.state.customSets.map((formattedSet, index) => (
             <div key={index} className="custom-sets-input-group mr-1 mb-1">
               <InputGroup>
                 <Input
                   className="set-rep-input"
                   bsSize="sm"
-                  value={value.reps}
+                  value={formattedSet}
                   onChange={e => this.handleRepValueChanged(e, index)}
+                  onBlur={e => this.handleRepValueChangeCompleted(e, index)}
                 />
                 {index !== 0 && (
                   <InputGroupAddon addonType="append">
@@ -57,27 +69,46 @@ class CustomSetsInput extends React.Component<Props> {
 
   private handleAddSetClick = () => {
     const { customSets, onChange } = this.props;
-    const reps = [...customSets, customSets[customSets.length - 1]];
-    onChange(reps);
+    const sets = [...customSets, customSets[customSets.length - 1]];
+    this.setState({ customSets: sets.map(formatSet) });
+    onChange(sets);
   };
 
   private handleRepValueChanged = (
     e: React.ChangeEvent<HTMLInputElement>,
     index: number
   ) => {
-    const { customSets, onChange } = this.props;
+    const newSetStringValue = e.target.value;
+    const newFormattedSets = Object.assign([], this.state.customSets, {
+      [index]: newSetStringValue
+    });
 
-    const newRepsValue = toValidRepSet(e.target.value);
-    const reps = customSets.map(
-      (value, i) => (i === index ? { ...value, reps: newRepsValue } : value)
-    );
-    onChange(reps);
+    this.setState({ customSets: newFormattedSets });
+  };
+
+  private handleRepValueChangeCompleted = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    const { customSets, onChange } = this.props;
+    const newSetValue: Set = toValidSet(e.target.value);
+
+    const newRepValue = {
+      ...customSets[index],
+      reps: newSetValue.reps,
+      rpe: newSetValue.rpe
+    };
+    const sets: Set[] = Object.assign([], customSets, { [index]: newRepValue });
+
+    this.setState({ customSets: sets.map(formatSet) });
+    onChange(sets);
   };
 
   private handleRemoveSetClick = (index: number) => {
     const { customSets, onChange } = this.props;
-    const reps = customSets.filter((e, i) => i !== index);
-    onChange(reps);
+    const sets = customSets.filter((e, i) => i !== index);
+    this.setState({ customSets: sets.map(formatSet) });
+    onChange(sets);
   };
 }
 

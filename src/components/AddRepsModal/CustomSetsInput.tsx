@@ -79,9 +79,9 @@ class CustomSetsInput extends React.Component<Props, State> {
     index: number
   ) => {
     const newSetStringValue = e.target.value;
-    const newFormattedSets = this.state.customSets.map(
-      (value, i) => (i === index ? newSetStringValue : value)
-    );
+    const newFormattedSets = Object.assign([], this.state.customSets, {
+      [index]: newSetStringValue
+    });
 
     this.setState({ customSets: newFormattedSets });
   };
@@ -93,12 +93,12 @@ class CustomSetsInput extends React.Component<Props, State> {
     const { customSets, onChange } = this.props;
     const newSetValue: Set = toValidSet(e.target.value);
 
-    const sets: Set[] = customSets.map(
-      (value, i) =>
-        i === index
-          ? { ...value, reps: newSetValue.reps, rpe: newSetValue.rpe }
-          : value
-    );
+    const newRepValue = {
+      ...customSets[index],
+      reps: newSetValue.reps,
+      rpe: newSetValue.rpe
+    };
+    const sets: Set[] = Object.assign([], customSets, { [index]: newRepValue });
 
     this.setState({ customSets: sets.map(formatSet) });
     onChange(sets);

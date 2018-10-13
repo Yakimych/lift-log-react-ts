@@ -16,11 +16,8 @@ export const toValidSet = (repsWithRpe: string): Set => {
   const repNumber = toValidPositiveInteger(repsString);
   const validRepNumber = Math.min(repNumber, MAX_REP_SET_VALUE);
 
-  let rpe: number | null = null;
-  if (stringParts.length > 1) {
-    const rpeString = stringParts[1];
-    rpe = toValidRpe(rpeString);
-  }
+  const rpe: number | null =
+    stringParts.length > 1 ? toValidRpe(stringParts[1]) : null;
 
   return { reps: validRepNumber, rpe };
 };

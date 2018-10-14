@@ -19,6 +19,7 @@ import "./AddLogEntry.css";
 import AddRepsModal from "./AddRepsModal";
 
 type Props = {
+  disabled: boolean;
   onAddEntry: (entry: LiftLogEntry) => void;
 };
 
@@ -40,6 +41,7 @@ class AddLogEntry extends React.Component<Props, State> {
         <div className="row">
           <div className="col">
             <DatePicker
+              disabled={this.props.disabled}
               dateFormat="YYYY-MM-DD"
               selected={date}
               onChange={this.handleDateChanged}
@@ -48,6 +50,7 @@ class AddLogEntry extends React.Component<Props, State> {
           </div>
           <div className="col">
             <input
+              disabled={this.props.disabled}
               className="form-control form-control-sm log-entry-input"
               type="text"
               placeholder="Name"
@@ -57,6 +60,7 @@ class AddLogEntry extends React.Component<Props, State> {
           </div>
           <div className="col">
             <input
+              disabled={this.props.disabled}
               className="form-control form-control-sm log-entry-input"
               type="text"
               placeholder="Weight"
@@ -65,7 +69,12 @@ class AddLogEntry extends React.Component<Props, State> {
           </div>
           <div className="col d-flex align-items-center">
             <span className="mr-2">{formatRepsSets(liftLogReps)}</span>
-            <Button size="sm" color="primary" onClick={this.toggleAddRepsModal}>
+            <Button
+              disabled={this.props.disabled}
+              size="sm"
+              color="primary"
+              onClick={this.toggleAddRepsModal}
+            >
               Add
             </Button>
           </div>

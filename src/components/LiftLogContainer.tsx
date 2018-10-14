@@ -6,6 +6,7 @@ import "./LiftLog.css";
 import LiftRow from "./LiftRow";
 
 type Props = {
+  disabled: boolean;
   entries: LiftLogEntry[];
   onAddEntry: (entry: LiftLogEntry) => void;
 };
@@ -22,7 +23,7 @@ const LiftLogContainer = (props: Props) => {
         <h6 className="col">Weight lifted (kg)</h6>
         <h6 className="col">Sets/Reps</h6>
       </div>
-      <AddLogEntry onAddEntry={props.onAddEntry} />
+      <AddLogEntry disabled={props.disabled} onAddEntry={props.onAddEntry} />
       <div className="lifts">
         {props.entries
           .concat()

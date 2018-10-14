@@ -8,6 +8,7 @@ import LiftLogContainer from "./LiftLogContainer";
 
 type LoadingState = {
   isLoading: true;
+  loadingMessage: string;
 };
 
 type ErrorState = {
@@ -16,14 +17,10 @@ type ErrorState = {
   errorMessage: string;
 };
 
-type SuccessState = {
-  isLoading: false;
-  networkErrorOccurred: false;
-  headerText: string;
+type State = (LoadingState | ErrorState) & {
+  logTitle?: string;
   logEntries: LiftLogEntry[];
 };
-
-type State = StrictUnion<LoadingState | ErrorState | SuccessState>;
 
 class App extends React.Component<RouteProps, State> {
   private readonly liftLogService = new LiftLogService();
@@ -33,7 +30,9 @@ class App extends React.Component<RouteProps, State> {
     super(props);
     this.logName = this.getLogNameFromRoute(props);
     this.state = {
-      isLoading: true
+      isLoading: true,
+      loadingMessage: `Loading board ${this.logName}...`,
+      logEntries: []
     };
   }
 
@@ -45,27 +44,24 @@ class App extends React.Component<RouteProps, State> {
     return (
       <div className="App">
         <header className="App-header">
-          <h1 className="App-title">
-            {this.getHeaderText(this.state, this.logName)}
-          </h1>
+          <h1 className="App-title">{this.getHeaderText(this.state)}</h1>
         </header>
-        {this.state.isLoading || this.state.networkErrorOccurred ? null : (
-          <LiftLogContainer
-            entries={this.state.logEntries}
-            onAddEntry={(entry: LiftLogEntry) => this.handleAddEntry(entry)}
-          />
-        )}
+        <LiftLogContainer
+          disabled={this.state.isLoading || this.state.networkErrorOccurred}
+          entries={this.state.logEntries}
+          onAddEntry={(entry: LiftLogEntry) => this.handleAddEntry(entry)}
+        />
       </div>
     );
   }
 
-  private getHeaderText(state: State, logName: string) {
+  private getHeaderText(state: State): string {
     if (state.isLoading) {
-      return `Loading board ${logName}...`;
+      return state.loadingMessage;
     } else if (state.networkErrorOccurred) {
       return state.errorMessage;
     } else {
-      return state.headerText;
+      return state.logTitle || "";
     }
   }
 
@@ -74,14 +70,14 @@ class App extends React.Component<RouteProps, State> {
       ? `Board ${this.logName} does not exist`
       : `An unexpected network error has occured`;
 
-  private reloadLifts() {
+  private reloadLifts = () =>
     this.liftLogService
       .getLiftLog(this.logName)
       .then(liftLog =>
         this.setState({
           isLoading: false,
           networkErrorOccurred: false,
-          headerText: liftLog.title,
+          logTitle: liftLog.title,
           logEntries: liftLog.entries
         })
       )
@@ -90,15 +86,21 @@ class App extends React.Component<RouteProps, State> {
         this.setState({
           isLoading: false,
           networkErrorOccurred: true,
-          errorMessage
+          errorMessage,
+          logEntries: []
         });
       });
-  }
 
-  private handleAddEntry = (entry: LiftLogEntry) =>
-    this.liftLogService
-      .addEntry(this.logName, entry)
-      .then(() => this.reloadLifts());
+  private async handleAddEntry(entry: LiftLogEntry) {
+    this.setState(prevState => ({
+      isLoading: true,
+      loadingMessage: `Adding entry for ${entry.name}...`,
+      logEntries: prevState.logEntries
+    }));
+
+    await this.liftLogService.addEntry(this.logName, entry);
+    await this.reloadLifts();
+  }
 
   private getLogNameFromRoute = (props: RouteProps) =>
     !!props.location ? props.location.pathname.substr(1) : "";

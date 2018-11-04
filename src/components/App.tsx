@@ -17,7 +17,13 @@ type ErrorState = {
   errorMessage: string;
 };
 
-type State = (LoadingState | ErrorState) & {
+type SuccessState = {
+  isLoading: false;
+  networkErrorOccurred: false;
+};
+
+// This has become rather verbose...
+type State = (LoadingState | ErrorState | SuccessState) & {
   logTitle?: string;
   logEntries: LiftLogEntry[];
 };
@@ -93,13 +99,22 @@ class App extends React.Component<RouteProps, State> {
 
   private async handleAddEntry(entry: LiftLogEntry) {
     this.setState(prevState => ({
+      ...prevState,
       isLoading: true,
-      loadingMessage: `Adding entry for ${entry.name}...`,
-      logEntries: prevState.logEntries
+      loadingMessage: `Adding entry for ${entry.name}...`
     }));
 
-    await this.liftLogService.addEntry(this.logName, entry);
-    await this.reloadLifts();
+    try {
+      await this.liftLogService.addEntry(this.logName, entry);
+      await this.reloadLifts();
+    } catch (error) {
+      this.setState(prevState => ({
+        ...prevState,
+        isLoading: false,
+        networkErrorOccurred: true,
+        errorMessage: `Error while adding entry for ${entry.name}`
+      }));
+    }
   }
 
   private getLogNameFromRoute = (props: RouteProps) =>

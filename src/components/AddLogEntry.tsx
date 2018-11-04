@@ -3,6 +3,7 @@ import * as React from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Button } from "reactstrap";
+import { toValidInteger } from "src/utils/NumberUtils";
 import {
   InputMode,
   LiftLogEntry,
@@ -26,7 +27,7 @@ type Props = {
 type State = {
   name: string;
   date: moment.Moment;
-  weightLifted: number;
+  weightLifted?: number;
   addRepsModalIsOpen: boolean;
   liftLogReps: LiftLogEntryReps;
 };
@@ -34,7 +35,13 @@ type State = {
 class AddLogEntry extends React.Component<Props, State> {
   public state = this.getDefaultState();
   public render() {
-    const { date, addRepsModalIsOpen, liftLogReps } = this.state;
+    const {
+      date,
+      addRepsModalIsOpen,
+      liftLogReps,
+      name,
+      weightLifted
+    } = this.state;
 
     return (
       <div className="add-log-entry">
@@ -55,7 +62,8 @@ class AddLogEntry extends React.Component<Props, State> {
               type="text"
               placeholder="Name"
               maxLength={50}
-              onBlur={this.handleNameChanged}
+              value={name}
+              onChange={this.handleNameChanged}
             />
           </div>
           <div className="col">
@@ -64,13 +72,16 @@ class AddLogEntry extends React.Component<Props, State> {
               className="form-control form-control-sm log-entry-input"
               type="text"
               placeholder="Weight"
-              onBlur={this.handleWeigthLiftedChanged}
+              value={this.getDisplayWeightLifted(weightLifted)}
+              onChange={this.handleWeightLiftedChanged}
             />
           </div>
           <div className="col d-flex align-items-center">
             <span className="mr-2">{formatRepsSets(liftLogReps)}</span>
             <Button
-              disabled={this.props.disabled}
+              disabled={
+                this.props.disabled || !this.canAddEntry(name, weightLifted)
+              }
               size="sm"
               color="primary"
               onClick={this.toggleAddRepsModal}
@@ -89,6 +100,12 @@ class AddLogEntry extends React.Component<Props, State> {
       </div>
     );
   }
+
+  private getDisplayWeightLifted = (weightLifted?: number): string =>
+    weightLifted === undefined ? "" : weightLifted.toString();
+
+  private canAddEntry = (name: string, weightLifted?: number) =>
+    name.length > 0 && weightLifted !== undefined;
 
   private getDefaultSets() {
     return Array<Set>(DEFAULT_SET_VALUE).fill({
@@ -135,12 +152,13 @@ class AddLogEntry extends React.Component<Props, State> {
     this.setState({ name: e.target.value });
   };
 
-  private handleWeigthLiftedChanged = (
+  private handleWeightLiftedChanged = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
-    // validate
-    const weightLifted = Number(e.target.value);
-    this.setState({ weightLifted });
+    const value = e.target.value;
+    this.setState({
+      weightLifted: value === "" ? undefined : toValidInteger(value)
+    });
   };
 
   private handleLiftLogRepsChanged = (liftLogReps: Partial<LiftLogEntryReps>) =>
@@ -154,7 +172,7 @@ class AddLogEntry extends React.Component<Props, State> {
     const newEntry: LiftLogEntry = {
       date: this.state.date,
       name: this.state.name,
-      weightLifted: this.state.weightLifted,
+      weightLifted: this.state.weightLifted || 0,
       sets: getSets(this.state.liftLogReps),
       comment,
       links: links.filter(link => !!link.url)

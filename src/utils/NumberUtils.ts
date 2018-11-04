@@ -1,7 +1,11 @@
-export const toValidPositiveInteger = (numericString: string) => {
-  const validInt = Number(numericString.replace(/[^0-9]+/g, ""));
-  return validInt < 1 ? 1 : validInt;
-};
+const toNumber = (numericString: string) =>
+  Number(numericString.replace(/[^0-9]+/g, ""));
+
+export const toValidPositiveInteger = (numericString: string) =>
+  Math.max(toNumber(numericString), 1);
+
+export const toValidInteger = (numericString: string) =>
+  Math.max(toNumber(numericString), 0);
 
 // prettier-ignore
 const allowedRpeValues: ReadonlyArray<number> = [

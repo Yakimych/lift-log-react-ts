@@ -12,7 +12,7 @@
     "react-datepicker": "^1.8.0",
     "react-dom": "^16.6.0",
     "react-router-dom": "^4.3.1",
-    "react-scripts-ts": "2.17.0",
+    "react-scripts-ts": "^4.0.8",
     "react-transition-group": "^2.5.0",
     "reactstrap": "^6.5.0"
   },
@@ -30,5 +30,11 @@
     "@types/react-dom": "^16.0.9",
     "@types/react-router-dom": "^4.3.1",
     "typescript": "^3.1.6"
-  }
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }

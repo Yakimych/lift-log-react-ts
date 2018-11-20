@@ -3,7 +3,7 @@ import * as React from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Button } from "reactstrap";
-import { toValidInteger } from "src/utils/NumberUtils";
+import { toValidFloatOrNull } from "src/utils/NumberUtils";
 import {
   InputMode,
   LiftLogEntry,
@@ -27,7 +27,8 @@ type Props = {
 type State = {
   name: string;
   date: moment.Moment;
-  weightLifted?: number;
+  weightLifted: number | null;
+  weightLiftedStringValue: string;
   addRepsModalIsOpen: boolean;
   liftLogReps: LiftLogEntryReps;
 };
@@ -72,7 +73,7 @@ class AddLogEntry extends React.Component<Props, State> {
               className="form-control form-control-sm log-entry-input"
               type="text"
               placeholder="Weight"
-              value={this.getDisplayWeightLifted(weightLifted)}
+              value={this.state.weightLiftedStringValue}
               onChange={this.handleWeightLiftedChanged}
             />
           </div>
@@ -101,11 +102,8 @@ class AddLogEntry extends React.Component<Props, State> {
     );
   }
 
-  private getDisplayWeightLifted = (weightLifted?: number): string =>
-    weightLifted === undefined ? "" : weightLifted.toString();
-
-  private canAddEntry = (name: string, weightLifted?: number) =>
-    name.length > 0 && weightLifted !== undefined;
+  private canAddEntry = (name: string, weightLifted: number | null) =>
+    name.length > 0 && weightLifted !== null;
 
   private getDefaultSets() {
     return Array<Set>(DEFAULT_SET_VALUE).fill({
@@ -130,7 +128,8 @@ class AddLogEntry extends React.Component<Props, State> {
     return {
       date: moment(),
       name: "",
-      weightLifted: 0,
+      weightLifted: null,
+      weightLiftedStringValue: "",
       liftLogReps,
       addRepsModalIsOpen: false
     };
@@ -157,7 +156,8 @@ class AddLogEntry extends React.Component<Props, State> {
   ) => {
     const value = e.target.value;
     this.setState({
-      weightLifted: value === "" ? undefined : toValidInteger(value)
+      weightLiftedStringValue: value,
+      weightLifted: toValidFloatOrNull(value)
     });
   };
 

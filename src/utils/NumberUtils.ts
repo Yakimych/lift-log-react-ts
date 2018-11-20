@@ -1,11 +1,13 @@
-const toNumber = (numericString: string) =>
+const toInteger = (numericString: string) =>
   Number(numericString.replace(/[^0-9]+/g, ""));
 
 export const toValidPositiveInteger = (numericString: string) =>
-  Math.max(toNumber(numericString), 1);
+  Math.max(toInteger(numericString), 1);
 
-export const toValidInteger = (numericString: string) =>
-  Math.max(toNumber(numericString), 0);
+export const toValidFloatOrNull = (numericString: string): number | null => {
+  const parsedValue = parseFloat(numericString.replace(",", "."));
+  return !isNaN(parsedValue) && isFinite(parsedValue) ? parsedValue : null;
+};
 
 // prettier-ignore
 const allowedRpeValues: ReadonlyArray<number> = [

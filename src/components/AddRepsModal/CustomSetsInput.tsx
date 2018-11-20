@@ -24,7 +24,7 @@ class CustomSetsInput extends React.Component<Props, State> {
 
   public render() {
     return (
-      <React.Fragment>
+      <>
         <div className="d-flex flex-wrap">
           {this.state.customSets.map((formattedSet, index) => (
             <div key={index} className="custom-sets-input-group mr-1 mb-1">
@@ -60,7 +60,7 @@ class CustomSetsInput extends React.Component<Props, State> {
         >
           <Octicon icon={getIconByName("plus")} />
         </Button>
-      </React.Fragment>
+      </>
     );
   }
 

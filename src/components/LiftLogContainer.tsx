@@ -14,7 +14,7 @@ type Props = {
 const byDateNewestFirst = (entry: LiftLogEntry, otherEntry: LiftLogEntry) =>
   moment.utc(otherEntry.date).diff(moment.utc(entry.date));
 
-const LiftLogContainer = (props: Props) => {
+const LiftLogContainer: React.SFC<Props> = props => {
   return (
     <div className="mt-3 mb-3 p-2 box-shadow lift-log-container">
       <div className="row">

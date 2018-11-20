@@ -23,7 +23,7 @@ type Props = {
 const LINK_ELEMENT_HEIGHT = 40;
 const MAX_LINKS_NUMBER = 3;
 
-const Links = (props: Props) => {
+const Links: React.SFC<Props> = props => {
   const { links, onLinkChange, onLinkAdd, onLinkRemove } = props;
   const linksContainerHeight = links.length * LINK_ELEMENT_HEIGHT;
   const canAddMoreLinks = links.length < MAX_LINKS_NUMBER;

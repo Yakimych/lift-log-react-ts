@@ -13,7 +13,7 @@ type State = {
 };
 
 class LiftInfoContainer extends React.Component<Props, State> {
-  public state = {
+  public state: Readonly<State> = {
     hasComment: !!this.props.liftInfo.comment
   };
 
@@ -42,8 +42,8 @@ class LiftInfoContainer extends React.Component<Props, State> {
   ) => {
     const value = e.target.value;
     const name = e.target.name;
-    const links = this.props.liftInfo.links.map(
-      (link, i) => (i !== index ? link : { ...link, [name]: value })
+    const links = this.props.liftInfo.links.map((link, i) =>
+      i !== index ? link : { ...link, [name]: value }
     );
     this.props.onLiftInfoChange({ links } as LiftInfo);
   };

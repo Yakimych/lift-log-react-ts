@@ -9,11 +9,11 @@ type Props = {
   commentValue: string;
 };
 
-const Comment = (props: Props) => {
+const Comment: React.SFC<Props> = props => {
   const { hasComment, onCommentToggle, onCommentChange, commentValue } = props;
 
   return (
-    <React.Fragment>
+    <>
       {!hasComment && (
         <Button onClick={onCommentToggle} size="sm">
           Add comment
@@ -33,7 +33,7 @@ const Comment = (props: Props) => {
           />
         </Fade>
       </AnimateHeight>
-    </React.Fragment>
+    </>
   );
 };
 

@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@githubprimer/octicons-react": "^8.1.0",
+    "@types/react-redux": "^6.0.9",
     "@types/reactstrap": "^6.4.2",
     "axios": "^0.18.0",
     "bootstrap": "^4.1.3",
@@ -11,10 +12,13 @@
     "react-animate-height": "^2.0.6",
     "react-datepicker": "^1.8.0",
     "react-dom": "^16.6.0",
+    "react-redux": "^5.1.1",
     "react-router-dom": "^4.3.1",
     "react-scripts-ts": "^4.0.8",
     "react-transition-group": "^2.5.0",
-    "reactstrap": "^6.5.0"
+    "reactstrap": "^6.5.0",
+    "redux": "^4.0.1",
+    "typesafe-actions": "^2.0.4"
   },
   "scripts": {
     "start": "react-scripts-ts start",

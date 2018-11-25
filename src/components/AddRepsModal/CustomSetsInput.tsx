@@ -93,12 +93,13 @@ class CustomSetsInput extends React.Component<Props, State> {
     const { customSets, onChange } = this.props;
     const newSetValue: Set = toValidSet(e.target.value);
 
-    const newRepValue = {
-      ...customSets[index],
-      reps: newSetValue.reps,
-      rpe: newSetValue.rpe
-    };
-    const sets: Set[] = Object.assign([], customSets, { [index]: newRepValue });
+    // TODO: Not sure why this was neccessary
+    // const newRepValue: Set = {
+    //   // ...customSets[index],
+    //   reps: newSetValue.reps,
+    //   rpe: newSetValue.rpe
+    // };
+    const sets: Set[] = Object.assign([], customSets, { [index]: newSetValue });
 
     this.setState({ customSets: sets.map(formatSet) });
     onChange(sets);

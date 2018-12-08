@@ -5,7 +5,7 @@ import {
   toValidSet
 } from "src/utils/LiftUtils";
 import { getType } from "typesafe-actions";
-import { actions, DialogAction } from "./dialogAction";
+import { actions, DialogAction } from "./dialogActions";
 import { DialogState } from "./storeState";
 
 export const newEntryReducer = (
@@ -78,7 +78,47 @@ export const newEntryReducer = (
         customSetsStrings
       };
     }
-    // TODO: Comments, Links, Tests?
+    case getType(actions.showComment):
+      return {
+        ...state,
+        commentIsShown: true
+      };
+    case getType(actions.changeComment):
+      return {
+        ...state,
+        comment: action.payload
+      };
+    case getType(actions.addLink):
+      return {
+        ...state,
+        links: [...state.links, { text: "", url: "" }]
+      };
+    case getType(actions.removeLink):
+      return {
+        ...state,
+        links: state.links.filter((l, i) => i !== action.payload)
+      };
+    case getType(actions.changeLinkText): {
+      const { index, newText } = action.payload;
+      const oldLink = state.links[index];
+      return {
+        ...state,
+        links: Object.assign({}, state.links, {
+          [index]: { ...oldLink, text: newText }
+        })
+      };
+    }
+    case getType(actions.changeLinkUrl): {
+      const { index, newUrl } = action.payload;
+      const oldLink = state.links[index];
+      return {
+        ...state,
+        links: Object.assign({}, state.links, {
+          [index]: { ...oldLink, url: newUrl }
+        })
+      };
+    }
+    // TODO: Tests?
   }
   return state;
 };

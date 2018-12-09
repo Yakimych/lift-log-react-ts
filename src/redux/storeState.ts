@@ -27,8 +27,8 @@ export type DialogState = {
 
   commentIsShown: boolean;
   comment: string;
-  links: ReadonlyArray<LiftInfoLink>;
   canAddLink: boolean;
+  links: ReadonlyArray<LiftInfoLink>;
 };
 
 export type StoreState = {

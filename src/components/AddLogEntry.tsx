@@ -3,7 +3,6 @@ import * as React from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Button } from "reactstrap";
-import { toValidFloatOrNull } from "src/utils/NumberUtils";
 import {
   InputMode,
   LiftLogEntry,
@@ -16,6 +15,7 @@ import {
   formatRepsSets,
   getSets
 } from "../utils/LiftUtils";
+import { toValidFloatOrNull } from "../utils/NumberUtils";
 import "./AddLogEntry.css";
 import AddRepsModal from "./AddRepsModal";
 

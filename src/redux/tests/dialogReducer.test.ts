@@ -87,3 +87,20 @@ it("customsets should be not be derived from SetsReps if set previously", () => 
     { reps: 5, rpe: null }
   ]);
 });
+
+it("cannot add more than 3 links", () => {
+  const allActions = [
+    actions.open(),
+    actions.addLink(),
+    actions.addLink(),
+    actions.addLink(),
+    actions.addLink()
+  ];
+
+  const finalState = allActions.reduce<DialogState>(
+    dialogReducer,
+    emptyInitialState
+  );
+
+  expect(finalState.links.length).toEqual(3);
+});

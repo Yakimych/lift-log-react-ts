@@ -22,6 +22,8 @@ const initialState: DialogState = {
 const getSetsFromNumberSetsReps = (sets: number, reps: number): Set[] =>
   Array<Set>(sets).fill({ reps, rpe: null });
 
+const maxNumberOfLinks = 3;
+
 export const dialogReducer = (
   state: DialogState = initialState,
   action: DialogAction
@@ -122,7 +124,10 @@ export const dialogReducer = (
     case getType(actions.addLink):
       return {
         ...state,
-        links: [...state.links, { text: "", url: "" }]
+        links:
+          state.links.length < maxNumberOfLinks
+            ? [...state.links, { text: "", url: "" }]
+            : state.links
       };
     case getType(actions.removeLink):
       return {

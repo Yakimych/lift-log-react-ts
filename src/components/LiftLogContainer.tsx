@@ -7,7 +7,7 @@ import LiftRow from "./LiftRow";
 
 type Props = {
   disabled: boolean;
-  entries: LiftLogEntry[];
+  entries: ReadonlyArray<LiftLogEntry>;
   onAddEntry: (entry: LiftLogEntry) => void;
 };
 

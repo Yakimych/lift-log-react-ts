@@ -9,8 +9,6 @@ import { configureStore } from "./redux/store";
 import LiftLogService from "./services/LiftLogService";
 
 const store = configureStore(new LiftLogService());
-// tslint:disable-next-line:no-debugger
-// debugger;
 
 ReactDOM.render(
   <Provider store={store}>

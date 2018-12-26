@@ -23,6 +23,7 @@ type ApiLiftLog = {
 };
 
 class LiftLogService {
+  // TODO: Take in url as constructor parameter instead
   private liftLogsUrl = `${process.env.REACT_APP_API_BASE_URL}/liftlogs`;
 
   public getLiftLog(logName: string): Promise<LiftLog> {

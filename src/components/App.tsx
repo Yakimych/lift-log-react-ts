@@ -6,40 +6,22 @@ import { LiftLogEntry } from "./../types/LiftTypes";
 import "./App.css";
 import LiftLogContainer from "./LiftLogContainer";
 
-type LoadingState = {
+type Props = {
   isLoading: true;
   loadingMessage: string;
-};
-
-type ErrorState = {
-  isLoading: false;
   networkErrorOccurred: true;
   errorMessage: string;
-};
-
-type SuccessState = {
-  isLoading: false;
-  networkErrorOccurred: false;
-};
-
-// This has become rather verbose...
-type State = (LoadingState | ErrorState | SuccessState) & {
   logTitle?: string;
   logEntries: LiftLogEntry[];
-};
+} & RouteProps;
 
-class App extends React.Component<RouteProps, State> {
+class App extends React.Component<Props> {
   private readonly liftLogService = new LiftLogService();
   private readonly logName: string;
 
-  constructor(props: RouteProps) {
+  constructor(props: Props) {
     super(props);
     this.logName = this.getLogNameFromRoute(props);
-    this.state = {
-      isLoading: true,
-      loadingMessage: `Loading board ${this.logName}...`,
-      logEntries: []
-    };
   }
 
   public componentDidMount() {
@@ -50,24 +32,24 @@ class App extends React.Component<RouteProps, State> {
     return (
       <div className="App">
         <header className="App-header">
-          <h1 className="App-title">{this.getHeaderText(this.state)}</h1>
+          <h1 className="App-title">{this.getHeaderText(this.props)}</h1>
         </header>
         <LiftLogContainer
-          disabled={this.state.isLoading || this.state.networkErrorOccurred}
-          entries={this.state.logEntries}
+          disabled={this.props.isLoading || this.props.networkErrorOccurred}
+          entries={this.props.logEntries}
           onAddEntry={(entry: LiftLogEntry) => this.handleAddEntry(entry)}
         />
       </div>
     );
   }
 
-  private getHeaderText(state: State): string {
-    if (state.isLoading) {
-      return state.loadingMessage;
-    } else if (state.networkErrorOccurred) {
-      return state.errorMessage;
+  private getHeaderText(props: Props): string {
+    if (props.isLoading) {
+      return props.loadingMessage;
+    } else if (props.networkErrorOccurred) {
+      return props.errorMessage;
     } else {
-      return state.logTitle || "";
+      return props.logTitle || "";
     }
   }
 

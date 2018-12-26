@@ -105,6 +105,7 @@ class AddLogEntry extends React.Component<Props, State> {
   private canAddEntry = (name: string, weightLifted: number | null) =>
     name.length > 0 && weightLifted !== null;
 
+  // TODO: Remove
   private getDefaultSets() {
     return Array<Set>(DEFAULT_SET_VALUE).fill({
       reps: DEFAULT_REP_VALUE,
@@ -112,6 +113,7 @@ class AddLogEntry extends React.Component<Props, State> {
     });
   }
 
+  // TODO: Remove
   private getDefaultLogEntryReps(): LiftLogEntryReps {
     return {
       mode: InputMode.SetsReps,
@@ -123,6 +125,7 @@ class AddLogEntry extends React.Component<Props, State> {
     };
   }
 
+  // TODO: Remove
   private getDefaultState(): State {
     const liftLogReps = this.getDefaultLogEntryReps();
     return {

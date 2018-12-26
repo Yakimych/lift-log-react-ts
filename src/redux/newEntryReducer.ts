@@ -1,11 +1,47 @@
 import * as moment from "moment";
 import { toValidFloatOrNull } from "src/utils/NumberUtils";
 import { getType } from "typesafe-actions";
+// import { Set } from "../types/LiftTypes";
+// import { DEFAULT_REP_VALUE, DEFAULT_SET_VALUE } from "../utils/LiftUtils";
 import { actions, NewEntryAction } from "./newEntryActions";
 import { NewEntryState } from "./storeState";
 
+// const getDefaultSets = () => {
+//   return Array<Set>(DEFAULT_SET_VALUE).fill({
+//     reps: DEFAULT_REP_VALUE,
+//     rpe: null
+//   });
+// };
+
+// const getDefaultLogEntryReps = (): LiftLogEntryReps => {
+//   return {
+//     mode: InputMode.SetsReps,
+//     numberOfReps: DEFAULT_REP_VALUE,
+//     numberOfSets: DEFAULT_SET_VALUE,
+//     customSets: getDefaultSets(),
+//     links: [],
+//     comment: ""
+//   };
+// };
+
+const getDefaultState = (): NewEntryState => {
+  // const liftLogReps = getDefaultLogEntryReps();
+  return {
+    date: moment(),
+    // TODO: Doublecheck string format
+    dateString: moment().toString(),
+    name: "",
+    weightLifted: null,
+    weightLiftedString: ""
+    // liftLogReps,
+    // addRepsModalIsOpen: false
+  };
+};
+
+const initialState: NewEntryState = getDefaultState();
+
 export const newEntryReducer = (
-  state: NewEntryState,
+  state: NewEntryState = initialState,
   action: NewEntryAction
 ): NewEntryState => {
   switch (action.type) {

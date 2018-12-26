@@ -2,8 +2,15 @@ import { getType } from "typesafe-actions";
 import { fetchLiftLogActions, LiftLogAction } from "./liftLogActions";
 import { LiftLogState } from "./liftLogState";
 
+const initialState: LiftLogState = {
+  isLoading: true,
+  networkErrorOccured: false,
+  logEntries: [],
+  logTitle: ""
+};
+
 export const liftLogReducer = (
-  state: LiftLogState,
+  state: LiftLogState = initialState,
   action: LiftLogAction
 ): LiftLogState => {
   switch (action.type) {

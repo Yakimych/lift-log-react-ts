@@ -13,10 +13,18 @@ it("should be closed from the start", () => {
   expect(dialogState.isOpen).toEqual(false);
 });
 
+// TODO: Should NOT be possible before filling in required fields.
+// NOTE: This might require refactoring the shape of the state
+// TODO: Move dialogIsOpen into AddNewEntryState?
 it("should be open after passing 'open' action", () => {
   const dialogState = dialogReducer(emptyInitialState, actions.open());
   expect(dialogState.isOpen).toEqual(true);
 });
+
+// it("should be open after filling in required data and passing 'open' action", () => {
+//   const dialogState = dialogReducer(emptyInitialState, actions.open());
+//   expect(dialogState.isOpen).toEqual(true);
+// });
 
 it("should be closed after passing 'close' action", () => {
   const openDialogState = dialogReducer(emptyInitialState, actions.open());

@@ -6,9 +6,9 @@ import { liftLogReducer } from "./liftLogReducer";
 import { newEntryReducer } from "./newEntryReducer";
 
 const rootReducer = combineReducers({
-  liftLog: liftLogReducer,
-  newEntry: newEntryReducer,
-  dialog: dialogReducer
+  liftLogState: liftLogReducer,
+  newEntryState: newEntryReducer,
+  dialogState: dialogReducer
 });
 
 export const configureStore = (liftLogService: LiftLogService) => {

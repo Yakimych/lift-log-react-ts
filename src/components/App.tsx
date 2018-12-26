@@ -1,19 +1,29 @@
 import { AxiosError } from "axios";
 import * as React from "react";
+import { connect } from "react-redux";
 import { RouteProps } from "react-router-dom";
+import { Dispatch } from "redux";
+import { reloadLifts } from "../redux/effects/liftLogEffects";
+import { StoreState } from "../redux/storeState";
 import LiftLogService from "./../services/LiftLogService";
 import { LiftLogEntry } from "./../types/LiftTypes";
 import "./App.css";
 import LiftLogContainer from "./LiftLogContainer";
 
-type Props = {
-  isLoading: true;
+type StateProps = {
+  isLoading: boolean;
   loadingMessage: string;
-  networkErrorOccurred: true;
+  networkErrorOccurred: boolean;
   errorMessage: string;
   logTitle?: string;
   logEntries: LiftLogEntry[];
-} & RouteProps;
+};
+
+type DispatchProps = {
+  reloadLifts: (logName: string) => void;
+};
+
+type Props = StateProps & DispatchProps & RouteProps;
 
 class App extends React.Component<Props> {
   private readonly liftLogService = new LiftLogService();
@@ -25,10 +35,12 @@ class App extends React.Component<Props> {
   }
 
   public componentDidMount() {
-    this.reloadLifts();
+    this.props.reloadLifts(this.logName);
   }
 
   public render() {
+    // tslint:disable-next-line:no-debugger
+    debugger;
     return (
       <div className="App">
         <header className="App-header">
@@ -58,6 +70,7 @@ class App extends React.Component<Props> {
       ? `Board ${this.logName} does not exist`
       : `An unexpected network error has occured`;
 
+  // TODO: Remove
   private reloadLifts = () =>
     this.liftLogService
       .getLiftLog(this.logName)
@@ -103,4 +116,25 @@ class App extends React.Component<Props> {
     !!props.location ? props.location.pathname.substr(1) : "";
 }
 
-export default App;
+const mapStateToProps = (storeState: StoreState): Partial<Props> => {
+  // tslint:disable-next-line:no-debugger
+  // debugger;
+  return {
+    isLoading: storeState.liftLogState.isLoading,
+    networkErrorOccurred: storeState.liftLogState.networkErrorOccured,
+    errorMessage: storeState.liftLogState.errorMessage
+    // TODO: Map the rest of the props
+  };
+};
+
+const mapDispatchToProps = (dispatch: Dispatch): Partial<Props> => {
+  return {
+    // TODO: Change to ThunkDispatch
+    reloadLifts: (logName: string) => dispatch<any>(reloadLifts(logName))
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App);

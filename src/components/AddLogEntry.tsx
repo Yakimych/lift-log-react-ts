@@ -2,39 +2,43 @@ import * as moment from "moment";
 import * as React from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { connect } from "react-redux";
 import { Button } from "reactstrap";
-import {
-  InputMode,
-  LiftLogEntry,
-  LiftLogEntryReps,
-  Set
-} from "../types/LiftTypes";
-import {
-  DEFAULT_REP_VALUE,
-  DEFAULT_SET_VALUE,
-  formatRepsSets,
-  getSets
-} from "../utils/LiftUtils";
-import { toValidFloatOrNull } from "../utils/NumberUtils";
+import { Dispatch } from "redux";
+import { actions as dialogActions } from "../redux/dialogActions";
+import { actions as newEntryActions } from "../redux/newEntryActions";
+import { StoreState } from "../redux/storeState";
+import { LiftLogEntry, LiftLogEntryReps } from "../types/LiftTypes";
+import { formatRepsSets } from "../utils/LiftUtils";
 import "./AddLogEntry.css";
 import AddRepsModal from "./AddRepsModal";
 
-type Props = {
-  disabled: boolean;
-  onAddEntry: (entry: LiftLogEntry) => void;
-};
-
-type State = {
+type StateProps = {
   name: string;
-  date: moment.Moment;
+  date: moment.Moment | null;
   weightLifted: number | null;
   weightLiftedStringValue: string;
   addRepsModalIsOpen: boolean;
   liftLogReps: LiftLogEntryReps;
 };
 
-class AddLogEntry extends React.Component<Props, State> {
-  public state = this.getDefaultState();
+type DispatchProps = {
+  changeName: (name: string) => void;
+  changeDate: (dateString: moment.Moment | null) => void;
+  changeWeightLifted: (weightLiftedString: string) => void;
+  openDialog: () => void;
+  closeDialog: () => void;
+};
+
+type OwnProps = {
+  disabled: boolean;
+  onAddEntry: (entry: LiftLogEntry) => void;
+};
+
+type Props = StateProps & DispatchProps & OwnProps;
+
+class AddLogEntry extends React.Component<Props> {
+  // public state = this.getDefaultState();
   public render() {
     const {
       date,
@@ -42,7 +46,7 @@ class AddLogEntry extends React.Component<Props, State> {
       liftLogReps,
       name,
       weightLifted
-    } = this.state;
+    } = this.props;
 
     return (
       <div className="add-log-entry">
@@ -73,7 +77,7 @@ class AddLogEntry extends React.Component<Props, State> {
               className="form-control form-control-sm log-entry-input"
               type="text"
               placeholder="Weight"
-              value={this.state.weightLiftedStringValue}
+              value={this.props.weightLiftedStringValue}
               onChange={this.handleWeightLiftedChanged}
             />
           </div>
@@ -85,18 +89,18 @@ class AddLogEntry extends React.Component<Props, State> {
               }
               size="sm"
               color="primary"
-              onClick={this.toggleAddRepsModal}
+              onClick={this.props.openDialog}
             >
               Add
             </Button>
           </div>
         </div>
         <AddRepsModal
-          onLiftLogRepsChange={this.handleLiftLogRepsChanged}
+          onLiftLogRepsChange={this.props.handleLiftLogRepsChanged}
           liftLogReps={liftLogReps}
           isOpen={addRepsModalIsOpen}
-          toggle={this.toggleAddRepsModal}
-          onSave={this.addLogEntry}
+          close={this.props.closeDialog}
+          onSave={this.props.addLogEntry}
         />
       </div>
     );
@@ -106,90 +110,110 @@ class AddLogEntry extends React.Component<Props, State> {
     name.length > 0 && weightLifted !== null;
 
   // TODO: Remove
-  private getDefaultSets() {
-    return Array<Set>(DEFAULT_SET_VALUE).fill({
-      reps: DEFAULT_REP_VALUE,
-      rpe: null
-    });
-  }
+  // private getDefaultSets() {
+  //   return Array<Set>(DEFAULT_SET_VALUE).fill({
+  //     reps: DEFAULT_REP_VALUE,
+  //     rpe: null
+  //   });
+  // }
 
   // TODO: Remove
-  private getDefaultLogEntryReps(): LiftLogEntryReps {
-    return {
-      mode: InputMode.SetsReps,
-      numberOfReps: DEFAULT_REP_VALUE,
-      numberOfSets: DEFAULT_SET_VALUE,
-      customSets: this.getDefaultSets(),
-      links: [],
-      comment: ""
-    };
-  }
+  // private getDefaultLogEntryReps(): LiftLogEntryReps {
+  //   return {
+  //     mode: InputMode.SetsReps,
+  //     numberOfReps: DEFAULT_REP_VALUE,
+  //     numberOfSets: DEFAULT_SET_VALUE,
+  //     customSets: this.getDefaultSets(),
+  //     links: [],
+  //     comment: ""
+  //   };
+  // }
 
-  // TODO: Remove
-  private getDefaultState(): State {
-    const liftLogReps = this.getDefaultLogEntryReps();
-    return {
-      date: moment(),
-      name: "",
-      weightLifted: null,
-      weightLiftedStringValue: "",
-      liftLogReps,
-      addRepsModalIsOpen: false
-    };
-  }
-
-  private toggleAddRepsModal = () => {
-    this.setState((prevState: State) => ({
-      addRepsModalIsOpen: !prevState.addRepsModalIsOpen
-    }));
-  };
+  // private toggleAddRepsModal = () => {
+  //   this.setState((prevState: State) => ({
+  //     addRepsModalIsOpen: !prevState.addRepsModalIsOpen
+  //   }));
+  // };
 
   private handleDateChanged = (date: moment.Moment | null) => {
-    if (date !== null) {
-      this.setState({ date });
-    }
+    this.props.changeDate(date);
   };
 
   private handleNameChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ name: e.target.value });
+    this.props.changeName(e.target.value);
   };
 
   private handleWeightLiftedChanged = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
-    const value = e.target.value;
-    this.setState({
-      weightLiftedStringValue: value,
-      weightLifted: toValidFloatOrNull(value)
-    });
+    this.props.changeWeightLifted(e.target.value);
+    // this.setState({
+    //   weightLiftedStringValue: value,
+    //   weightLifted: toValidFloatOrNull(value)
+    // });
   };
 
-  private handleLiftLogRepsChanged = (liftLogReps: Partial<LiftLogEntryReps>) =>
-    this.setState((prevState: State) => ({
-      liftLogReps: { ...prevState.liftLogReps, ...liftLogReps }
-    }));
+  // private handleLiftLogRepsChanged = (liftLogReps: Partial<LiftLogEntryReps>) =>
+  //   this.setState((prevState: State) => ({
+  //     liftLogReps: { ...prevState.liftLogReps, ...liftLogReps }
+  //   }));
 
-  private addLogEntry = () => {
-    const { comment, links } = this.state.liftLogReps;
+  // private addLogEntry = () => {
+  //   const { comment, links } = this.props.liftLogReps;
 
-    const newEntry: LiftLogEntry = {
-      date: this.state.date,
-      name: this.state.name,
-      weightLifted: this.state.weightLifted || 0,
-      sets: getSets(this.state.liftLogReps),
-      comment,
-      links: links.filter(link => !!link.url)
-    };
+  //   const newEntry: LiftLogEntry = {
+  //     date: this.props.date,
+  //     name: this.props.name,
+  //     weightLifted: this.props.weightLifted || 0,
+  //     sets: getSets(this.props.liftLogReps),
+  //     comment,
+  //     links: links.filter(link => !!link.url)
+  //   };
 
-    this.props.onAddEntry(newEntry);
+  //   this.props.onAddEntry(newEntry);
 
-    // reset liftLogReps and make sure the dialog is closed
-    const liftLogReps = this.getDefaultLogEntryReps();
-    this.setState({
-      liftLogReps,
-      addRepsModalIsOpen: false
-    });
-  };
+  //   // reset liftLogReps and make sure the dialog is closed
+  //   const liftLogReps = this.getDefaultLogEntryReps();
+  //   this.setState({
+  //     liftLogReps,
+  //     addRepsModalIsOpen: false
+  //   });
+  // };
 }
 
-export default AddLogEntry;
+const mapStateToProps = (storeState: StoreState): StateProps => {
+  return {
+    addRepsModalIsOpen: storeState.dialogState.isOpen,
+    date: storeState.newEntry.date,
+    name: storeState.newEntry.name,
+    weightLifted: storeState.newEntry.weightLifted,
+    weightLiftedStringValue: storeState.newEntry.weightLiftedString,
+    liftLogReps: {
+      mode: storeState.dialogState.inputMode,
+      // TODO: Model optionals correctly
+      numberOfSets: storeState.dialogState.numberOfSets || 0,
+      numberOfReps: storeState.dialogState.numberOfReps || 0,
+      customSets: storeState.dialogState.customSets || [],
+      comment: storeState.dialogState.comment,
+      links: storeState.dialogState.links
+    }
+  };
+};
+
+const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
+  return {
+    changeName: (newName: string) =>
+      dispatch(newEntryActions.changeName(newName)),
+    changeDate: (newDate: moment.Moment | null) =>
+      dispatch(newEntryActions.changeDate(newDate)),
+    changeWeightLifted: (newWeightLiftedString: string) =>
+      dispatch(newEntryActions.changeWeightLifted(newWeightLiftedString)),
+    openDialog: () => dispatch(dialogActions.open()),
+    closeDialog: () => dispatch(dialogActions.close())
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(AddLogEntry);

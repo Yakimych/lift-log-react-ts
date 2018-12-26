@@ -12,7 +12,7 @@ type LiftInfoLink = {
 
 type LiftInfo = {
   comment: string;
-  links: LiftInfoLink[];
+  links: ReadonlyArray<LiftInfoLink>;
 };
 
 type LiftLogEntry = {
@@ -31,7 +31,7 @@ type SetsRepsInput = {
   mode: InputMode;
   numberOfSets: number;
   numberOfReps: number;
-  customSets: Set[];
+  customSets: ReadonlyArray<Set>;
 };
 
 type LiftLogEntryReps = SetsRepsInput & LiftInfo;

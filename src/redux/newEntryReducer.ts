@@ -29,7 +29,7 @@ const getDefaultState = (): NewEntryState => {
   return {
     date: moment(),
     // TODO: Doublecheck string format
-    dateString: moment().toString(),
+    // dateString: moment().toString(),
     name: "",
     weightLifted: null,
     weightLiftedString: ""
@@ -46,12 +46,10 @@ export const newEntryReducer = (
 ): NewEntryState => {
   switch (action.type) {
     case getType(actions.changeDate):
-      const dateString = action.payload;
-      const date = moment(dateString);
+      // const date = moment(dateString);
       return {
         ...state,
-        dateString,
-        date: date.isValid() ? date : null
+        date: action.payload
       };
     case getType(actions.changeName):
       return {

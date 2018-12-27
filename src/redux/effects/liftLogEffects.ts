@@ -60,9 +60,9 @@ export const addLogEntry = (logName: string) => (
     inputMode
   } = state.dialogState;
   const newEntry: LiftLogEntry = {
-    date: state.newEntry.date || moment(),
-    name: state.newEntry.name,
-    weightLifted: state.newEntry.weightLifted || 0,
+    date: state.newEntryState.date || moment(),
+    name: state.newEntryState.name,
+    weightLifted: state.newEntryState.weightLifted || 0,
     // sets: getSets(this.props.liftLogReps),
     sets: getSets2(numberOfSets, numberOfReps, customSets, inputMode),
     comment: state.dialogState.comment,

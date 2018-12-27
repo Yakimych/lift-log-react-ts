@@ -169,10 +169,10 @@ class AddLogEntry extends React.Component<Props> {
 const mapStateToProps = (storeState: StoreState): StateProps => {
   return {
     addRepsModalIsOpen: storeState.dialogState.isOpen,
-    date: storeState.newEntry.date,
-    name: storeState.newEntry.name,
-    weightLifted: storeState.newEntry.weightLifted,
-    weightLiftedStringValue: storeState.newEntry.weightLiftedString,
+    date: storeState.newEntryState.date,
+    name: storeState.newEntryState.name,
+    weightLifted: storeState.newEntryState.weightLifted,
+    weightLiftedStringValue: storeState.newEntryState.weightLiftedString,
     liftLogReps: {
       mode: storeState.dialogState.inputMode,
       // TODO: Model optionals correctly

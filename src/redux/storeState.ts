@@ -33,7 +33,6 @@ export type DialogState = {
 
 export type StoreState = {
   liftLogState: LiftLogState;
-  // TODO: newEntryState
-  newEntry: NewEntryState;
+  newEntryState: NewEntryState;
   dialogState: DialogState;
 };

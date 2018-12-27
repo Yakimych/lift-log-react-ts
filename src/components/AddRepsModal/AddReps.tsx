@@ -28,7 +28,7 @@ const isSetsRepsMode = (props: Props) =>
 // const getSetsFromNumberSetsReps = (sets: number, reps: number): Set[] =>
 //   Array<Set>(sets).fill({ reps, rpe: null });
 
-const AddReps: React.SFC<Props> = props => {
+const AddReps: React.FunctionComponent<Props> = props => {
   const { numberOfSets, numberOfReps, customSets, mode } = props.liftLogReps;
 
   return (

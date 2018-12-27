@@ -21,7 +21,7 @@ type Props = {
 const LINK_ELEMENT_HEIGHT = 40;
 const MAX_LINKS_NUMBER = 3;
 
-const Links: React.SFC<Props> = props => {
+const Links: React.FunctionComponent<Props> = props => {
   const {
     links,
     onLinkTextChange,

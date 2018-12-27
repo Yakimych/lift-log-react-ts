@@ -8,7 +8,7 @@ type Props = {
   onNumberOfRepsChange: (newValue: string) => void;
 };
 
-const SetsRepsInput: React.SFC<Props> = props => (
+const SetsRepsInput: React.FunctionComponent<Props> = props => (
   <div className="d-flex align-items-center ">
     <input
       className="form-control form-control-sm set-rep-input"

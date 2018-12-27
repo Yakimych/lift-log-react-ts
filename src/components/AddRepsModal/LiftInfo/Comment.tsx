@@ -9,7 +9,7 @@ type Props = {
   commentValue: string;
 };
 
-const Comment: React.SFC<Props> = props => {
+const Comment: React.FunctionComponent<Props> = props => {
   const { hasComment, onCommentToggle, onCommentChange, commentValue } = props;
 
   return (

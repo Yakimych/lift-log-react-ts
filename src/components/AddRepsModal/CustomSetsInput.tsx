@@ -19,7 +19,7 @@ type Props = {
 const isAddSetDisabled = (numberOfCustomSets: number) =>
   numberOfCustomSets >= MAX_REP_SET_VALUE;
 
-const CustomSetsInput: React.SFC<Props> = props => (
+const CustomSetsInput: React.FunctionComponent<Props> = props => (
   <>
     <div className="d-flex flex-wrap">
       {props.customSets.map(formatSet).map((formattedSet, index) => (

@@ -24,7 +24,7 @@ type Props = {
   onCommentChange: (newValue: string) => void;
 };
 
-const AddRepsModal: React.SFC<Props> = props => {
+const AddRepsModal: React.FunctionComponent<Props> = props => {
   return (
     <Modal isOpen={props.isOpen} toggle={props.close}>
       <ModalHeader toggle={props.close}>Input sets and reps</ModalHeader>

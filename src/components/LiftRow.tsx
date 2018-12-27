@@ -2,7 +2,7 @@ import * as React from "react";
 import { LiftLogEntry } from "../types/LiftTypes";
 import { formatSets } from "../utils/LiftUtils";
 
-const LiftRow: React.SFC<LiftLogEntry> = props => {
+const LiftRow: React.FunctionComponent<LiftLogEntry> = props => {
   return (
     <div className="row">
       <span className="col">{props.date.format("YYYY-MM-DD")}</span>

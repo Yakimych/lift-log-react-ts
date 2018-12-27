@@ -139,7 +139,7 @@ export const dialogReducer = (
       const oldLink = state.links[index];
       return {
         ...state,
-        links: Object.assign({}, state.links, {
+        links: Object.assign([], state.links, {
           [index]: { ...oldLink, text: newText }
         })
       };
@@ -149,12 +149,11 @@ export const dialogReducer = (
       const oldLink = state.links[index];
       return {
         ...state,
-        links: Object.assign({}, state.links, {
+        links: Object.assign([], state.links, {
           [index]: { ...oldLink, url: newUrl }
         })
       };
     }
-    // TODO: Tests?
   }
   return state;
 };

@@ -112,3 +112,23 @@ it("cannot add more than 3 links", () => {
 
   expect(finalState.links.length).toEqual(3);
 });
+
+it("can change link text and URL", () => {
+  const expectedLinkText = "Test";
+  const expectedLinkUrl = "http://test.com";
+  const allActions = [
+    actions.open(),
+    actions.addLink(),
+    actions.changeLinkText({ index: 0, newText: expectedLinkText }),
+    actions.changeLinkUrl({ index: 0, newUrl: expectedLinkUrl })
+  ];
+
+  const finalState = allActions.reduce<DialogState>(
+    dialogReducer,
+    emptyInitialState
+  );
+
+  expect(Array.isArray(finalState.links)).toBe(true);
+  expect(finalState.links[0].text).toEqual(expectedLinkText);
+  expect(finalState.links[0].url).toEqual(expectedLinkUrl);
+});

@@ -18,7 +18,7 @@ type StateProps = {
 
 type DispatchProps = {
   reloadLifts: (logName: string) => void;
-  addLogEntry: (logName: string, entry: LiftLogEntry) => Promise<any>;
+  addLogEntry: (logName: string) => Promise<any>;
 };
 
 type Props = StateProps & DispatchProps & RouteProps;
@@ -46,7 +46,7 @@ class App extends React.Component<Props> {
         <LiftLogContainer
           disabled={this.props.isLoading || this.props.networkErrorOccurred}
           entries={this.props.logEntries}
-          onAddEntry={(entry: LiftLogEntry) => this.handleAddEntry(entry)}
+          onAddEntry={() => this.handleAddEntry()}
         />
       </div>
     );
@@ -62,8 +62,8 @@ class App extends React.Component<Props> {
     }
   }
 
-  private async handleAddEntry(entry: LiftLogEntry) {
-    await this.props.addLogEntry(this.logName, entry);
+  private async handleAddEntry() {
+    await this.props.addLogEntry(this.logName);
     await this.props.reloadLifts(this.logName);
   }
 
@@ -85,8 +85,7 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
   return {
     // TODO: Change to ThunkDispatch
     reloadLifts: (logName: string) => dispatch<any>(reloadLifts(logName)),
-    addLogEntry: (logName: string, entry: LiftLogEntry) =>
-      dispatch<any>(addLogEntry(logName, entry))
+    addLogEntry: (logName: string) => dispatch<any>(addLogEntry(logName))
   };
 };
 

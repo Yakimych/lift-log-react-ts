@@ -19,7 +19,7 @@ type LiftLogEntry = {
   date: moment.Moment;
   name: string;
   weightLifted: number;
-  sets: Set[];
+  sets: ReadonlyArray<Set>;
 } & LiftInfo;
 
 enum InputMode {

@@ -13,7 +13,7 @@ type ApiLiftLogEntry = {
   weightLifted: number;
   sets: ApiSet[];
   comment: string;
-  links: LiftInfoLink[];
+  links: ReadonlyArray<LiftInfoLink>;
 };
 
 type ApiLiftLog = {

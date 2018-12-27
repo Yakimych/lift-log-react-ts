@@ -22,15 +22,15 @@ export const toValidSet = (repsWithRpe: string): Set => {
   return { reps: validRepNumber, rpe };
 };
 
-export const allRepsAreEqualAndWithoutRpes = (sets: Set[]) =>
+export const allRepsAreEqualAndWithoutRpes = (sets: ReadonlyArray<Set>) =>
   sets.length !== 0
     ? sets.every(s => s.reps === sets[0].reps && s.rpe === null)
     : true;
 
-export const noSetsHaveRpe = (sets: Set[]) =>
+export const noSetsHaveRpe = (sets: ReadonlyArray<Set>) =>
   sets.length !== 0 ? sets.every(s => s.reps === sets[0].reps) : true;
 
-export function formatSets(sets: Set[]): string {
+export function formatSets(sets: ReadonlyArray<Set>): string {
   if (allRepsAreEqualAndWithoutRpes(sets)) {
     const reps = sets.length > 0 ? sets[0].reps : 0;
     return `${sets.length}x${reps}`;
@@ -43,10 +43,22 @@ export function formatRepsSets(setsReps: SetsRepsInput): string {
   return formatSets(sets);
 }
 
-export const getSets = (setsReps: SetsRepsInput): Set[] => {
+export const getSets = (setsReps: SetsRepsInput): ReadonlyArray<Set> => {
   const { numberOfSets, numberOfReps, customSets, mode } = setsReps;
 
   return mode === InputMode.SetsReps
+    ? Array<Set>(numberOfSets).fill({ reps: numberOfReps, rpe: null })
+    : customSets;
+};
+
+// TODO: Consolidate
+export const getSets2 = (
+  numberOfSets: number | undefined,
+  numberOfReps: number | undefined,
+  customSets: ReadonlyArray<Set>,
+  mode: InputMode
+): ReadonlyArray<Set> => {
+  return mode === InputMode.SetsReps && numberOfSets && numberOfReps
     ? Array<Set>(numberOfSets).fill({ reps: numberOfReps, rpe: null })
     : customSets;
 };

@@ -4,7 +4,7 @@ import { Button, Fade, Input } from "reactstrap";
 
 type Props = {
   hasComment: boolean;
-  onCommentChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onCommentChange: (newValue: string) => void;
   onCommentToggle: () => void;
   commentValue: string;
 };
@@ -29,7 +29,7 @@ const Comment: React.SFC<Props> = props => {
             maxLength={400}
             type="textarea"
             value={commentValue}
-            onChange={onCommentChange}
+            onChange={e => onCommentChange(e.target.value)}
           />
         </Fade>
       </AnimateHeight>

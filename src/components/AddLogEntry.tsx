@@ -8,7 +8,7 @@ import { Dispatch } from "redux";
 import { actions as dialogActions } from "../redux/dialogActions";
 import { actions as newEntryActions } from "../redux/newEntryActions";
 import { StoreState } from "../redux/storeState";
-import { LiftLogEntry, LiftLogEntryReps } from "../types/LiftTypes";
+import { InputMode, LiftLogEntryReps } from "../types/LiftTypes";
 import { formatRepsSets } from "../utils/LiftUtils";
 import "./AddLogEntry.css";
 import AddRepsModal from "./AddRepsModal";
@@ -28,11 +28,24 @@ type DispatchProps = {
   changeWeightLifted: (weightLiftedString: string) => void;
   openDialog: () => void;
   closeDialog: () => void;
+
+  onInputModeChange: (inputMode: InputMode) => void;
+  onLiftLogRepsChange: (index: number, newValue: string) => void;
+  onAddCustomSet: () => void;
+  onRemoveCustomSet: (index: number) => void;
+  onNumberOfSetsChange: (newValue: string) => void;
+  onNumberOfRepsChange: (newValue: string) => void;
+
+  onAddLink: () => void;
+  onRemoveLink: (index: number) => void;
+  onChangeLinkText: (index: number, newText: string) => void;
+  onChangeLinkUrl: (index: number, newUrl: string) => void;
+  onCommentChange: (newValue: string) => void;
 };
 
 type OwnProps = {
   disabled: boolean;
-  onAddEntry: (entry: LiftLogEntry) => void;
+  onAddEntry: () => void;
 };
 
 type Props = StateProps & DispatchProps & OwnProps;
@@ -96,11 +109,21 @@ class AddLogEntry extends React.Component<Props> {
           </div>
         </div>
         <AddRepsModal
-          onLiftLogRepsChange={this.props.handleLiftLogRepsChanged}
+          onInputModeChange={this.props.onInputModeChange}
+          onLiftLogRepsChange={this.props.onLiftLogRepsChange}
+          onAddCustomSet={this.props.onAddCustomSet}
+          onRemoveCustomSet={this.props.onRemoveCustomSet}
+          onNumberOfSetsChange={this.props.onNumberOfSetsChange}
+          onNumberOfRepsChange={this.props.onNumberOfRepsChange}
           liftLogReps={liftLogReps}
           isOpen={addRepsModalIsOpen}
           close={this.props.closeDialog}
-          onSave={this.props.addLogEntry}
+          onSave={this.addLogEntry}
+          onAddLink={this.props.onAddLink}
+          onRemoveLink={this.props.onRemoveLink}
+          onChangeLinkText={this.props.onChangeLinkText}
+          onChangeLinkUrl={this.props.onChangeLinkUrl}
+          onCommentChange={this.props.onCommentChange}
         />
       </div>
     );
@@ -108,32 +131,6 @@ class AddLogEntry extends React.Component<Props> {
 
   private canAddEntry = (name: string, weightLifted: number | null) =>
     name.length > 0 && weightLifted !== null;
-
-  // TODO: Remove
-  // private getDefaultSets() {
-  //   return Array<Set>(DEFAULT_SET_VALUE).fill({
-  //     reps: DEFAULT_REP_VALUE,
-  //     rpe: null
-  //   });
-  // }
-
-  // TODO: Remove
-  // private getDefaultLogEntryReps(): LiftLogEntryReps {
-  //   return {
-  //     mode: InputMode.SetsReps,
-  //     numberOfReps: DEFAULT_REP_VALUE,
-  //     numberOfSets: DEFAULT_SET_VALUE,
-  //     customSets: this.getDefaultSets(),
-  //     links: [],
-  //     comment: ""
-  //   };
-  // }
-
-  // private toggleAddRepsModal = () => {
-  //   this.setState((prevState: State) => ({
-  //     addRepsModalIsOpen: !prevState.addRepsModalIsOpen
-  //   }));
-  // };
 
   private handleDateChanged = (date: moment.Moment | null) => {
     this.props.changeDate(date);
@@ -158,27 +155,15 @@ class AddLogEntry extends React.Component<Props> {
   //     liftLogReps: { ...prevState.liftLogReps, ...liftLogReps }
   //   }));
 
-  // private addLogEntry = () => {
-  //   const { comment, links } = this.props.liftLogReps;
+  private addLogEntry = () => {
+    this.props.onAddEntry();
 
-  //   const newEntry: LiftLogEntry = {
-  //     date: this.props.date,
-  //     name: this.props.name,
-  //     weightLifted: this.props.weightLifted || 0,
-  //     sets: getSets(this.props.liftLogReps),
-  //     comment,
-  //     links: links.filter(link => !!link.url)
-  //   };
+    // TODO: Is this handled in the reducer?
+    // reset liftLogReps and make sure the dialog is closed
+    // const liftLogReps = this.getDefaultLogEntryReps();
 
-  //   this.props.onAddEntry(newEntry);
-
-  //   // reset liftLogReps and make sure the dialog is closed
-  //   const liftLogReps = this.getDefaultLogEntryReps();
-  //   this.setState({
-  //     liftLogReps,
-  //     addRepsModalIsOpen: false
-  //   });
-  // };
+    this.props.closeDialog();
+  };
 }
 
 const mapStateToProps = (storeState: StoreState): StateProps => {
@@ -209,7 +194,28 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
     changeWeightLifted: (newWeightLiftedString: string) =>
       dispatch(newEntryActions.changeWeightLifted(newWeightLiftedString)),
     openDialog: () => dispatch(dialogActions.open()),
-    closeDialog: () => dispatch(dialogActions.close())
+    closeDialog: () => dispatch(dialogActions.close()),
+
+    onInputModeChange: (inputMode: InputMode) =>
+      dispatch(dialogActions.setInputMode(inputMode)),
+    onLiftLogRepsChange: (index: number, newValue: string) =>
+      dispatch(dialogActions.changeCustomSet({ index, value: newValue })),
+    onAddCustomSet: () => dispatch(dialogActions.addCustomSet()),
+    onRemoveCustomSet: (index: number) =>
+      dispatch(dialogActions.removeCustomSet(index)),
+    onNumberOfSetsChange: (newValue: string) =>
+      dispatch(dialogActions.setNumberOfSets(newValue)),
+    onNumberOfRepsChange: (newValue: string) =>
+      dispatch(dialogActions.setNumberOfReps(newValue)),
+
+    onAddLink: () => dispatch(dialogActions.addLink()),
+    onRemoveLink: (index: number) => dispatch(dialogActions.removeLink(index)),
+    onChangeLinkText: (index: number, newText: string) =>
+      dispatch(dialogActions.changeLinkText({ index, newText })),
+    onChangeLinkUrl: (index: number, newUrl: string) =>
+      dispatch(dialogActions.changeLinkUrl({ index, newUrl })),
+    onCommentChange: (newValue: string) =>
+      dispatch(dialogActions.changeComment(newValue))
   };
 };
 

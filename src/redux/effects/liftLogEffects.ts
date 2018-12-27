@@ -1,7 +1,9 @@
 import { AxiosError } from "axios";
+import * as moment from "moment";
 import { Dispatch } from "redux";
 import LiftLogService from "../../services/LiftLogService";
 import { LiftLogEntry } from "../../types/LiftTypes";
+import { getSets2 } from "../../utils/LiftUtils";
 import { fetchLiftLogActions } from "../liftLogActions";
 import { actions } from "../newEntryActions";
 import { StoreState } from "../storeState";
@@ -45,19 +47,38 @@ export const reloadLifts = (logName: string) => (
     });
 };
 
-export const addLogEntry = (logName: string, entry: LiftLogEntry) => (
+export const addLogEntry = (logName: string) => (
   dispatch: Dispatch,
   getState: () => StoreState,
   liftLogService: LiftLogService
 ) => {
-  dispatch(actions.addLogEntry.request(entry));
+  const state = getState();
+  const {
+    numberOfSets,
+    numberOfReps,
+    customSets,
+    inputMode
+  } = state.dialogState;
+  const newEntry: LiftLogEntry = {
+    date: state.newEntry.date || moment(),
+    name: state.newEntry.name,
+    weightLifted: state.newEntry.weightLifted || 0,
+    // sets: getSets(this.props.liftLogReps),
+    sets: getSets2(numberOfSets, numberOfReps, customSets, inputMode),
+    comment: state.dialogState.comment,
+    links: state.dialogState.links.filter(link => !!link.url)
+  };
+
+  dispatch(actions.addLogEntry.request(newEntry));
 
   return liftLogService
-    .addEntry(logName, entry)
+    .addEntry(logName, newEntry)
     .then(() => {
       dispatch(actions.addLogEntry.success());
     })
     .catch(() =>
-      actions.addLogEntry.failure(`Error while adding entry for ${entry.name}`)
+      actions.addLogEntry.failure(
+        `Error while adding entry for ${newEntry.name}`
+      )
     );
 };

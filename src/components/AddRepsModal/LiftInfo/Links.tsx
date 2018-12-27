@@ -13,18 +13,22 @@ import { LiftInfoLink } from "../../../types/LiftTypes";
 type Props = {
   onLinkAdd: () => void;
   onLinkRemove: (index: number) => void;
-  onLinkChange: (
-    event: React.ChangeEvent<HTMLInputElement>,
-    index: number
-  ) => void;
-  links: LiftInfoLink[];
+  onLinkTextChange: (index: number, newTextValue: string) => void;
+  onLinkUrlChange: (index: number, newUrlValue: string) => void;
+  links: ReadonlyArray<LiftInfoLink>;
 };
 
 const LINK_ELEMENT_HEIGHT = 40;
 const MAX_LINKS_NUMBER = 3;
 
 const Links: React.SFC<Props> = props => {
-  const { links, onLinkChange, onLinkAdd, onLinkRemove } = props;
+  const {
+    links,
+    onLinkTextChange,
+    onLinkUrlChange,
+    onLinkAdd,
+    onLinkRemove
+  } = props;
   const linksContainerHeight = links.length * LINK_ELEMENT_HEIGHT;
   const canAddMoreLinks = links.length < MAX_LINKS_NUMBER;
 
@@ -49,7 +53,7 @@ const Links: React.SFC<Props> = props => {
               maxLength={20}
               placeholder="Display text"
               type="text"
-              onBlur={e => onLinkChange(e, index)}
+              onBlur={e => onLinkTextChange(index, e.target.value)}
             />
             <InputGroup>
               <Input
@@ -59,7 +63,7 @@ const Links: React.SFC<Props> = props => {
                 maxLength={200}
                 placeholder="Url"
                 type="text"
-                onBlur={e => onLinkChange(e, index)}
+                onBlur={e => onLinkUrlChange(index, e.target.value)}
               />
               <InputGroupAddon addonType="append">
                 <div

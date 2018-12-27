@@ -8,7 +8,7 @@ import LiftRow from "./LiftRow";
 type Props = {
   disabled: boolean;
   entries: ReadonlyArray<LiftLogEntry>;
-  onAddEntry: (entry: LiftLogEntry) => void;
+  onAddEntry: () => void;
 };
 
 const byDateNewestFirst = (entry: LiftLogEntry, otherEntry: LiftLogEntry) =>

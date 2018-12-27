@@ -4,15 +4,18 @@ import { Button, Input, InputGroup, InputGroupAddon } from "reactstrap";
 import { Set } from "../../types/LiftTypes";
 import {
   formatSet,
-  MAX_REP_SET_VALUE,
-  toValidSet
+  MAX_REP_SET_VALUE
+  // toValidSet
 } from "../../utils/LiftUtils";
 
 type Props = {
-  onChange: (sets: Set[]) => void;
-  customSets: Set[];
+  onAdd: () => void;
+  onRemove: (index: number) => void;
+  onChange: (index: number, newValue: string) => void;
+  customSets: ReadonlyArray<Set>;
 };
 
+// TODO: Remove
 type State = {
   customSets: string[];
 };
@@ -34,7 +37,8 @@ class CustomSetsInput extends React.Component<Props, State> {
                   bsSize="sm"
                   value={formattedSet}
                   onChange={e => this.handleRepValueChanged(e, index)}
-                  onBlur={e => this.handleRepValueChangeCompleted(e, index)}
+                  // TODO: Do we need this?
+                  // onBlur={e => this.handleRepValueChangeCompleted(e, index)}
                 />
                 {index !== 0 && (
                   <InputGroupAddon addonType="append">
@@ -68,10 +72,7 @@ class CustomSetsInput extends React.Component<Props, State> {
     this.props.customSets.length >= MAX_REP_SET_VALUE;
 
   private handleAddSetClick = () => {
-    const { customSets, onChange } = this.props;
-    const sets = [...customSets, customSets[customSets.length - 1]];
-    this.setState({ customSets: sets.map(formatSet) });
-    onChange(sets);
+    this.props.onAdd();
   };
 
   private handleRepValueChanged = (
@@ -79,37 +80,11 @@ class CustomSetsInput extends React.Component<Props, State> {
     index: number
   ) => {
     const newSetStringValue = e.target.value;
-    const newFormattedSets = Object.assign([], this.state.customSets, {
-      [index]: newSetStringValue
-    });
-
-    this.setState({ customSets: newFormattedSets });
-  };
-
-  private handleRepValueChangeCompleted = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    index: number
-  ) => {
-    const { customSets, onChange } = this.props;
-    const newSetValue: Set = toValidSet(e.target.value);
-
-    // TODO: Not sure why this was neccessary
-    // const newRepValue: Set = {
-    //   // ...customSets[index],
-    //   reps: newSetValue.reps,
-    //   rpe: newSetValue.rpe
-    // };
-    const sets: Set[] = Object.assign([], customSets, { [index]: newSetValue });
-
-    this.setState({ customSets: sets.map(formatSet) });
-    onChange(sets);
+    this.props.onChange(index, newSetStringValue);
   };
 
   private handleRemoveSetClick = (index: number) => {
-    const { customSets, onChange } = this.props;
-    const sets = customSets.filter((e, i) => i !== index);
-    this.setState({ customSets: sets.map(formatSet) });
-    onChange(sets);
+    this.props.onRemove(index);
   };
 }
 

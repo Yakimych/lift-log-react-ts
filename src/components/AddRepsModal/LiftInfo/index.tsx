@@ -5,7 +5,11 @@ import Links from "./Links";
 
 type Props = {
   liftInfo: LiftInfo;
-  onLiftInfoChange: (info: LiftInfo) => void;
+  onAddLink: () => void;
+  onRemoveLink: (index: number) => void;
+  onChangeLinkText: (index: number, newText: string) => void;
+  onChangeLinkUrl: (index: number, newUrl: string) => void;
+  onCommentChange: (newValue: string) => void;
 };
 
 type State = {
@@ -21,47 +25,21 @@ class LiftInfoContainer extends React.Component<Props, State> {
     return (
       <div className="d-flex flex-column align-items-start">
         <Comment
-          onCommentChange={this.onCommentChange}
+          onCommentChange={this.props.onCommentChange}
           commentValue={this.props.liftInfo.comment}
           onCommentToggle={this.onCommentToggle}
           hasComment={this.state.hasComment}
         />
         <Links
           links={this.props.liftInfo.links}
-          onLinkAdd={this.onLinkAdd}
-          onLinkRemove={this.onLinkRemove}
-          onLinkChange={this.onLinkChange}
+          onLinkAdd={this.props.onAddLink}
+          onLinkRemove={this.props.onRemoveLink}
+          onLinkTextChange={this.props.onChangeLinkText}
+          onLinkUrlChange={this.props.onChangeLinkUrl}
         />
       </div>
     );
   }
-
-  private onLinkChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    index: number
-  ) => {
-    const value = e.target.value;
-    const name = e.target.name;
-    const links = this.props.liftInfo.links.map((link, i) =>
-      i !== index ? link : { ...link, [name]: value }
-    );
-    this.props.onLiftInfoChange({ links } as LiftInfo);
-  };
-
-  private onLinkAdd = () => {
-    const links = [...this.props.liftInfo.links, { text: "", url: "" }];
-    this.props.onLiftInfoChange({ links } as LiftInfo);
-  };
-
-  private onLinkRemove = (index: number) => {
-    const links = this.props.liftInfo.links.filter((_, i) => i !== index);
-    this.props.onLiftInfoChange({ links } as LiftInfo);
-  };
-
-  private onCommentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const comment = e.target.value;
-    this.props.onLiftInfoChange({ comment } as LiftInfo);
-  };
 
   private onCommentToggle = () =>
     this.setState(prevState => ({ hasComment: !prevState.hasComment }));

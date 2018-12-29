@@ -4,6 +4,7 @@ import { Dispatch } from "redux";
 import LiftLogService from "../../services/LiftLogService";
 import { LiftLogEntry, SetsRepsInput } from "../../types/LiftTypes";
 import { getSets } from "../../utils/LiftUtils";
+import { actions as dialogActions } from "../dialogActions";
 import { fetchLiftLogActions } from "../liftLogActions";
 import { actions } from "../newEntryActions";
 import { StoreState } from "../storeState";
@@ -54,7 +55,10 @@ export const addLogEntry = (logName: string) => (
 
   return liftLogService
     .addEntry(logName, newEntry)
-    .then(() => dispatch(actions.addLogEntry.success()))
+    .then(() => {
+      dispatch(actions.addLogEntry.success());
+      dispatch(dialogActions.reset());
+    })
     .catch(() =>
       actions.addLogEntry.failure(
         `Error while adding entry for ${newEntry.name}`

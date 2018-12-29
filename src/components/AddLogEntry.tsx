@@ -152,11 +152,6 @@ class AddLogEntry extends React.Component<Props> {
 
   private addLogEntry = () => {
     this.props.onAddEntry();
-
-    // TODO: Is this handled in the reducer?
-    // reset liftLogReps and make sure the dialog is closed
-    // const liftLogReps = this.getDefaultLogEntryReps();
-
     this.props.closeDialog();
   };
 }

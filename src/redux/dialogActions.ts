@@ -3,11 +3,11 @@ import { ActionType, createStandardAction } from "typesafe-actions";
 
 // TODO: Rename to SetsRepsInputActions?
 export const actions = {
+  reset: createStandardAction("dialog/RESET")(),
   open: createStandardAction("dialog/OPEN")(),
   close: createStandardAction("dialog/CLOSE")(),
 
   setInputMode: createStandardAction("dialog/SET_INPUT_MODE")<InputMode>(),
-  // TODO: Show/hide tooltip?
 
   setNumberOfSets: createStandardAction("dialog/SET_NUMBER_OF_SETS")<string>(),
   setNumberOfReps: createStandardAction("dialog/SET_NUMBER_OF_REPS")<string>(),

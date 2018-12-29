@@ -37,6 +37,10 @@ export const dialogReducer = (
   action: DialogAction
 ): DialogState => {
   switch (action.type) {
+    case getType(actions.reset):
+      return {
+        ...initialState
+      };
     case getType(actions.open):
       return {
         ...state,

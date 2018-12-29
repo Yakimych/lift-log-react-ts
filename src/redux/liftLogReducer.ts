@@ -17,7 +17,6 @@ export const liftLogReducer = (
     case getType(fetchLiftLogActions.request):
       return { ...state, isLoading: true, networkErrorOccured: false };
     case getType(fetchLiftLogActions.success):
-      // TODO: Check what else is set in the component
       return {
         ...state,
         isLoading: false,

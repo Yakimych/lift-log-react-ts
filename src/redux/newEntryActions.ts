@@ -22,5 +22,3 @@ export const actions = {
 };
 
 export type NewEntryAction = ActionType<typeof actions>;
-
-// TODO: thunks

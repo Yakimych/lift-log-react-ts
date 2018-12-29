@@ -1,16 +1,22 @@
 import { getType } from "typesafe-actions";
 import { InputMode, Set } from "../types/LiftTypes";
-import { formatSet, toValidNumberOfReps, toValidSet } from "../utils/LiftUtils";
+import {
+  DEFAULT_REP_VALUE,
+  DEFAULT_SET_VALUE,
+  formatSet,
+  toValidNumberOfReps,
+  toValidSet
+} from "../utils/LiftUtils";
 import { actions, DialogAction } from "./dialogActions";
 import { DialogState } from "./storeState";
 
 const initialState: DialogState = {
   isOpen: false,
   inputMode: InputMode.SetsReps,
-  numberOfSetsString: "3",
-  numberOfSets: 3,
-  numberOfRepsString: "5",
-  numberOfReps: 5,
+  numberOfSetsString: DEFAULT_SET_VALUE.toString(),
+  numberOfSets: DEFAULT_SET_VALUE,
+  numberOfRepsString: DEFAULT_REP_VALUE.toString(),
+  numberOfReps: DEFAULT_REP_VALUE,
   customSetsStrings: [],
   customSets: [],
   commentIsShown: false,
@@ -19,8 +25,10 @@ const initialState: DialogState = {
   links: []
 };
 
-const getSetsFromNumberSetsReps = (sets: number, reps: number): Set[] =>
-  Array<Set>(sets).fill({ reps, rpe: null });
+const getSetsFromNumberSetsReps = (
+  sets: number,
+  reps: number
+): ReadonlyArray<Set> => Array<Set>(sets).fill({ reps, rpe: null });
 
 const maxNumberOfLinks = 3;
 
@@ -95,8 +103,6 @@ export const dialogReducer = (
     }
     case getType(actions.changeCustomSet): {
       const { index, value } = action.payload;
-
-      // TODO: Should this be a separate action (dispatched onBlur)?
       const customSets: Set[] = Object.assign([], state.customSets, {
         [index]: toValidSet(value)
       });

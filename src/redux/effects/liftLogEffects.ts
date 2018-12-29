@@ -21,30 +21,10 @@ export const reloadLifts = (logName: string) => (
   dispatch(fetchLiftLogActions.request());
   return liftLogService
     .getLiftLog(logName)
-    .then(
-      liftLog => {
-        // tslint:disable-next-line:no-console
-        console.log("received API call response");
-        dispatch(fetchLiftLogActions.success(liftLog));
-      }
-      // this.setState({
-      //   isLoading: false,
-      //   networkErrorOccurred: false,
-      //   logTitle: liftLog.title,
-      //   logEntries: liftLog.entries
-      // })
-    )
-    .catch((error: AxiosError) => {
-      dispatch(fetchLiftLogActions.failure(getErrorMessage(error, logName)));
-
-      // const errorMessage = this.getErrorMessage(error);
-      // this.setState({
-      //   isLoading: false,
-      //   networkErrorOccurred: true,
-      //   errorMessage,
-      //   logEntries: []
-      // });
-    });
+    .then(liftLog => dispatch(fetchLiftLogActions.success(liftLog)))
+    .catch((error: AxiosError) =>
+      dispatch(fetchLiftLogActions.failure(getErrorMessage(error, logName)))
+    );
 };
 
 export const addLogEntry = (logName: string) => (
@@ -74,9 +54,7 @@ export const addLogEntry = (logName: string) => (
 
   return liftLogService
     .addEntry(logName, newEntry)
-    .then(() => {
-      dispatch(actions.addLogEntry.success());
-    })
+    .then(() => dispatch(actions.addLogEntry.success()))
     .catch(() =>
       actions.addLogEntry.failure(
         `Error while adding entry for ${newEntry.name}`

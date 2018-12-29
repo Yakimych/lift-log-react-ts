@@ -4,7 +4,6 @@ import { InputMode, LiftInfoLink } from "../types/LiftTypes";
 import { LiftLogState } from "./liftLogState";
 
 export type NewEntryState = {
-  // dateString: string;
   date: Moment | null;
   name: string;
   weightLiftedString: string;

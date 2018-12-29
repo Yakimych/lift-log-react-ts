@@ -25,8 +25,6 @@ const CustomSetsInput: React.FunctionComponent<Props> = props => (
               bsSize="sm"
               value={formattedSet}
               onChange={e => props.onChange(index, e.target.value)}
-              // TODO: Do we need this?
-              // onBlur={e => this.handleRepValueChangeCompleted(e, index)}
             />
             {index !== 0 && (
               <InputGroupAddon addonType="append">

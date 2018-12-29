@@ -1,28 +1,23 @@
 import Octicon, { getIconByName } from "@githubprimer/octicons-react";
 import * as React from "react";
 import { Button, Input, InputGroup, InputGroupAddon } from "reactstrap";
-import { Set } from "../../types/LiftTypes";
-import {
-  formatSet,
-  MAX_REP_SET_VALUE
-  // toValidSet
-} from "../../utils/LiftUtils";
+import { MAX_REP_SET_VALUE } from "../../utils/LiftUtils";
 
 type Props = {
   onAdd: () => void;
   onRemove: (index: number) => void;
   onChange: (index: number, newValue: string) => void;
-  customSets: ReadonlyArray<Set>;
+  customSetsStrings: ReadonlyArray<string>;
 };
 
-// TODO: Move this check to the reducer?
+// TODO: Move this check to the reducer/selector?
 const isAddSetDisabled = (numberOfCustomSets: number) =>
   numberOfCustomSets >= MAX_REP_SET_VALUE;
 
 const CustomSetsInput: React.FunctionComponent<Props> = props => (
   <>
     <div className="d-flex flex-wrap">
-      {props.customSets.map(formatSet).map((formattedSet, index) => (
+      {props.customSetsStrings.map((formattedSet, index) => (
         <div key={index} className="custom-sets-input-group mr-1 mb-1">
           <InputGroup>
             <Input
@@ -53,7 +48,7 @@ const CustomSetsInput: React.FunctionComponent<Props> = props => (
       size="sm"
       className="mt-2"
       onClick={props.onAdd}
-      disabled={isAddSetDisabled(props.customSets.length)}
+      disabled={isAddSetDisabled(props.customSetsStrings.length)}
     >
       <Octicon icon={getIconByName("plus")} />
     </Button>

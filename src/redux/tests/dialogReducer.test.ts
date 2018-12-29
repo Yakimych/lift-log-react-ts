@@ -52,6 +52,25 @@ it("numberOfReps should be set to correct numeric value", () => {
   expect(dialogStateWith11Reps.numberOfReps).toEqual(11);
 });
 
+it("should be possible to enter custom rep with RPE", () => {
+  const allActions = [
+    actions.open(),
+    actions.setInputMode(InputMode.CustomReps),
+    actions.changeCustomSet({ index: 0, value: "5@" }),
+    actions.changeCustomSet({ index: 0, value: "5@9" }),
+    actions.changeCustomSet({ index: 0, value: "5@9." }),
+    actions.changeCustomSet({ index: 0, value: "5@9.5" })
+  ];
+
+  const finalState = allActions.reduce<DialogState>(
+    dialogReducer,
+    emptyInitialState
+  );
+
+  expect(finalState.customSetsStrings[0]).toEqual("5@9.5");
+  expect(finalState.customSets[0]).toEqual({ reps: 5, rpe: 9.5 });
+});
+
 it("customsets should be derived from SetsReps after toggling InputMode to Custom", () => {
   const allActions = [
     actions.open(),

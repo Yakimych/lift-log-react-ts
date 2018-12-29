@@ -31,7 +31,9 @@ type SetsRepsInput = {
   mode: InputMode;
   numberOfSets: number;
   numberOfReps: number;
+  // TODO: If this is only to be used in the view, it should be removed
   customSets: ReadonlyArray<Set>;
+  customSetsStrings: ReadonlyArray<string>;
 };
 
 type LiftLogEntryReps = SetsRepsInput & LiftInfo;

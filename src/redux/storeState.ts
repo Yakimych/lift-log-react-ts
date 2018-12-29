@@ -19,6 +19,7 @@ export type DialogState = {
   numberOfSetsString: string;
   numberOfRepsString: string;
 
+  // TODO: Why is this optional?
   numberOfSets?: number;
   numberOfReps?: number;
 

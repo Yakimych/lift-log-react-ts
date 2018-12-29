@@ -51,18 +51,6 @@ export const getSets = (setsReps: SetsRepsInput): ReadonlyArray<Set> => {
     : customSets;
 };
 
-// TODO: Consolidate
-export const getSets2 = (
-  numberOfSets: number | undefined,
-  numberOfReps: number | undefined,
-  customSets: ReadonlyArray<Set>,
-  mode: InputMode
-): ReadonlyArray<Set> => {
-  return mode === InputMode.SetsReps && numberOfSets && numberOfReps
-    ? Array<Set>(numberOfSets).fill({ reps: numberOfReps, rpe: null })
-    : customSets;
-};
-
 export const formatRpe = (rpe: number | null) =>
   rpe !== null ? `@${rpe}` : "";
 

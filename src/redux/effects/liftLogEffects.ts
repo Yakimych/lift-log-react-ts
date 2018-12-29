@@ -2,8 +2,8 @@ import { AxiosError } from "axios";
 import * as moment from "moment";
 import { Dispatch } from "redux";
 import LiftLogService from "../../services/LiftLogService";
-import { LiftLogEntry } from "../../types/LiftTypes";
-import { getSets2 } from "../../utils/LiftUtils";
+import { LiftLogEntry, SetsRepsInput } from "../../types/LiftTypes";
+import { getSets } from "../../utils/LiftUtils";
 import { fetchLiftLogActions } from "../liftLogActions";
 import { actions } from "../newEntryActions";
 import { StoreState } from "../storeState";
@@ -53,18 +53,20 @@ export const addLogEntry = (logName: string) => (
   liftLogService: LiftLogService
 ) => {
   const state = getState();
-  const {
-    numberOfSets,
-    numberOfReps,
-    customSets,
-    inputMode
-  } = state.dialogState;
+
+  const setsRepsInput: SetsRepsInput = {
+    mode: state.dialogState.inputMode,
+    numberOfSets: state.dialogState.numberOfSets || 0,
+    numberOfReps: state.dialogState.numberOfReps || 0,
+    customSets: state.dialogState.customSets,
+    customSetsStrings: state.dialogState.customSetsStrings
+  };
+
   const newEntry: LiftLogEntry = {
     date: state.newEntryState.date || moment(),
     name: state.newEntryState.name,
     weightLifted: state.newEntryState.weightLifted || 0,
-    // sets: getSets(this.props.liftLogReps),
-    sets: getSets2(numberOfSets, numberOfReps, customSets, inputMode),
+    sets: getSets(setsRepsInput),
     comment: state.dialogState.comment,
     links: state.dialogState.links.filter(link => !!link.url)
   };

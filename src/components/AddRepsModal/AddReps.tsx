@@ -25,45 +25,41 @@ type Props = {
 const isSetsRepsMode = (props: Props) =>
   props.liftLogReps.mode === InputMode.SetsReps;
 
-// const getSetsFromNumberSetsReps = (sets: number, reps: number): Set[] =>
-//   Array<Set>(sets).fill({ reps, rpe: null });
-
-const AddReps: React.FunctionComponent<Props> = props => {
-  const { numberOfSets, numberOfReps, customSets, mode } = props.liftLogReps;
-
-  return (
-    <div className="px-1">
-      <div className="d-flex">
-        <InputModeSwitch mode={mode} onChange={props.onInputModeChange} />
-        <div className="lead ml-4">{formatRepsSets(props.liftLogReps)}</div>
-      </div>
-      <div className="my-3">
-        {isSetsRepsMode(props) ? (
-          <SetsRepsInput
-            {...{ numberOfSets, numberOfReps }}
-            onNumberOfSetsChange={props.onNumberOfSetsChange}
-            onNumberOfRepsChange={props.onNumberOfRepsChange}
-          />
-        ) : (
-          <CustomSetsInput
-            customSets={customSets}
-            onAdd={props.onAddCustomSet}
-            onRemove={props.onRemoveCustomSet}
-            onChange={props.onLiftLogRepsChange}
-          />
-        )}
-      </div>
-      <LiftInfoContainer
-        // onLiftInfoChange={props.onLiftLogRepsChange}
-        onAddLink={props.onAddLink}
-        onRemoveLink={props.onRemoveLink}
-        onChangeLinkText={props.onChangeLinkText}
-        onChangeLinkUrl={props.onChangeLinkUrl}
-        onCommentChange={props.onCommentChange}
-        liftInfo={props.liftLogReps}
+const AddReps: React.FunctionComponent<Props> = props => (
+  <div className="px-1">
+    <div className="d-flex">
+      <InputModeSwitch
+        mode={props.liftLogReps.mode}
+        onChange={props.onInputModeChange}
       />
+      <div className="lead ml-4">{formatRepsSets(props.liftLogReps)}</div>
     </div>
-  );
-};
+    <div className="my-3">
+      {isSetsRepsMode(props) ? (
+        <SetsRepsInput
+          numberOfSets={props.liftLogReps.numberOfSets}
+          numberOfReps={props.liftLogReps.numberOfReps}
+          onNumberOfSetsChange={props.onNumberOfSetsChange}
+          onNumberOfRepsChange={props.onNumberOfRepsChange}
+        />
+      ) : (
+        <CustomSetsInput
+          customSetsStrings={props.liftLogReps.customSetsStrings}
+          onAdd={props.onAddCustomSet}
+          onRemove={props.onRemoveCustomSet}
+          onChange={props.onLiftLogRepsChange}
+        />
+      )}
+    </div>
+    <LiftInfoContainer
+      onAddLink={props.onAddLink}
+      onRemoveLink={props.onRemoveLink}
+      onChangeLinkText={props.onChangeLinkText}
+      onChangeLinkUrl={props.onChangeLinkUrl}
+      onCommentChange={props.onCommentChange}
+      liftInfo={props.liftLogReps}
+    />
+  </div>
+);
 
 export default AddReps;

@@ -8,7 +8,8 @@ import "./index.css";
 import { configureStore } from "./redux/store";
 import LiftLogService from "./services/LiftLogService";
 
-const store = configureStore(new LiftLogService());
+const baseUrl = `${process.env.REACT_APP_API_BASE_URL}/liftlogs`;
+const store = configureStore(new LiftLogService(baseUrl));
 
 ReactDOM.render(
   <Provider store={store}>

@@ -23,8 +23,10 @@ type ApiLiftLog = {
 };
 
 class LiftLogService {
-  // TODO: Take in url as constructor parameter instead
-  private liftLogsUrl = `${process.env.REACT_APP_API_BASE_URL}/liftlogs`;
+  private readonly liftLogsUrl: string;
+  constructor(url: string) {
+    this.liftLogsUrl = url;
+  }
 
   public getLiftLog(logName: string): Promise<LiftLog> {
     return axios

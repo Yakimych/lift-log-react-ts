@@ -19,9 +19,8 @@ export type DialogState = {
   numberOfSetsString: string;
   numberOfRepsString: string;
 
-  // TODO: Why is this optional?
-  numberOfSets?: number;
-  numberOfReps?: number;
+  numberOfSets: number;
+  numberOfReps: number;
 
   customSetsStrings: ReadonlyArray<string>;
   customSets: ReadonlyArray<Set>;

@@ -56,15 +56,15 @@ export const addLogEntry = (logName: string) => (
 
   const setsRepsInput: SetsRepsInput = {
     mode: state.dialogState.inputMode,
-    numberOfSets: state.dialogState.numberOfSets || 0,
-    numberOfReps: state.dialogState.numberOfReps || 0,
+    numberOfSets: state.dialogState.numberOfSets,
+    numberOfReps: state.dialogState.numberOfReps,
     customSetsStrings: state.dialogState.customSetsStrings
   };
 
   const newEntry: LiftLogEntry = {
     date: state.newEntryState.date || moment(),
     name: state.newEntryState.name,
-    weightLifted: state.newEntryState.weightLifted || 0,
+    weightLifted: state.newEntryState.weightLifted,
     sets: getSets(setsRepsInput),
     comment: state.dialogState.comment,
     links: state.dialogState.links.filter(link => !!link.url)

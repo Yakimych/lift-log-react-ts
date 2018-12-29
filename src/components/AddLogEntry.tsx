@@ -175,9 +175,8 @@ const mapStateToProps = (storeState: StoreState): StateProps => {
     weightLiftedStringValue: storeState.newEntryState.weightLiftedString,
     liftLogReps: {
       mode: storeState.dialogState.inputMode,
-      // TODO: Model optionals correctly
-      numberOfSets: storeState.dialogState.numberOfSets || 0,
-      numberOfReps: storeState.dialogState.numberOfReps || 0,
+      numberOfSets: storeState.dialogState.numberOfSets,
+      numberOfReps: storeState.dialogState.numberOfReps,
       customSetsStrings: storeState.dialogState.customSetsStrings,
       comment: storeState.dialogState.comment,
       links: storeState.dialogState.links

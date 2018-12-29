@@ -18,7 +18,7 @@ type LiftInfo = {
 type LiftLogEntry = {
   date: moment.Moment;
   name: string;
-  weightLifted: number;
+  weightLifted: number | null;
   sets: ReadonlyArray<Set>;
 } & LiftInfo;
 

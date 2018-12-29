@@ -48,7 +48,7 @@ class LiftLogService {
   private toApiLiftLogEntry = (entry: LiftLogEntry): ApiLiftLogEntry => ({
     date: entry.date.toISOString(),
     name: entry.name,
-    weightLifted: entry.weightLifted,
+    weightLifted: entry.weightLifted || 0,
     sets: entry.sets.map(this.toApiSet),
     comment: entry.comment,
     links: entry.links

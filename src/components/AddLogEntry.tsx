@@ -52,109 +52,77 @@ type OwnProps = {
 
 type Props = StateProps & DispatchProps & OwnProps;
 
-// TODO: Make into a functional component
-class AddLogEntry extends React.Component<Props> {
-  public render() {
-    const {
-      date,
-      addRepsModalIsOpen,
-      liftLogReps,
-      name,
-      weightLifted
-    } = this.props;
+const canAddEntry = (name: string, weightLifted: number | null): boolean =>
+  name.length > 0 && weightLifted !== null;
 
-    return (
-      <div className="add-log-entry">
-        <div className="row">
-          <div className="col">
-            <DatePicker
-              disabled={this.props.disabled}
-              dateFormat="YYYY-MM-DD"
-              selected={date}
-              onChange={this.handleDateChanged}
-              className="form-control form-control-sm log-entry-input"
-            />
-          </div>
-          <div className="col">
-            <input
-              disabled={this.props.disabled}
-              className="form-control form-control-sm log-entry-input"
-              type="text"
-              placeholder="Name"
-              maxLength={50}
-              value={name}
-              onChange={this.handleNameChanged}
-            />
-          </div>
-          <div className="col">
-            <input
-              disabled={this.props.disabled}
-              className="form-control form-control-sm log-entry-input"
-              type="text"
-              placeholder="Weight"
-              value={this.props.weightLiftedStringValue}
-              onChange={this.handleWeightLiftedChanged}
-            />
-          </div>
-          <div className="col d-flex align-items-center">
-            <span className="mr-2">{formatRepsSets(liftLogReps)}</span>
-            <Button
-              disabled={
-                this.props.disabled || !this.canAddEntry(name, weightLifted)
-              }
-              size="sm"
-              color="primary"
-              onClick={this.props.openDialog}
-            >
-              Add
-            </Button>
-          </div>
-        </div>
-        <AddRepsModal
-          onInputModeChange={this.props.onInputModeChange}
-          onLiftLogRepsChange={this.props.onLiftLogRepsChange}
-          onAddCustomSet={this.props.onAddCustomSet}
-          onRemoveCustomSet={this.props.onRemoveCustomSet}
-          onNumberOfSetsChange={this.props.onNumberOfSetsChange}
-          onNumberOfRepsChange={this.props.onNumberOfRepsChange}
-          liftLogReps={liftLogReps}
-          isOpen={addRepsModalIsOpen}
-          close={this.props.closeDialog}
-          onSave={this.addLogEntry}
-          onAddLink={this.props.onAddLink}
-          onRemoveLink={this.props.onRemoveLink}
-          onChangeLinkText={this.props.onChangeLinkText}
-          onChangeLinkUrl={this.props.onChangeLinkUrl}
-          onCommentChange={this.props.onCommentChange}
-          onOpenComment={this.props.onOpenComment}
-          commentIsShown={this.props.commentIsShown}
+const AddLogEntry: React.FunctionComponent<Props> = props => (
+  <div className="add-log-entry">
+    <div className="row">
+      <div className="col">
+        <DatePicker
+          disabled={props.disabled}
+          dateFormat="YYYY-MM-DD"
+          selected={props.date}
+          onChange={props.changeDate}
+          className="form-control form-control-sm log-entry-input"
         />
       </div>
-    );
-  }
-
-  private canAddEntry = (name: string, weightLifted: number | null) =>
-    name.length > 0 && weightLifted !== null;
-
-  private handleDateChanged = (date: moment.Moment | null) => {
-    this.props.changeDate(date);
-  };
-
-  private handleNameChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.props.changeName(e.target.value);
-  };
-
-  private handleWeightLiftedChanged = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    this.props.changeWeightLifted(e.target.value);
-  };
-
-  private addLogEntry = () => {
-    this.props.onAddEntry();
-    this.props.closeDialog();
-  };
-}
+      <div className="col">
+        <input
+          disabled={props.disabled}
+          className="form-control form-control-sm log-entry-input"
+          type="text"
+          placeholder="Name"
+          maxLength={50}
+          value={props.name}
+          onChange={e => props.changeName(e.target.value)}
+        />
+      </div>
+      <div className="col">
+        <input
+          disabled={props.disabled}
+          className="form-control form-control-sm log-entry-input"
+          type="text"
+          placeholder="Weight"
+          value={props.weightLiftedStringValue}
+          onChange={e => props.changeWeightLifted(e.target.value)}
+        />
+      </div>
+      <div className="col d-flex align-items-center">
+        <span className="mr-2">{formatRepsSets(props.liftLogReps)}</span>
+        <Button
+          disabled={
+            props.disabled || !canAddEntry(props.name, props.weightLifted)
+          }
+          size="sm"
+          color="primary"
+          onClick={props.openDialog}
+        >
+          Add
+        </Button>
+      </div>
+    </div>
+    <AddRepsModal
+      onInputModeChange={props.onInputModeChange}
+      onLiftLogRepsChange={props.onLiftLogRepsChange}
+      onAddCustomSet={props.onAddCustomSet}
+      onRemoveCustomSet={props.onRemoveCustomSet}
+      onNumberOfSetsChange={props.onNumberOfSetsChange}
+      onNumberOfRepsChange={props.onNumberOfRepsChange}
+      liftLogReps={props.liftLogReps}
+      isOpen={props.addRepsModalIsOpen}
+      close={props.closeDialog}
+      onSave={props.onAddEntry}
+      onAddLink={props.onAddLink}
+      onRemoveLink={props.onRemoveLink}
+      onChangeLinkText={props.onChangeLinkText}
+      onChangeLinkUrl={props.onChangeLinkUrl}
+      onCommentChange={props.onCommentChange}
+      onOpenComment={props.onOpenComment}
+      commentIsShown={props.commentIsShown}
+    />
+  </div>
+);
 
 const mapStateToProps = (storeState: StoreState): StateProps => {
   return {

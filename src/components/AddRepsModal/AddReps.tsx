@@ -20,6 +20,8 @@ type Props = {
   onChangeLinkText: (index: number, newText: string) => void;
   onChangeLinkUrl: (index: number, newUrl: string) => void;
   onCommentChange: (newValue: string) => void;
+  onOpenComment: () => void;
+  commentIsShown: boolean;
 };
 
 const isSetsRepsMode = (props: Props) =>
@@ -57,6 +59,8 @@ const AddReps: React.FunctionComponent<Props> = props => (
       onChangeLinkText={props.onChangeLinkText}
       onChangeLinkUrl={props.onChangeLinkUrl}
       onCommentChange={props.onCommentChange}
+      onOpenComment={props.onOpenComment}
+      commentIsShown={props.commentIsShown}
       liftInfo={props.liftLogReps}
     />
   </div>

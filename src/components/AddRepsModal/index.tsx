@@ -22,6 +22,8 @@ type Props = {
   onChangeLinkText: (index: number, newText: string) => void;
   onChangeLinkUrl: (index: number, newUrl: string) => void;
   onCommentChange: (newValue: string) => void;
+  onOpenComment: () => void;
+  commentIsShown: boolean;
 };
 
 const AddRepsModal: React.FunctionComponent<Props> = props => {
@@ -42,6 +44,8 @@ const AddRepsModal: React.FunctionComponent<Props> = props => {
           onChangeLinkText={props.onChangeLinkText}
           onChangeLinkUrl={props.onChangeLinkUrl}
           onCommentChange={props.onCommentChange}
+          onOpenComment={props.onOpenComment}
+          commentIsShown={props.commentIsShown}
         />
       </ModalBody>
       <ModalFooter>

@@ -20,6 +20,7 @@ type StateProps = {
   weightLiftedStringValue: string;
   addRepsModalIsOpen: boolean;
   liftLogReps: LiftLogEntryReps;
+  commentIsShown: boolean;
 };
 
 type DispatchProps = {
@@ -41,6 +42,7 @@ type DispatchProps = {
   onChangeLinkText: (index: number, newText: string) => void;
   onChangeLinkUrl: (index: number, newUrl: string) => void;
   onCommentChange: (newValue: string) => void;
+  onOpenComment: () => void;
 };
 
 type OwnProps = {
@@ -50,8 +52,8 @@ type OwnProps = {
 
 type Props = StateProps & DispatchProps & OwnProps;
 
+// TODO: Make into a functional component
 class AddLogEntry extends React.Component<Props> {
-  // public state = this.getDefaultState();
   public render() {
     const {
       date,
@@ -124,6 +126,8 @@ class AddLogEntry extends React.Component<Props> {
           onChangeLinkText={this.props.onChangeLinkText}
           onChangeLinkUrl={this.props.onChangeLinkUrl}
           onCommentChange={this.props.onCommentChange}
+          onOpenComment={this.props.onOpenComment}
+          commentIsShown={this.props.commentIsShown}
         />
       </div>
     );
@@ -144,16 +148,7 @@ class AddLogEntry extends React.Component<Props> {
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     this.props.changeWeightLifted(e.target.value);
-    // this.setState({
-    //   weightLiftedStringValue: value,
-    //   weightLifted: toValidFloatOrNull(value)
-    // });
   };
-
-  // private handleLiftLogRepsChanged = (liftLogReps: Partial<LiftLogEntryReps>) =>
-  //   this.setState((prevState: State) => ({
-  //     liftLogReps: { ...prevState.liftLogReps, ...liftLogReps }
-  //   }));
 
   private addLogEntry = () => {
     this.props.onAddEntry();
@@ -180,7 +175,8 @@ const mapStateToProps = (storeState: StoreState): StateProps => {
       customSetsStrings: storeState.dialogState.customSetsStrings,
       comment: storeState.dialogState.comment,
       links: storeState.dialogState.links
-    }
+    },
+    commentIsShown: storeState.dialogState.commentIsShown
   };
 };
 
@@ -214,7 +210,8 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
     onChangeLinkUrl: (index: number, newUrl: string) =>
       dispatch(dialogActions.changeLinkUrl({ index, newUrl })),
     onCommentChange: (newValue: string) =>
-      dispatch(dialogActions.changeComment(newValue))
+      dispatch(dialogActions.changeComment(newValue)),
+    onOpenComment: () => dispatch(dialogActions.showComment())
   };
 };
 

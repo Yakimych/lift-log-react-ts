@@ -5,17 +5,17 @@ import { Button, Fade, Input } from "reactstrap";
 type Props = {
   hasComment: boolean;
   onCommentChange: (newValue: string) => void;
-  onCommentToggle: () => void;
+  onOpenComment: () => void;
   commentValue: string;
 };
 
 const Comment: React.FunctionComponent<Props> = props => {
-  const { hasComment, onCommentToggle, onCommentChange, commentValue } = props;
+  const { hasComment, onOpenComment, onCommentChange, commentValue } = props;
 
   return (
     <>
       {!hasComment && (
-        <Button onClick={onCommentToggle} size="sm">
+        <Button onClick={onOpenComment} size="sm">
           Add comment
         </Button>
       )}

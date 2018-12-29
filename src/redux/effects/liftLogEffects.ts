@@ -1,12 +1,12 @@
 import { AxiosError } from "axios";
 import * as moment from "moment";
-import { Dispatch } from "redux";
+import { ThunkAction, ThunkDispatch } from "redux-thunk";
 import LiftLogService from "../../services/LiftLogService";
 import { LiftLogEntry, SetsRepsInput } from "../../types/LiftTypes";
 import { getSets } from "../../utils/LiftUtils";
-import { actions as dialogActions } from "../dialogActions";
-import { fetchLiftLogActions } from "../liftLogActions";
-import { actions } from "../newEntryActions";
+import { actions as dialogActions, DialogAction } from "../dialogActions";
+import { fetchLiftLogActions, LiftLogAction } from "../liftLogActions";
+import { actions, NewEntryAction } from "../newEntryActions";
 import { StoreState } from "../storeState";
 
 const getErrorMessage = (error: AxiosError, logName: string) =>
@@ -14,8 +14,10 @@ const getErrorMessage = (error: AxiosError, logName: string) =>
     ? `Board ${logName} does not exist`
     : `An unexpected network error has occured`;
 
-export const reloadLifts = (logName: string) => (
-  dispatch: Dispatch,
+export const reloadLifts = (
+  logName: string
+): ThunkAction<void, StoreState, LiftLogService, LiftLogAction> => (
+  dispatch: ThunkDispatch<StoreState, LiftLogService, LiftLogAction>,
   getState: () => StoreState,
   liftLogService: LiftLogService
 ) => {
@@ -28,8 +30,19 @@ export const reloadLifts = (logName: string) => (
     );
 };
 
-export const addLogEntry = (logName: string) => (
-  dispatch: Dispatch,
+export const addLogEntry = (
+  logName: string
+): ThunkAction<
+  Promise<any>,
+  StoreState,
+  LiftLogService,
+  NewEntryAction | DialogAction
+> => (
+  dispatch: ThunkDispatch<
+    StoreState,
+    LiftLogService,
+    NewEntryAction | DialogAction
+  >,
   getState: () => StoreState,
   liftLogService: LiftLogService
 ) => {

@@ -1,7 +1,6 @@
 import { InputMode } from "src/types/LiftTypes";
 import { ActionType, createStandardAction } from "typesafe-actions";
 
-// TODO: Rename to SetsRepsInputActions?
 export const actions = {
   reset: createStandardAction("dialog/RESET")(),
   open: createStandardAction("dialog/OPEN")(),

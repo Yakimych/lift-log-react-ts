@@ -44,11 +44,11 @@ export function formatRepsSets(setsReps: SetsRepsInput): string {
 }
 
 export const getSets = (setsReps: SetsRepsInput): ReadonlyArray<Set> => {
-  const { numberOfSets, numberOfReps, customSets, mode } = setsReps;
+  const { numberOfSets, numberOfReps, customSetsStrings, mode } = setsReps;
 
   return mode === InputMode.SetsReps
     ? Array<Set>(numberOfSets).fill({ reps: numberOfReps, rpe: null })
-    : customSets;
+    : customSetsStrings.map(toValidSet);
 };
 
 export const formatRpe = (rpe: number | null) =>

@@ -58,7 +58,6 @@ export const addLogEntry = (logName: string) => (
     mode: state.dialogState.inputMode,
     numberOfSets: state.dialogState.numberOfSets || 0,
     numberOfReps: state.dialogState.numberOfReps || 0,
-    customSets: state.dialogState.customSets,
     customSetsStrings: state.dialogState.customSetsStrings
   };
 

@@ -178,8 +178,6 @@ const mapStateToProps = (storeState: StoreState): StateProps => {
       // TODO: Model optionals correctly
       numberOfSets: storeState.dialogState.numberOfSets || 0,
       numberOfReps: storeState.dialogState.numberOfReps || 0,
-      // TODO: Is it possible to remove this?
-      customSets: storeState.dialogState.customSets || [],
       customSetsStrings: storeState.dialogState.customSetsStrings,
       comment: storeState.dialogState.comment,
       links: storeState.dialogState.links

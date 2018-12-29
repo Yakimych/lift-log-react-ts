@@ -1,18 +1,14 @@
 import Octicon, { getIconByName } from "@githubprimer/octicons-react";
 import * as React from "react";
 import { Button, Input, InputGroup, InputGroupAddon } from "reactstrap";
-import { MAX_REP_SET_VALUE } from "../../utils/LiftUtils";
 
 type Props = {
   onAdd: () => void;
   onRemove: (index: number) => void;
   onChange: (index: number, newValue: string) => void;
+  canAddSet: boolean;
   customSetsStrings: ReadonlyArray<string>;
 };
-
-// TODO: Move this check to the reducer/selector?
-const isAddSetDisabled = (numberOfCustomSets: number) =>
-  numberOfCustomSets >= MAX_REP_SET_VALUE;
 
 const CustomSetsInput: React.FunctionComponent<Props> = props => (
   <>
@@ -46,7 +42,7 @@ const CustomSetsInput: React.FunctionComponent<Props> = props => (
       size="sm"
       className="mt-2"
       onClick={props.onAdd}
-      disabled={isAddSetDisabled(props.customSetsStrings.length)}
+      disabled={!props.canAddSet}
     >
       <Octicon icon={getIconByName("plus")} />
     </Button>

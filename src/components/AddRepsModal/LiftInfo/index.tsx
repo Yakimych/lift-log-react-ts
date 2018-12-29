@@ -5,6 +5,7 @@ import Links from "./Links";
 
 type Props = {
   liftInfo: LiftInfo;
+  canAddLink: boolean;
   onAddLink: () => void;
   onRemoveLink: (index: number) => void;
   onChangeLinkText: (index: number, newText: string) => void;
@@ -25,6 +26,7 @@ const LiftInfoContainer: React.FunctionComponent<Props> = props => {
       />
       <Links
         links={props.liftInfo.links}
+        canAddMoreLinks={props.canAddLink}
         onLinkAdd={props.onAddLink}
         onLinkRemove={props.onRemoveLink}
         onLinkTextChange={props.onChangeLinkText}

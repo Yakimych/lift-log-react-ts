@@ -12,11 +12,13 @@ type Props = {
 
   onInputModeChange: (inputMode: InputMode) => void;
   onLiftLogRepsChange: (index: number, newValue: string) => void;
+  canAddCustomSet: boolean;
   onAddCustomSet: () => void;
   onRemoveCustomSet: (index: number) => void;
   onNumberOfSetsChange: (newValue: string) => void;
   onNumberOfRepsChange: (newValue: string) => void;
 
+  canAddLink: boolean;
   onAddLink: () => void;
   onRemoveLink: (index: number) => void;
   onChangeLinkText: (index: number, newText: string) => void;
@@ -34,11 +36,13 @@ const AddRepsModal: React.FunctionComponent<Props> = props => {
         <AddReps
           onInputModeChange={props.onInputModeChange}
           onLiftLogRepsChange={props.onLiftLogRepsChange}
+          canAddCustomSet={props.canAddCustomSet}
           onAddCustomSet={props.onAddCustomSet}
           onRemoveCustomSet={props.onRemoveCustomSet}
           onNumberOfSetsChange={props.onNumberOfSetsChange}
           onNumberOfRepsChange={props.onNumberOfRepsChange}
           liftLogReps={props.liftLogReps}
+          canAddLink={props.canAddLink}
           onAddLink={props.onAddLink}
           onRemoveLink={props.onRemoveLink}
           onChangeLinkText={props.onChangeLinkText}

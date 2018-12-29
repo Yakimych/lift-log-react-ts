@@ -8,6 +8,7 @@ import {
   InputGroup,
   InputGroupAddon
 } from "reactstrap";
+import { MAX_NUMBER_OF_LINKS } from "../../../redux/dialogReducer";
 import { LiftInfoLink } from "../../../types/LiftTypes";
 
 type Props = {
@@ -16,10 +17,10 @@ type Props = {
   onLinkTextChange: (index: number, newTextValue: string) => void;
   onLinkUrlChange: (index: number, newUrlValue: string) => void;
   links: ReadonlyArray<LiftInfoLink>;
+  canAddMoreLinks: boolean;
 };
 
 const LINK_ELEMENT_HEIGHT = 40;
-const MAX_LINKS_NUMBER = 3;
 
 const Links: React.FunctionComponent<Props> = props => {
   const {
@@ -30,7 +31,6 @@ const Links: React.FunctionComponent<Props> = props => {
     onLinkRemove
   } = props;
   const linksContainerHeight = links.length * LINK_ELEMENT_HEIGHT;
-  const canAddMoreLinks = links.length < MAX_LINKS_NUMBER;
 
   return (
     <div className="mt-2">
@@ -80,14 +80,14 @@ const Links: React.FunctionComponent<Props> = props => {
       <Button
         onClick={onLinkAdd}
         size="sm"
-        disabled={!canAddMoreLinks}
+        disabled={!props.canAddMoreLinks}
         className={links.length > 0 ? "mt-2" : ""}
       >
         Add link
       </Button>
-      <AnimateHeight duration={350} height={canAddMoreLinks ? 0 : "auto"}>
+      <AnimateHeight duration={350} height={props.canAddMoreLinks ? 0 : "auto"}>
         <FormText color="muted">
-          You can only add maximum {MAX_LINKS_NUMBER} links.
+          You can only add maximum {MAX_NUMBER_OF_LINKS} links.
         </FormText>
       </AnimateHeight>
     </div>

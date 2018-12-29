@@ -7,6 +7,7 @@ import { Button } from "reactstrap";
 import { Dispatch } from "redux";
 import { actions as dialogActions } from "../redux/dialogActions";
 import { actions as newEntryActions } from "../redux/newEntryActions";
+import { getCanAddCustomSet, getCanAddLink } from "../redux/selectors";
 import { StoreState } from "../redux/storeState";
 import { InputMode, LiftLogEntryReps } from "../types/LiftTypes";
 import { formatRepsSets } from "../utils/LiftUtils";
@@ -21,6 +22,8 @@ type StateProps = {
   addRepsModalIsOpen: boolean;
   liftLogReps: LiftLogEntryReps;
   commentIsShown: boolean;
+  canAddCustomSet: boolean;
+  canAddLink: boolean;
 };
 
 type DispatchProps = {
@@ -105,6 +108,7 @@ const AddLogEntry: React.FunctionComponent<Props> = props => (
     <AddRepsModal
       onInputModeChange={props.onInputModeChange}
       onLiftLogRepsChange={props.onLiftLogRepsChange}
+      canAddCustomSet={props.canAddCustomSet}
       onAddCustomSet={props.onAddCustomSet}
       onRemoveCustomSet={props.onRemoveCustomSet}
       onNumberOfSetsChange={props.onNumberOfSetsChange}
@@ -113,6 +117,7 @@ const AddLogEntry: React.FunctionComponent<Props> = props => (
       isOpen={props.addRepsModalIsOpen}
       close={props.closeDialog}
       onSave={props.onAddEntry}
+      canAddLink={props.canAddLink}
       onAddLink={props.onAddLink}
       onRemoveLink={props.onRemoveLink}
       onChangeLinkText={props.onChangeLinkText}
@@ -139,7 +144,9 @@ const mapStateToProps = (storeState: StoreState): StateProps => {
       comment: storeState.dialogState.comment,
       links: storeState.dialogState.links
     },
-    commentIsShown: storeState.dialogState.commentIsShown
+    commentIsShown: storeState.dialogState.commentIsShown,
+    canAddCustomSet: getCanAddCustomSet(storeState),
+    canAddLink: getCanAddLink(storeState)
   };
 };
 

@@ -9,12 +9,14 @@ import SetsRepsInput from "./SetsRepsInput";
 type Props = {
   onInputModeChange: (inputMode: InputMode) => void;
   onLiftLogRepsChange: (index: number, newValue: string) => void;
+  canAddCustomSet: boolean;
   onAddCustomSet: () => void;
   onRemoveCustomSet: (index: number) => void;
   onNumberOfSetsChange: (newValue: string) => void;
   onNumberOfRepsChange: (newValue: string) => void;
   liftLogReps: LiftLogEntryReps;
 
+  canAddLink: boolean;
   onAddLink: () => void;
   onRemoveLink: (index: number) => void;
   onChangeLinkText: (index: number, newText: string) => void;
@@ -47,6 +49,7 @@ const AddReps: React.FunctionComponent<Props> = props => (
       ) : (
         <CustomSetsInput
           customSetsStrings={props.liftLogReps.customSetsStrings}
+          canAddSet={props.canAddCustomSet}
           onAdd={props.onAddCustomSet}
           onRemove={props.onRemoveCustomSet}
           onChange={props.onLiftLogRepsChange}
@@ -54,6 +57,7 @@ const AddReps: React.FunctionComponent<Props> = props => (
       )}
     </div>
     <LiftInfoContainer
+      canAddLink={props.canAddLink}
       onAddLink={props.onAddLink}
       onRemoveLink={props.onRemoveLink}
       onChangeLinkText={props.onChangeLinkText}

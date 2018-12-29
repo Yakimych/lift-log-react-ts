@@ -4,6 +4,7 @@ import {
   DEFAULT_REP_VALUE,
   DEFAULT_SET_VALUE,
   formatSet,
+  MAX_REP_SET_VALUE,
   toValidNumberOfReps,
   toValidSet
 } from "../utils/LiftUtils";
@@ -30,7 +31,13 @@ const getSetsFromNumberSetsReps = (
   reps: number
 ): ReadonlyArray<Set> => Array<Set>(sets).fill({ reps, rpe: null });
 
-const maxNumberOfLinks = 3;
+export const canAddCustomSet = (numberOfCustomSets: number) =>
+  numberOfCustomSets < MAX_REP_SET_VALUE;
+
+export const MAX_NUMBER_OF_LINKS = 3;
+
+export const canAddLink = (numberOfLinks: number) =>
+  numberOfLinks < MAX_NUMBER_OF_LINKS;
 
 export const dialogReducer = (
   state: DialogState = initialState,
@@ -88,6 +95,10 @@ export const dialogReducer = (
       };
     }
     case getType(actions.addCustomSet): {
+      if (!canAddCustomSet(state.customSets.length)) {
+        return { ...state };
+      }
+
       const lastCustomSet = state.customSets[state.customSets.length - 1];
       const customSets = [...state.customSets, lastCustomSet];
       return {
@@ -132,12 +143,13 @@ export const dialogReducer = (
         comment: action.payload
       };
     case getType(actions.addLink):
+      if (!canAddLink(state.links.length)) {
+        return { ...state };
+      }
+
       return {
         ...state,
-        links:
-          state.links.length < maxNumberOfLinks
-            ? [...state.links, { text: "", url: "" }]
-            : state.links
+        links: [...state.links, { text: "", url: "" }]
       };
     case getType(actions.removeLink):
       return {

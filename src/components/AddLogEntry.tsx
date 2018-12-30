@@ -2,13 +2,7 @@ import * as moment from "moment";
 import * as React from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { connect } from "react-redux";
 import { Button } from "reactstrap";
-import { Dispatch } from "redux";
-import { actions as dialogActions } from "../redux/dialogActions";
-import { actions as newEntryActions } from "../redux/newEntryActions";
-import { getCanAddCustomSet, getCanAddLink } from "../redux/selectors";
-import { StoreState } from "../redux/storeState";
 import { InputMode, SetsReps } from "../types/LiftTypes";
 import { formatRepsSets } from "../utils/LiftUtils";
 import "./AddLogEntry.css";
@@ -22,7 +16,7 @@ import {
   LinksStateProps
 } from "./AddRepsModal/LiftInfo/Links";
 
-type StateProps = {
+export type AddLogEntryStateProps = {
   name: string;
   date: moment.Moment | null;
   weightLifted: number | null;
@@ -33,7 +27,7 @@ type StateProps = {
 } & LinksStateProps &
   CommentStateProps;
 
-type DispatchProps = {
+export type AddLogEntryDispatchProps = {
   changeName: (name: string) => void;
   changeDate: (dateString: moment.Moment | null) => void;
   changeWeightLifted: (weightLiftedString: string) => void;
@@ -54,12 +48,14 @@ type OwnProps = {
   onAddEntry: () => void;
 };
 
-type Props = StateProps & DispatchProps & OwnProps;
+export type AddLogEntryProps = AddLogEntryStateProps &
+  AddLogEntryDispatchProps &
+  OwnProps;
 
 const canAddEntry = (name: string, weightLifted: number | null): boolean =>
   name.length > 0 && weightLifted !== null;
 
-const AddLogEntry: React.FunctionComponent<Props> = props => (
+const AddLogEntry: React.FunctionComponent<AddLogEntryProps> = props => (
   <div className="add-log-entry">
     <div className="row">
       <div className="col">
@@ -132,63 +128,4 @@ const AddLogEntry: React.FunctionComponent<Props> = props => (
   </div>
 );
 
-const mapStateToProps = (storeState: StoreState): StateProps => {
-  return {
-    addRepsModalIsOpen: storeState.dialogState.isOpen,
-    date: storeState.newEntryState.date,
-    name: storeState.newEntryState.name,
-    weightLifted: storeState.newEntryState.weightLifted,
-    weightLiftedStringValue: storeState.newEntryState.weightLiftedString,
-    setsReps: {
-      mode: storeState.dialogState.inputMode,
-      numberOfSets: storeState.dialogState.numberOfSets,
-      numberOfReps: storeState.dialogState.numberOfReps,
-      customSetsStrings: storeState.dialogState.customSetsStrings
-    },
-    comment: storeState.dialogState.comment,
-    hasComment: storeState.dialogState.commentIsShown,
-    links: storeState.dialogState.links,
-    canAddLink: getCanAddLink(storeState),
-    canAddCustomSet: getCanAddCustomSet(storeState)
-  };
-};
-
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
-  return {
-    changeName: (newName: string) =>
-      dispatch(newEntryActions.changeName(newName)),
-    changeDate: (newDate: moment.Moment | null) =>
-      dispatch(newEntryActions.changeDate(newDate)),
-    changeWeightLifted: (newWeightLiftedString: string) =>
-      dispatch(newEntryActions.changeWeightLifted(newWeightLiftedString)),
-    openDialog: () => dispatch(dialogActions.open()),
-    closeDialog: () => dispatch(dialogActions.close()),
-
-    onInputModeChange: (inputMode: InputMode) =>
-      dispatch(dialogActions.setInputMode(inputMode)),
-    onLiftLogRepsChange: (index: number, newValue: string) =>
-      dispatch(dialogActions.changeCustomSet({ index, value: newValue })),
-    onAddCustomSet: () => dispatch(dialogActions.addCustomSet()),
-    onRemoveCustomSet: (index: number) =>
-      dispatch(dialogActions.removeCustomSet(index)),
-    onNumberOfSetsChange: (newValue: string) =>
-      dispatch(dialogActions.setNumberOfSets(newValue)),
-    onNumberOfRepsChange: (newValue: string) =>
-      dispatch(dialogActions.setNumberOfReps(newValue)),
-
-    onAddLink: () => dispatch(dialogActions.addLink()),
-    onRemoveLink: (index: number) => dispatch(dialogActions.removeLink(index)),
-    onChangeLinkText: (index: number, newText: string) =>
-      dispatch(dialogActions.changeLinkText({ index, newText })),
-    onChangeLinkUrl: (index: number, newUrl: string) =>
-      dispatch(dialogActions.changeLinkUrl({ index, newUrl })),
-    onCommentChange: (newValue: string) =>
-      dispatch(dialogActions.changeComment(newValue)),
-    onOpenComment: () => dispatch(dialogActions.showComment())
-  };
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AddLogEntry);
+export default AddLogEntry;

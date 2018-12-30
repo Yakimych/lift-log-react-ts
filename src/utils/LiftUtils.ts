@@ -1,4 +1,4 @@
-import { InputMode, Set, SetsRepsInput } from "../types/LiftTypes";
+import { InputMode, Set, SetsReps } from "../types/LiftTypes";
 import { toValidPositiveInteger, toValidRpe } from "./NumberUtils";
 
 export const MAX_REP_SET_VALUE = 30;
@@ -38,12 +38,12 @@ export function formatSets(sets: ReadonlyArray<Set>): string {
   return sets.map(s => s.reps).join("-");
 }
 
-export function formatRepsSets(setsReps: SetsRepsInput): string {
+export function formatRepsSets(setsReps: SetsReps): string {
   const sets = getSets(setsReps);
   return formatSets(sets);
 }
 
-export const getSets = (setsReps: SetsRepsInput): ReadonlyArray<Set> => {
+export const getSets = (setsReps: SetsReps): ReadonlyArray<Set> => {
   const { numberOfSets, numberOfReps, customSetsStrings, mode } = setsReps;
 
   return mode === InputMode.SetsReps

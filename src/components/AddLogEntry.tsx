@@ -9,10 +9,18 @@ import { actions as dialogActions } from "../redux/dialogActions";
 import { actions as newEntryActions } from "../redux/newEntryActions";
 import { getCanAddCustomSet, getCanAddLink } from "../redux/selectors";
 import { StoreState } from "../redux/storeState";
-import { InputMode, LiftLogEntryReps } from "../types/LiftTypes";
+import { InputMode, SetsReps } from "../types/LiftTypes";
 import { formatRepsSets } from "../utils/LiftUtils";
 import "./AddLogEntry.css";
 import AddRepsModal from "./AddRepsModal";
+import {
+  CommentDispatchProps,
+  CommentStateProps
+} from "./AddRepsModal/LiftInfo/Comment";
+import {
+  LinksDispatchProps,
+  LinksStateProps
+} from "./AddRepsModal/LiftInfo/Links";
 
 type StateProps = {
   name: string;
@@ -20,11 +28,10 @@ type StateProps = {
   weightLifted: number | null;
   weightLiftedStringValue: string;
   addRepsModalIsOpen: boolean;
-  liftLogReps: LiftLogEntryReps;
-  commentIsShown: boolean;
+  setsReps: SetsReps;
   canAddCustomSet: boolean;
-  canAddLink: boolean;
-};
+} & LinksStateProps &
+  CommentStateProps;
 
 type DispatchProps = {
   changeName: (name: string) => void;
@@ -39,14 +46,8 @@ type DispatchProps = {
   onRemoveCustomSet: (index: number) => void;
   onNumberOfSetsChange: (newValue: string) => void;
   onNumberOfRepsChange: (newValue: string) => void;
-
-  onAddLink: () => void;
-  onRemoveLink: (index: number) => void;
-  onChangeLinkText: (index: number, newText: string) => void;
-  onChangeLinkUrl: (index: number, newUrl: string) => void;
-  onCommentChange: (newValue: string) => void;
-  onOpenComment: () => void;
-};
+} & LinksDispatchProps &
+  CommentDispatchProps;
 
 type OwnProps = {
   disabled: boolean;
@@ -92,7 +93,7 @@ const AddLogEntry: React.FunctionComponent<Props> = props => (
         />
       </div>
       <div className="col d-flex align-items-center">
-        <span className="mr-2">{formatRepsSets(props.liftLogReps)}</span>
+        <span className="mr-2">{formatRepsSets(props.setsReps)}</span>
         <Button
           disabled={
             props.disabled || !canAddEntry(props.name, props.weightLifted)
@@ -113,18 +114,20 @@ const AddLogEntry: React.FunctionComponent<Props> = props => (
       onRemoveCustomSet={props.onRemoveCustomSet}
       onNumberOfSetsChange={props.onNumberOfSetsChange}
       onNumberOfRepsChange={props.onNumberOfRepsChange}
-      liftLogReps={props.liftLogReps}
+      setsReps={props.setsReps}
       isOpen={props.addRepsModalIsOpen}
       close={props.closeDialog}
       onSave={props.onAddEntry}
+      links={props.links}
       canAddLink={props.canAddLink}
       onAddLink={props.onAddLink}
       onRemoveLink={props.onRemoveLink}
       onChangeLinkText={props.onChangeLinkText}
       onChangeLinkUrl={props.onChangeLinkUrl}
+      comment={props.comment}
+      hasComment={props.hasComment}
       onCommentChange={props.onCommentChange}
       onOpenComment={props.onOpenComment}
-      commentIsShown={props.commentIsShown}
     />
   </div>
 );
@@ -136,17 +139,17 @@ const mapStateToProps = (storeState: StoreState): StateProps => {
     name: storeState.newEntryState.name,
     weightLifted: storeState.newEntryState.weightLifted,
     weightLiftedStringValue: storeState.newEntryState.weightLiftedString,
-    liftLogReps: {
+    setsReps: {
       mode: storeState.dialogState.inputMode,
       numberOfSets: storeState.dialogState.numberOfSets,
       numberOfReps: storeState.dialogState.numberOfReps,
-      customSetsStrings: storeState.dialogState.customSetsStrings,
-      comment: storeState.dialogState.comment,
-      links: storeState.dialogState.links
+      customSetsStrings: storeState.dialogState.customSetsStrings
     },
-    commentIsShown: storeState.dialogState.commentIsShown,
-    canAddCustomSet: getCanAddCustomSet(storeState),
-    canAddLink: getCanAddLink(storeState)
+    comment: storeState.dialogState.comment,
+    hasComment: storeState.dialogState.commentIsShown,
+    links: storeState.dialogState.links,
+    canAddLink: getCanAddLink(storeState),
+    canAddCustomSet: getCanAddCustomSet(storeState)
   };
 };
 

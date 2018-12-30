@@ -1,36 +1,25 @@
 import * as React from "react";
-import { LiftInfo } from "../../../types/LiftTypes";
-import Comment from "./Comment";
-import Links from "./Links";
+import Comment, { CommentProps } from "./Comment";
+import Links, { LinksProps } from "./Links";
 
-type Props = {
-  liftInfo: LiftInfo;
-  canAddLink: boolean;
-  onAddLink: () => void;
-  onRemoveLink: (index: number) => void;
-  onChangeLinkText: (index: number, newText: string) => void;
-  onChangeLinkUrl: (index: number, newUrl: string) => void;
-  onCommentChange: (newValue: string) => void;
-  onOpenComment: () => void;
-  commentIsShown: boolean;
-};
+type Props = CommentProps & LinksProps;
 
 const LiftInfoContainer: React.FunctionComponent<Props> = props => {
   return (
     <div className="d-flex flex-column align-items-start">
       <Comment
         onCommentChange={props.onCommentChange}
-        commentValue={props.liftInfo.comment}
+        comment={props.comment}
         onOpenComment={props.onOpenComment}
-        hasComment={props.commentIsShown}
+        hasComment={props.hasComment}
       />
       <Links
-        links={props.liftInfo.links}
-        canAddMoreLinks={props.canAddLink}
-        onLinkAdd={props.onAddLink}
-        onLinkRemove={props.onRemoveLink}
-        onLinkTextChange={props.onChangeLinkText}
-        onLinkUrlChange={props.onChangeLinkUrl}
+        links={props.links}
+        canAddLink={props.canAddLink}
+        onAddLink={props.onAddLink}
+        onRemoveLink={props.onRemoveLink}
+        onChangeLinkText={props.onChangeLinkText}
+        onChangeLinkUrl={props.onChangeLinkUrl}
       />
     </div>
   );

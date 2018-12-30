@@ -2,7 +2,7 @@ import { AxiosError } from "axios";
 import * as moment from "moment";
 import { ThunkAction, ThunkDispatch } from "redux-thunk";
 import LiftLogService from "../../services/LiftLogService";
-import { LiftLogEntry, SetsRepsInput } from "../../types/LiftTypes";
+import { LiftLogEntry, SetsReps } from "../../types/LiftTypes";
 import { getSets } from "../../utils/LiftUtils";
 import { actions as dialogActions, DialogAction } from "../dialogActions";
 import { fetchLiftLogActions, LiftLogAction } from "../liftLogActions";
@@ -48,7 +48,7 @@ export const addLogEntry = (
 ) => {
   const state = getState();
 
-  const setsRepsInput: SetsRepsInput = {
+  const setsReps: SetsReps = {
     mode: state.dialogState.inputMode,
     numberOfSets: state.dialogState.numberOfSets,
     numberOfReps: state.dialogState.numberOfReps,
@@ -59,7 +59,7 @@ export const addLogEntry = (
     date: state.newEntryState.date || moment(),
     name: state.newEntryState.name,
     weightLifted: state.newEntryState.weightLifted,
-    sets: getSets(setsRepsInput),
+    sets: getSets(setsReps),
     comment: state.dialogState.comment,
     links: state.dialogState.links.filter(link => !!link.url)
   };

@@ -1,14 +1,16 @@
 import * as React from "react";
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
-import { InputMode, LiftLogEntryReps } from "../../types/LiftTypes";
+import { InputMode, SetsReps } from "../../types/LiftTypes";
 import AddReps from "./AddReps";
+import { CommentProps } from "./LiftInfo/Comment";
+import { LinksProps } from "./LiftInfo/Links";
 import "./style.css";
 
 type Props = {
   isOpen: boolean;
   close: () => void;
   onSave: () => void;
-  liftLogReps: LiftLogEntryReps;
+  setsReps: SetsReps;
 
   onInputModeChange: (inputMode: InputMode) => void;
   onLiftLogRepsChange: (index: number, newValue: string) => void;
@@ -17,16 +19,8 @@ type Props = {
   onRemoveCustomSet: (index: number) => void;
   onNumberOfSetsChange: (newValue: string) => void;
   onNumberOfRepsChange: (newValue: string) => void;
-
-  canAddLink: boolean;
-  onAddLink: () => void;
-  onRemoveLink: (index: number) => void;
-  onChangeLinkText: (index: number, newText: string) => void;
-  onChangeLinkUrl: (index: number, newUrl: string) => void;
-  onCommentChange: (newValue: string) => void;
-  onOpenComment: () => void;
-  commentIsShown: boolean;
-};
+} & LinksProps &
+  CommentProps;
 
 const AddRepsModal: React.FunctionComponent<Props> = props => {
   return (
@@ -41,15 +35,17 @@ const AddRepsModal: React.FunctionComponent<Props> = props => {
           onRemoveCustomSet={props.onRemoveCustomSet}
           onNumberOfSetsChange={props.onNumberOfSetsChange}
           onNumberOfRepsChange={props.onNumberOfRepsChange}
-          liftLogReps={props.liftLogReps}
+          setsReps={props.setsReps}
+          links={props.links}
           canAddLink={props.canAddLink}
           onAddLink={props.onAddLink}
           onRemoveLink={props.onRemoveLink}
           onChangeLinkText={props.onChangeLinkText}
           onChangeLinkUrl={props.onChangeLinkUrl}
+          comment={props.comment}
+          hasComment={props.hasComment}
           onCommentChange={props.onCommentChange}
           onOpenComment={props.onOpenComment}
-          commentIsShown={props.commentIsShown}
         />
       </ModalBody>
       <ModalFooter>

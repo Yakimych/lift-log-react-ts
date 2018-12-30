@@ -2,15 +2,20 @@ import * as React from "react";
 import AnimateHeight from "react-animate-height";
 import { Button, Fade, Input } from "reactstrap";
 
-type Props = {
+export type CommentStateProps = {
+  comment: string;
   hasComment: boolean;
-  onCommentChange: (newValue: string) => void;
-  onOpenComment: () => void;
-  commentValue: string;
 };
 
-const Comment: React.FunctionComponent<Props> = props => {
-  const { hasComment, onOpenComment, onCommentChange, commentValue } = props;
+export type CommentDispatchProps = {
+  onCommentChange: (newValue: string) => void;
+  onOpenComment: () => void;
+};
+
+export type CommentProps = CommentStateProps & CommentDispatchProps;
+
+const Comment: React.FunctionComponent<CommentProps> = props => {
+  const { hasComment, onOpenComment, onCommentChange, comment } = props;
 
   return (
     <>
@@ -28,7 +33,7 @@ const Comment: React.FunctionComponent<Props> = props => {
           <Input
             maxLength={400}
             type="textarea"
-            value={commentValue}
+            value={comment}
             onChange={e => onCommentChange(e.target.value)}
           />
         </Fade>

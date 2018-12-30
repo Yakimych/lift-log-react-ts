@@ -27,14 +27,12 @@ enum InputMode {
   CustomReps
 }
 
-type SetsRepsInput = {
+type SetsReps = {
   mode: InputMode;
   numberOfSets: number;
   numberOfReps: number;
   customSetsStrings: ReadonlyArray<string>;
 };
-
-type LiftLogEntryReps = SetsRepsInput & LiftInfo;
 
 type LiftLog = {
   name: string;
@@ -46,8 +44,7 @@ export {
   LiftLog,
   LiftLogEntry,
   Set,
-  LiftLogEntryReps,
-  SetsRepsInput,
+  SetsReps,
   LiftInfo,
   InputMode,
   LiftInfoLink

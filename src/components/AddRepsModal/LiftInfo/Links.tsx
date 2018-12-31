@@ -8,7 +8,7 @@ import {
   InputGroup,
   InputGroupAddon
 } from "reactstrap";
-import { MAX_NUMBER_OF_LINKS } from "../../../redux/dialogReducer";
+import { MAX_NUMBER_OF_LINKS } from "../../../store/dialogReducer";
 import { LiftInfoLink } from "../../../types/LiftTypes";
 
 export type LinksStateProps = {

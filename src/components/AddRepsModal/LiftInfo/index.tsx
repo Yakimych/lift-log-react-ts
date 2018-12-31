@@ -1,9 +1,9 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
-import { actions as dialogActions } from "../../../redux/dialogActions";
-import { getCanAddLink } from "../../../redux/selectors";
-import { AppState } from "../../../redux/types";
+import { actions as dialogActions } from "../../../store/dialogActions";
+import { getCanAddLink } from "../../../store/selectors";
+import { AppState } from "../../../store/types";
 import Comment, { CommentDispatchProps, CommentStateProps } from "./Comment";
 import Links, { LinksDispatchProps, LinksStateProps } from "./Links";
 

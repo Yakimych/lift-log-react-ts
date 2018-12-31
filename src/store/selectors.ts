@@ -1,4 +1,4 @@
-import { canAddCustomSet, canAddLink } from "../redux/dialogReducer";
+import { canAddCustomSet, canAddLink } from "../store/dialogReducer";
 import { AppState } from "./types";
 
 export const getCanAddCustomSet = (state: AppState) =>

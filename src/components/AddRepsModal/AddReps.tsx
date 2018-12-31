@@ -1,9 +1,9 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
-import { actions as dialogActions } from "../../redux/dialogActions";
-import { getCanAddCustomSet, getSetsReps } from "../../redux/selectors";
-import { AppState } from "../../redux/types";
+import { actions as dialogActions } from "../../store/dialogActions";
+import { getCanAddCustomSet, getSetsReps } from "../../store/selectors";
+import { AppState } from "../../store/types";
 import { InputMode, SetsReps } from "../../types/LiftTypes";
 import { formatRepsSets } from "../../utils/LiftUtils";
 import CustomSetsInput from "./CustomSetsInput";

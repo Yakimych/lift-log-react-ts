@@ -1,13 +1,13 @@
 import { canAddCustomSet, canAddLink } from "../redux/dialogReducer";
-import { StoreState } from "../redux/storeState";
+import { AppState } from "./types";
 
-export const getCanAddCustomSet = (state: StoreState) =>
+export const getCanAddCustomSet = (state: AppState) =>
   canAddCustomSet(state.dialogState.customSets.length);
 
-export const getCanAddLink = (state: StoreState) =>
+export const getCanAddLink = (state: AppState) =>
   canAddLink(state.dialogState.links.length);
 
-export const getSetsReps = (state: StoreState) => ({
+export const getSetsReps = (state: AppState) => ({
   mode: state.dialogState.inputMode,
   numberOfSets: state.dialogState.numberOfSets,
   numberOfReps: state.dialogState.numberOfReps,

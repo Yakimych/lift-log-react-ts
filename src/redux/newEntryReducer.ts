@@ -2,7 +2,7 @@ import * as moment from "moment";
 import { toValidFloatOrNull } from "src/utils/NumberUtils";
 import { getType } from "typesafe-actions";
 import { actions, NewEntryAction } from "./newEntryActions";
-import { NewEntryState } from "./storeState";
+import { NewEntryState } from "./types";
 
 const initialState: NewEntryState = {
   date: moment(),

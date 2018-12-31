@@ -2,7 +2,7 @@ import { AnyAction } from "redux";
 import { InputMode } from "../../types/LiftTypes";
 import { actions } from "../dialogActions";
 import { dialogReducer } from "../dialogReducer";
-import { DialogState } from "../storeState";
+import { DialogState } from "../types";
 
 // Let it default to the reducer's initialState
 const emptyInitialState = (undefined as unknown) as DialogState;

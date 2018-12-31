@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { actions as dialogActions } from "../../../redux/dialogActions";
 import { getCanAddLink } from "../../../redux/selectors";
-import { StoreState } from "../../../redux/storeState";
+import { AppState } from "../../../redux/types";
 import Comment, { CommentDispatchProps, CommentStateProps } from "./Comment";
 import Links, { LinksDispatchProps, LinksStateProps } from "./Links";
 
@@ -33,7 +33,7 @@ const LiftInfoContainer: React.FunctionComponent<Props> = props => {
   );
 };
 
-const mapStateToProps = (state: StoreState): StateProps => ({
+const mapStateToProps = (state: AppState): StateProps => ({
   comment: state.dialogState.comment,
   hasComment: state.dialogState.commentIsShown,
   links: state.dialogState.links,

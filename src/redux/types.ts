@@ -30,7 +30,7 @@ export type DialogState = {
   links: ReadonlyArray<LiftInfoLink>;
 };
 
-export type StoreState = {
+export type AppState = {
   liftLogState: LiftLogState;
   newEntryState: NewEntryState;
   dialogState: DialogState;

@@ -9,7 +9,7 @@ import {
   toValidSet
 } from "../utils/LiftUtils";
 import { actions, DialogAction } from "./dialogActions";
-import { DialogState } from "./storeState";
+import { DialogState } from "./types";
 
 const initialState: DialogState = {
   isOpen: false,

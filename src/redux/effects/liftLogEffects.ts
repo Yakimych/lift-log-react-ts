@@ -7,7 +7,7 @@ import { getSets } from "../../utils/LiftUtils";
 import { actions as dialogActions, DialogAction } from "../dialogActions";
 import { fetchLiftLogActions, LiftLogAction } from "../liftLogActions";
 import { actions, NewEntryAction } from "../newEntryActions";
-import { StoreState } from "../storeState";
+import { AppState } from "../types";
 
 const getErrorMessage = (error: AxiosError, logName: string) =>
   !!error.response && error.response.status === 404
@@ -16,9 +16,9 @@ const getErrorMessage = (error: AxiosError, logName: string) =>
 
 export const reloadLifts = (
   logName: string
-): ThunkAction<void, StoreState, LiftLogService, LiftLogAction> => (
-  dispatch: ThunkDispatch<StoreState, LiftLogService, LiftLogAction>,
-  getState: () => StoreState,
+): ThunkAction<void, AppState, LiftLogService, LiftLogAction> => (
+  dispatch: ThunkDispatch<AppState, LiftLogService, LiftLogAction>,
+  getState: () => AppState,
   liftLogService: LiftLogService
 ) => {
   dispatch(fetchLiftLogActions.request());
@@ -34,16 +34,16 @@ export const addLogEntry = (
   logName: string
 ): ThunkAction<
   Promise<any>,
-  StoreState,
+  AppState,
   LiftLogService,
   NewEntryAction | DialogAction
 > => (
   dispatch: ThunkDispatch<
-    StoreState,
+    AppState,
     LiftLogService,
     NewEntryAction | DialogAction
   >,
-  getState: () => StoreState,
+  getState: () => AppState,
   liftLogService: LiftLogService
 ) => {
   const state = getState();

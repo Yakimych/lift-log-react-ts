@@ -6,7 +6,7 @@ import { DialogAction } from "../redux/dialogActions";
 import { addLogEntry, reloadLifts } from "../redux/effects/liftLogEffects";
 import { LiftLogAction } from "../redux/liftLogActions";
 import { NewEntryAction } from "../redux/newEntryActions";
-import { StoreState } from "../redux/storeState";
+import { AppState } from "../redux/types";
 import LiftLogService from "../services/LiftLogService";
 import { LiftLogEntry } from "./../types/LiftTypes";
 import "./App.css";
@@ -75,7 +75,7 @@ class App extends React.Component<Props> {
     !!props.location ? props.location.pathname.substr(1) : "";
 }
 
-const mapStateToProps = (state: StoreState): StateProps => ({
+const mapStateToProps = (state: AppState): StateProps => ({
   isLoading: state.liftLogState.isLoading,
   networkErrorOccurred: state.liftLogState.networkErrorOccured,
   errorMessage: state.liftLogState.errorMessage || "",
@@ -85,7 +85,7 @@ const mapStateToProps = (state: StoreState): StateProps => ({
 
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<
-    StoreState,
+    AppState,
     LiftLogService,
     LiftLogAction | NewEntryAction | DialogAction
   >

@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { actions as dialogActions } from "../../redux/dialogActions";
 import { getCanAddCustomSet, getSetsReps } from "../../redux/selectors";
-import { StoreState } from "../../redux/storeState";
+import { AppState } from "../../redux/types";
 import { InputMode, SetsReps } from "../../types/LiftTypes";
 import { formatRepsSets } from "../../utils/LiftUtils";
 import CustomSetsInput from "./CustomSetsInput";
@@ -61,7 +61,7 @@ const AddReps: React.FunctionComponent<Props> = props => (
   </div>
 );
 
-const mapStateToProps = (state: StoreState): StateProps => ({
+const mapStateToProps = (state: AppState): StateProps => ({
   setsReps: getSetsReps(state),
   canAddCustomSet: getCanAddCustomSet(state)
 });

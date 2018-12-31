@@ -8,7 +8,7 @@ import { Dispatch } from "redux";
 import { actions as dialogActions } from "../redux/dialogActions";
 import { actions as newEntryActions } from "../redux/newEntryActions";
 import { getSetsReps } from "../redux/selectors";
-import { StoreState } from "../redux/storeState";
+import { AppState } from "../redux/types";
 import { SetsReps } from "../types/LiftTypes";
 import { formatRepsSets } from "../utils/LiftUtils";
 import "./AddLogEntry.css";
@@ -96,7 +96,7 @@ const AddLogEntry: React.FunctionComponent<AddLogEntryProps> = props => (
   </div>
 );
 
-const mapStateToProps = (state: StoreState): StateProps => ({
+const mapStateToProps = (state: AppState): StateProps => ({
   setsReps: getSetsReps(state),
   addRepsModalIsOpen: state.dialogState.isOpen,
   date: state.newEntryState.date,

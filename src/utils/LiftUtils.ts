@@ -1,5 +1,5 @@
-import { InputMode, Set, SetsRepsInput } from "../types/LiftTypes";
-import { toValidPositiveInteger, toValidRpe } from "./NumberUtils";
+import { InputMode, Set, SetsReps } from "../types/LiftTypes";
+import { toValidPositiveInteger, toValidRpe } from "./numberUtils";
 
 export const MAX_REP_SET_VALUE = 30;
 export const DEFAULT_SET_VALUE = 3;
@@ -22,15 +22,12 @@ export const toValidSet = (repsWithRpe: string): Set => {
   return { reps: validRepNumber, rpe };
 };
 
-export const allRepsAreEqualAndWithoutRpes = (sets: Set[]) =>
+export const allRepsAreEqualAndWithoutRpes = (sets: ReadonlyArray<Set>) =>
   sets.length !== 0
     ? sets.every(s => s.reps === sets[0].reps && s.rpe === null)
     : true;
 
-export const noSetsHaveRpe = (sets: Set[]) =>
-  sets.length !== 0 ? sets.every(s => s.reps === sets[0].reps) : true;
-
-export function formatSets(sets: Set[]): string {
+export function formatSets(sets: ReadonlyArray<Set>): string {
   if (allRepsAreEqualAndWithoutRpes(sets)) {
     const reps = sets.length > 0 ? sets[0].reps : 0;
     return `${sets.length}x${reps}`;
@@ -38,17 +35,17 @@ export function formatSets(sets: Set[]): string {
   return sets.map(s => s.reps).join("-");
 }
 
-export function formatRepsSets(setsReps: SetsRepsInput): string {
+export function formatRepsSets(setsReps: SetsReps): string {
   const sets = getSets(setsReps);
   return formatSets(sets);
 }
 
-export const getSets = (setsReps: SetsRepsInput): Set[] => {
-  const { numberOfSets, numberOfReps, customSets, mode } = setsReps;
+export const getSets = (setsReps: SetsReps): ReadonlyArray<Set> => {
+  const { numberOfSets, numberOfReps, customSetsStrings, mode } = setsReps;
 
   return mode === InputMode.SetsReps
     ? Array<Set>(numberOfSets).fill({ reps: numberOfReps, rpe: null })
-    : customSets;
+    : customSetsStrings.map(toValidSet);
 };
 
 export const formatRpe = (rpe: number | null) =>

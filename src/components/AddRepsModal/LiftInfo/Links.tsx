@@ -8,25 +8,27 @@ import {
   InputGroup,
   InputGroupAddon
 } from "reactstrap";
+import { MAX_NUMBER_OF_LINKS } from "../../../store/dialogReducer";
 import { LiftInfoLink } from "../../../types/LiftTypes";
 
-type Props = {
-  onLinkAdd: () => void;
-  onLinkRemove: (index: number) => void;
-  onLinkChange: (
-    event: React.ChangeEvent<HTMLInputElement>,
-    index: number
-  ) => void;
-  links: LiftInfoLink[];
+export type LinksStateProps = {
+  links: ReadonlyArray<LiftInfoLink>;
+  canAddLink: boolean;
 };
 
-const LINK_ELEMENT_HEIGHT = 40;
-const MAX_LINKS_NUMBER = 3;
+export type LinksDispatchProps = {
+  onAddLink: () => void;
+  onRemoveLink: (index: number) => void;
+  onChangeLinkText: (index: number, newTextValue: string) => void;
+  onChangeLinkUrl: (index: number, newUrlValue: string) => void;
+};
 
-const Links = (props: Props) => {
-  const { links, onLinkChange, onLinkAdd, onLinkRemove } = props;
-  const linksContainerHeight = links.length * LINK_ELEMENT_HEIGHT;
-  const canAddMoreLinks = links.length < MAX_LINKS_NUMBER;
+export type LinksProps = LinksStateProps & LinksDispatchProps;
+
+const LINK_ELEMENT_HEIGHT = 40;
+
+const Links: React.FunctionComponent<LinksProps> = props => {
+  const linksContainerHeight = props.links.length * LINK_ELEMENT_HEIGHT;
 
   return (
     <div className="mt-2">
@@ -35,7 +37,7 @@ const Links = (props: Props) => {
         className="pt-1 mx--1"
         height={linksContainerHeight}
       >
-        {links.map((link, index) => (
+        {props.links.map((link, index) => (
           <div
             className="d-flex align-items-start px-1"
             style={{ height: LINK_ELEMENT_HEIGHT }}
@@ -49,7 +51,7 @@ const Links = (props: Props) => {
               maxLength={20}
               placeholder="Display text"
               type="text"
-              onBlur={e => onLinkChange(e, index)}
+              onBlur={e => props.onChangeLinkText(index, e.target.value)}
             />
             <InputGroup>
               <Input
@@ -59,12 +61,12 @@ const Links = (props: Props) => {
                 maxLength={200}
                 placeholder="Url"
                 type="text"
-                onBlur={e => onLinkChange(e, index)}
+                onBlur={e => props.onChangeLinkUrl(index, e.target.value)}
               />
               <InputGroupAddon addonType="append">
                 <div
                   className="input-group-text remove-icon-wrapper"
-                  onClick={() => onLinkRemove(index)}
+                  onClick={() => props.onRemoveLink(index)}
                 >
                   <Octicon icon={getIconByName("x")} />
                 </div>
@@ -74,16 +76,16 @@ const Links = (props: Props) => {
         ))}
       </AnimateHeight>
       <Button
-        onClick={onLinkAdd}
+        onClick={props.onAddLink}
         size="sm"
-        disabled={!canAddMoreLinks}
-        className={links.length > 0 ? "mt-2" : ""}
+        disabled={!props.canAddLink}
+        className={props.links.length > 0 ? "mt-2" : ""}
       >
         Add link
       </Button>
-      <AnimateHeight duration={350} height={canAddMoreLinks ? 0 : "auto"}>
+      <AnimateHeight duration={350} height={props.canAddLink ? 0 : "auto"}>
         <FormText color="muted">
-          You can only add maximum {MAX_LINKS_NUMBER} links.
+          You can only add maximum {MAX_NUMBER_OF_LINKS} links.
         </FormText>
       </AnimateHeight>
     </div>

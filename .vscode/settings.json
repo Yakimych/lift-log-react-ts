@@ -1,5 +1,6 @@
 {
   "prettier.tslintIntegration": true,
   "editor.formatOnSave": true,
-  "editor.tabSize": 2
+  "editor.tabSize": 2,
+  "typescript.preferences.importModuleSpecifier": "relative"
 }

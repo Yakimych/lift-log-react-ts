@@ -13,7 +13,7 @@ type ApiLiftLogEntry = {
   weightLifted: number;
   sets: ApiSet[];
   comment: string;
-  links: LiftInfoLink[];
+  links: ReadonlyArray<LiftInfoLink>;
 };
 
 type ApiLiftLog = {
@@ -23,7 +23,10 @@ type ApiLiftLog = {
 };
 
 class LiftLogService {
-  private liftLogsUrl = `${process.env.REACT_APP_API_BASE_URL}/liftlogs`;
+  private readonly liftLogsUrl: string;
+  constructor(url: string) {
+    this.liftLogsUrl = url;
+  }
 
   public getLiftLog(logName: string): Promise<LiftLog> {
     return axios
@@ -47,7 +50,7 @@ class LiftLogService {
   private toApiLiftLogEntry = (entry: LiftLogEntry): ApiLiftLogEntry => ({
     date: entry.date.toISOString(),
     name: entry.name,
-    weightLifted: entry.weightLifted,
+    weightLifted: entry.weightLifted || 0,
     sets: entry.sets.map(this.toApiSet),
     comment: entry.comment,
     links: entry.links

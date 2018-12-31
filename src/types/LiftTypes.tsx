@@ -12,14 +12,14 @@ type LiftInfoLink = {
 
 type LiftInfo = {
   comment: string;
-  links: LiftInfoLink[];
+  links: ReadonlyArray<LiftInfoLink>;
 };
 
 type LiftLogEntry = {
   date: moment.Moment;
   name: string;
-  weightLifted: number;
-  sets: Set[];
+  weightLifted: number | null;
+  sets: ReadonlyArray<Set>;
 } & LiftInfo;
 
 enum InputMode {
@@ -27,14 +27,12 @@ enum InputMode {
   CustomReps
 }
 
-type SetsRepsInput = {
+type SetsReps = {
   mode: InputMode;
   numberOfSets: number;
   numberOfReps: number;
-  customSets: Set[];
+  customSetsStrings: ReadonlyArray<string>;
 };
-
-type LiftLogEntryReps = SetsRepsInput & LiftInfo;
 
 type LiftLog = {
   name: string;
@@ -46,8 +44,7 @@ export {
   LiftLog,
   LiftLogEntry,
   Set,
-  LiftLogEntryReps,
-  SetsRepsInput,
+  SetsReps,
   LiftInfo,
   InputMode,
   LiftInfoLink

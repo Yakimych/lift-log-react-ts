@@ -4,17 +4,21 @@
   "private": true,
   "dependencies": {
     "@githubprimer/octicons-react": "^8.1.0",
+    "@types/react-redux": "^6.0.9",
     "@types/reactstrap": "^6.4.2",
     "axios": "^0.18.0",
     "bootstrap": "^4.1.3",
-    "react": "^16.6.0",
     "react-animate-height": "^2.0.6",
     "react-datepicker": "^1.8.0",
-    "react-dom": "^16.6.0",
+    "react-dom": "^16.7.0",
+    "react-redux": "^5.1.1",
     "react-router-dom": "^4.3.1",
     "react-scripts-ts": "^4.0.8",
     "react-transition-group": "^2.5.0",
-    "reactstrap": "^6.5.0"
+    "reactstrap": "^6.5.0",
+    "redux": "^4.0.1",
+    "redux-thunk": "^2.3.0",
+    "typesafe-actions": "^2.0.4"
   },
   "scripts": {
     "start": "react-scripts-ts start",
@@ -23,13 +27,14 @@
     "eject": "react-scripts-ts eject"
   },
   "devDependencies": {
-    "@types/jest": "^23.3.9",
+    "@types/jest": "^23.3.10",
     "@types/node": "^10.12.2",
-    "@types/react": "^16.4.18",
-    "@types/react-datepicker": "^1.1.7",
-    "@types/react-dom": "^16.0.9",
+    "@types/react": "^16.7.18",
+    "@types/react-datepicker": "^1.8.0",
+    "@types/react-dom": "^16.0.11",
     "@types/react-router-dom": "^4.3.1",
-    "typescript": "^3.1.6"
+    "react": "^16.7.0",
+    "typescript": "^3.2.2"
   },
   "browserslist": [
     ">0.2%",

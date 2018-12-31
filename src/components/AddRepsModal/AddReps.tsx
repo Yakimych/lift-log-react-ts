@@ -1,93 +1,86 @@
 import * as React from "react";
-import {
-  InputMode,
-  LiftInfo,
-  LiftLogEntryReps,
-  Set
-} from "../../types/LiftTypes";
-import { formatRepsSets } from "../../utils/LiftUtils";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
+import { actions as dialogActions } from "../../store/dialogActions";
+import { getCanAddCustomSet, getSetsReps } from "../../store/selectors";
+import { AppState } from "../../store/types";
+import { InputMode, SetsReps } from "../../types/LiftTypes";
+import { formatRepsSets } from "../../utils/liftUtils";
 import CustomSetsInput from "./CustomSetsInput";
 import InputModeSwitch from "./InputModeSwitch";
 import LiftInfoContainer from "./LiftInfo";
 import SetsRepsInput from "./SetsRepsInput";
 
-type Props = {
-  onLiftLogRepsChange: (liftLogReps: Partial<LiftLogEntryReps>) => void;
-  liftLogReps: LiftLogEntryReps;
+type StateProps = {
+  canAddCustomSet: boolean;
+  setsReps: SetsReps;
 };
 
-class AddReps extends React.Component<Props, {}> {
-  public render() {
-    const {
-      numberOfSets,
-      numberOfReps,
-      customSets,
-      mode
-    } = this.props.liftLogReps;
-    return (
-      <div className="px-1">
-        <div className="d-flex">
-          <InputModeSwitch mode={mode} onChange={this.handleInputModeChange} />
-          <div className="lead ml-4">
-            {formatRepsSets(this.props.liftLogReps)}
-          </div>
-        </div>
-        <div className="my-3">
-          {this.isSetsRepsMode() ? (
-            <SetsRepsInput
-              {...{ numberOfSets, numberOfReps }}
-              onChange={this.handleSetsRepsChange}
-            />
-          ) : (
-            <CustomSetsInput
-              customSets={customSets}
-              onChange={this.handleCustomSetsChange}
-            />
-          )}
-        </div>
-        <LiftInfoContainer
-          onLiftInfoChange={this.onLiftInfoChange}
-          liftInfo={this.props.liftLogReps}
+type DispatchProps = {
+  onInputModeChange: (inputMode: InputMode) => void;
+  onLiftLogRepsChange: (index: number, newValue: string) => void;
+  onAddCustomSet: () => void;
+  onRemoveCustomSet: (index: number) => void;
+  onNumberOfSetsChange: (newValue: string) => void;
+  onNumberOfRepsChange: (newValue: string) => void;
+};
+
+type Props = StateProps & DispatchProps;
+
+const isSetsRepsMode = (props: Props) =>
+  props.setsReps.mode === InputMode.SetsReps;
+
+const AddReps: React.FunctionComponent<Props> = props => (
+  <div className="px-1">
+    <div className="d-flex">
+      <InputModeSwitch
+        mode={props.setsReps.mode}
+        onChange={props.onInputModeChange}
+      />
+      <div className="lead ml-4">{formatRepsSets(props.setsReps)}</div>
+    </div>
+    <div className="my-3">
+      {isSetsRepsMode(props) ? (
+        <SetsRepsInput
+          numberOfSets={props.setsReps.numberOfSets}
+          numberOfReps={props.setsReps.numberOfReps}
+          onNumberOfSetsChange={props.onNumberOfSetsChange}
+          onNumberOfRepsChange={props.onNumberOfRepsChange}
         />
-      </div>
-    );
-  }
-  private onLiftInfoChange = (liftInfo: LiftInfo) =>
-    this.props.onLiftLogRepsChange(liftInfo as LiftLogEntryReps);
+      ) : (
+        <CustomSetsInput
+          customSetsStrings={props.setsReps.customSetsStrings}
+          canAddSet={props.canAddCustomSet}
+          onAdd={props.onAddCustomSet}
+          onRemove={props.onRemoveCustomSet}
+          onChange={props.onLiftLogRepsChange}
+        />
+      )}
+    </div>
+    <LiftInfoContainer />
+  </div>
+);
 
-  private handleSetsRepsChange = (numberOfSets: number, numberOfReps: number) =>
-    this.props.onLiftLogRepsChange({
-      numberOfSets,
-      numberOfReps
-    });
+const mapStateToProps = (state: AppState): StateProps => ({
+  setsReps: getSetsReps(state),
+  canAddCustomSet: getCanAddCustomSet(state)
+});
 
-  private handleCustomSetsChange = (customSets: Set[]) =>
-    this.props.onLiftLogRepsChange({ customSets } as LiftLogEntryReps);
+const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
+  onInputModeChange: (inputMode: InputMode) =>
+    dispatch(dialogActions.setInputMode(inputMode)),
+  onLiftLogRepsChange: (index: number, newValue: string) =>
+    dispatch(dialogActions.changeCustomSet({ index, value: newValue })),
+  onAddCustomSet: () => dispatch(dialogActions.addCustomSet()),
+  onRemoveCustomSet: (index: number) =>
+    dispatch(dialogActions.removeCustomSet(index)),
+  onNumberOfSetsChange: (newValue: string) =>
+    dispatch(dialogActions.setNumberOfSets(newValue)),
+  onNumberOfRepsChange: (newValue: string) =>
+    dispatch(dialogActions.setNumberOfReps(newValue))
+});
 
-  private handleInputModeChange = (mode: InputMode) => {
-    if (mode === InputMode.SetsReps) {
-      this.props.onLiftLogRepsChange({
-        mode: InputMode.SetsReps
-      } as LiftLogEntryReps);
-    } else {
-      const { numberOfSets, numberOfReps, customSets } = this.props.liftLogReps;
-      const sets =
-        customSets.length === 0
-          ? this.getSetsFromNumberSetsReps(numberOfSets, numberOfReps)
-          : customSets;
-
-      this.props.onLiftLogRepsChange({
-        mode: InputMode.CustomReps,
-        customSets: sets
-      } as LiftLogEntryReps);
-    }
-  };
-
-  private isSetsRepsMode = () =>
-    this.props.liftLogReps.mode === InputMode.SetsReps;
-
-  private getSetsFromNumberSetsReps = (sets: number, reps: number): Set[] =>
-    Array<Set>(sets).fill({ reps, rpe: null });
-}
-
-export default AddReps;
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(AddReps);

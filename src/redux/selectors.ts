@@ -6,3 +6,10 @@ export const getCanAddCustomSet = (state: StoreState) =>
 
 export const getCanAddLink = (state: StoreState) =>
   canAddLink(state.dialogState.links.length);
+
+export const getSetsReps = (state: StoreState) => ({
+  mode: state.dialogState.inputMode,
+  numberOfSets: state.dialogState.numberOfSets,
+  numberOfReps: state.dialogState.numberOfReps,
+  customSetsStrings: state.dialogState.customSetsStrings
+});

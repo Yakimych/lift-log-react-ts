@@ -2,55 +2,41 @@ import * as moment from "moment";
 import * as React from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { connect } from "react-redux";
 import { Button } from "reactstrap";
-import { InputMode, SetsReps } from "../types/LiftTypes";
+import { Dispatch } from "redux";
+import { actions as dialogActions } from "../redux/dialogActions";
+import { actions as newEntryActions } from "../redux/newEntryActions";
+import { getSetsReps } from "../redux/selectors";
+import { StoreState } from "../redux/storeState";
+import { SetsReps } from "../types/LiftTypes";
 import { formatRepsSets } from "../utils/LiftUtils";
 import "./AddLogEntry.css";
 import AddRepsModal from "./AddRepsModal";
-import {
-  CommentDispatchProps,
-  CommentStateProps
-} from "./AddRepsModal/LiftInfo/Comment";
-import {
-  LinksDispatchProps,
-  LinksStateProps
-} from "./AddRepsModal/LiftInfo/Links";
 
-export type AddLogEntryStateProps = {
+export type StateProps = {
   name: string;
   date: moment.Moment | null;
   weightLifted: number | null;
   weightLiftedStringValue: string;
   addRepsModalIsOpen: boolean;
   setsReps: SetsReps;
-  canAddCustomSet: boolean;
-} & LinksStateProps &
-  CommentStateProps;
+};
 
-export type AddLogEntryDispatchProps = {
+export type DispatchProps = {
   changeName: (name: string) => void;
   changeDate: (dateString: moment.Moment | null) => void;
   changeWeightLifted: (weightLiftedString: string) => void;
   openDialog: () => void;
   closeDialog: () => void;
-
-  onInputModeChange: (inputMode: InputMode) => void;
-  onLiftLogRepsChange: (index: number, newValue: string) => void;
-  onAddCustomSet: () => void;
-  onRemoveCustomSet: (index: number) => void;
-  onNumberOfSetsChange: (newValue: string) => void;
-  onNumberOfRepsChange: (newValue: string) => void;
-} & LinksDispatchProps &
-  CommentDispatchProps;
+};
 
 type OwnProps = {
   disabled: boolean;
   onAddEntry: () => void;
 };
 
-export type AddLogEntryProps = AddLogEntryStateProps &
-  AddLogEntryDispatchProps &
-  OwnProps;
+export type AddLogEntryProps = StateProps & DispatchProps & OwnProps;
 
 const canAddEntry = (name: string, weightLifted: number | null): boolean =>
   name.length > 0 && weightLifted !== null;
@@ -103,29 +89,34 @@ const AddLogEntry: React.FunctionComponent<AddLogEntryProps> = props => (
       </div>
     </div>
     <AddRepsModal
-      onInputModeChange={props.onInputModeChange}
-      onLiftLogRepsChange={props.onLiftLogRepsChange}
-      canAddCustomSet={props.canAddCustomSet}
-      onAddCustomSet={props.onAddCustomSet}
-      onRemoveCustomSet={props.onRemoveCustomSet}
-      onNumberOfSetsChange={props.onNumberOfSetsChange}
-      onNumberOfRepsChange={props.onNumberOfRepsChange}
-      setsReps={props.setsReps}
       isOpen={props.addRepsModalIsOpen}
       close={props.closeDialog}
       onSave={props.onAddEntry}
-      links={props.links}
-      canAddLink={props.canAddLink}
-      onAddLink={props.onAddLink}
-      onRemoveLink={props.onRemoveLink}
-      onChangeLinkText={props.onChangeLinkText}
-      onChangeLinkUrl={props.onChangeLinkUrl}
-      comment={props.comment}
-      hasComment={props.hasComment}
-      onCommentChange={props.onCommentChange}
-      onOpenComment={props.onOpenComment}
     />
   </div>
 );
 
-export default AddLogEntry;
+const mapStateToProps = (state: StoreState): StateProps => ({
+  setsReps: getSetsReps(state),
+  addRepsModalIsOpen: state.dialogState.isOpen,
+  date: state.newEntryState.date,
+  name: state.newEntryState.name,
+  weightLifted: state.newEntryState.weightLifted,
+  weightLiftedStringValue: state.newEntryState.weightLiftedString
+});
+
+const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
+  changeName: (newName: string) =>
+    dispatch(newEntryActions.changeName(newName)),
+  changeDate: (newDate: moment.Moment | null) =>
+    dispatch(newEntryActions.changeDate(newDate)),
+  changeWeightLifted: (newWeightLiftedString: string) =>
+    dispatch(newEntryActions.changeWeightLifted(newWeightLiftedString)),
+  openDialog: () => dispatch(dialogActions.open()),
+  closeDialog: () => dispatch(dialogActions.close())
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(AddLogEntry);

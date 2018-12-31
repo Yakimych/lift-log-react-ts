@@ -1,24 +1,31 @@
 import * as React from "react";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
+import { actions as dialogActions } from "../../redux/dialogActions";
+import { getCanAddCustomSet, getSetsReps } from "../../redux/selectors";
+import { StoreState } from "../../redux/storeState";
 import { InputMode, SetsReps } from "../../types/LiftTypes";
 import { formatRepsSets } from "../../utils/LiftUtils";
 import CustomSetsInput from "./CustomSetsInput";
 import InputModeSwitch from "./InputModeSwitch";
 import LiftInfoContainer from "./LiftInfo";
-import { CommentProps } from "./LiftInfo/Comment";
-import { LinksProps } from "./LiftInfo/Links";
 import SetsRepsInput from "./SetsRepsInput";
 
-type Props = {
+type StateProps = {
+  canAddCustomSet: boolean;
+  setsReps: SetsReps;
+};
+
+type DispatchProps = {
   onInputModeChange: (inputMode: InputMode) => void;
   onLiftLogRepsChange: (index: number, newValue: string) => void;
-  canAddCustomSet: boolean;
   onAddCustomSet: () => void;
   onRemoveCustomSet: (index: number) => void;
   onNumberOfSetsChange: (newValue: string) => void;
   onNumberOfRepsChange: (newValue: string) => void;
-  setsReps: SetsReps;
-} & LinksProps &
-  CommentProps;
+};
+
+type Props = StateProps & DispatchProps;
 
 const isSetsRepsMode = (props: Props) =>
   props.setsReps.mode === InputMode.SetsReps;
@@ -50,19 +57,30 @@ const AddReps: React.FunctionComponent<Props> = props => (
         />
       )}
     </div>
-    <LiftInfoContainer
-      links={props.links}
-      canAddLink={props.canAddLink}
-      onAddLink={props.onAddLink}
-      onRemoveLink={props.onRemoveLink}
-      onChangeLinkText={props.onChangeLinkText}
-      onChangeLinkUrl={props.onChangeLinkUrl}
-      hasComment={props.hasComment}
-      comment={props.comment}
-      onCommentChange={props.onCommentChange}
-      onOpenComment={props.onOpenComment}
-    />
+    <LiftInfoContainer />
   </div>
 );
 
-export default AddReps;
+const mapStateToProps = (state: StoreState): StateProps => ({
+  setsReps: getSetsReps(state),
+  canAddCustomSet: getCanAddCustomSet(state)
+});
+
+const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
+  onInputModeChange: (inputMode: InputMode) =>
+    dispatch(dialogActions.setInputMode(inputMode)),
+  onLiftLogRepsChange: (index: number, newValue: string) =>
+    dispatch(dialogActions.changeCustomSet({ index, value: newValue })),
+  onAddCustomSet: () => dispatch(dialogActions.addCustomSet()),
+  onRemoveCustomSet: (index: number) =>
+    dispatch(dialogActions.removeCustomSet(index)),
+  onNumberOfSetsChange: (newValue: string) =>
+    dispatch(dialogActions.setNumberOfSets(newValue)),
+  onNumberOfRepsChange: (newValue: string) =>
+    dispatch(dialogActions.setNumberOfReps(newValue))
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(AddReps);

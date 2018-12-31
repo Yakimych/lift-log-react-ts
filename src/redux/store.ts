@@ -1,9 +1,9 @@
 import { applyMiddleware, combineReducers, compose, createStore } from "redux";
 import thunkMiddleware from "redux-thunk";
 import LiftLogService from "../services/LiftLogService";
-import { dialogReducer } from "./dialogReducer";
-import { liftLogReducer } from "./liftLogReducer";
-import { newEntryReducer } from "./newEntryReducer";
+import { dialogReducer } from "../store/dialogReducer";
+import { liftLogReducer } from "../store/liftLogReducer";
+import { newEntryReducer } from "../store/newEntryReducer";
 
 const rootReducer = combineReducers({
   liftLogState: liftLogReducer,

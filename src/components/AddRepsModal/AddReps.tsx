@@ -5,7 +5,7 @@ import { actions as dialogActions } from "../../store/dialogActions";
 import { getCanAddCustomSet, getSetsReps } from "../../store/selectors";
 import { AppState } from "../../store/types";
 import { InputMode, SetsReps } from "../../types/LiftTypes";
-import { formatRepsSets } from "../../utils/LiftUtils";
+import { formatRepsSets } from "../../utils/liftUtils";
 import CustomSetsInput from "./CustomSetsInput";
 import InputModeSwitch from "./InputModeSwitch";
 import LiftInfoContainer from "./LiftInfo";

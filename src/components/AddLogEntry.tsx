@@ -10,7 +10,7 @@ import { actions as newEntryActions } from "../store/newEntryActions";
 import { getSetsReps } from "../store/selectors";
 import { AppState } from "../store/types";
 import { SetsReps } from "../types/LiftTypes";
-import { formatRepsSets } from "../utils/LiftUtils";
+import { formatRepsSets } from "../utils/liftUtils";
 import "./AddLogEntry.css";
 import AddRepsModal from "./AddRepsModal";
 

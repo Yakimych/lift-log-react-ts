@@ -1,34 +1,11 @@
-import { AxiosError } from "axios";
 import * as moment from "moment";
 import { ThunkAction, ThunkDispatch } from "redux-thunk";
-import LiftLogService from "../../services/LiftLogService";
-import { LiftLogEntry, SetsReps } from "../../types/LiftTypes";
-import { getSets } from "../../utils/LiftUtils";
-import { actions as dialogActions, DialogAction } from "../dialogActions";
-import { fetchLiftLogActions, LiftLogAction } from "../liftLogActions";
-import { actions, NewEntryAction } from "../newEntryActions";
-import { AppState } from "../types";
-
-const getErrorMessage = (error: AxiosError, logName: string) =>
-  !!error.response && error.response.status === 404
-    ? `Board ${logName} does not exist`
-    : `An unexpected network error has occured`;
-
-export const reloadLifts = (
-  logName: string
-): ThunkAction<void, AppState, LiftLogService, LiftLogAction> => (
-  dispatch: ThunkDispatch<AppState, LiftLogService, LiftLogAction>,
-  getState: () => AppState,
-  liftLogService: LiftLogService
-) => {
-  dispatch(fetchLiftLogActions.request());
-  return liftLogService
-    .getLiftLog(logName)
-    .then(liftLog => dispatch(fetchLiftLogActions.success(liftLog)))
-    .catch((error: AxiosError) =>
-      dispatch(fetchLiftLogActions.failure(getErrorMessage(error, logName)))
-    );
-};
+import LiftLogService from "../services/LiftLogService";
+import { actions as dialogActions, DialogAction } from "../store/dialogActions";
+import { actions, NewEntryAction } from "../store/newEntryActions";
+import { AppState } from "../store/types";
+import { LiftLogEntry, SetsReps } from "../types/LiftTypes";
+import { getSets } from "../utils/liftUtils";
 
 export const addLogEntry = (
   logName: string

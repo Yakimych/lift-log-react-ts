@@ -7,7 +7,7 @@ import {
   MAX_REP_SET_VALUE,
   toValidNumberOfReps,
   toValidSet
-} from "../utils/LiftUtils";
+} from "../utils/liftUtils";
 import { actions, DialogAction } from "./dialogActions";
 import { DialogState } from "./types";
 

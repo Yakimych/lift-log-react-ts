@@ -1,5 +1,5 @@
 import * as moment from "moment";
-import { toValidFloatOrNull } from "src/utils/NumberUtils";
+import { toValidFloatOrNull } from "src/utils/numberUtils";
 import { getType } from "typesafe-actions";
 import { actions, NewEntryAction } from "./newEntryActions";
 import { NewEntryState } from "./types";

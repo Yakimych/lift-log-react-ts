@@ -1,6 +1,6 @@
 import * as React from "react";
 import { LiftLogEntry } from "../types/LiftTypes";
-import { formatSets } from "../utils/LiftUtils";
+import { formatSets } from "../utils/liftUtils";
 
 const LiftRow: React.FunctionComponent<LiftLogEntry> = props => {
   return (

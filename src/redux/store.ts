@@ -1,4 +1,5 @@
-import { applyMiddleware, combineReducers, compose, createStore } from "redux";
+import { applyMiddleware, combineReducers, createStore } from "redux";
+import { composeWithDevTools } from "redux-devtools-extension";
 import thunkMiddleware from "redux-thunk";
 import LiftLogService from "../services/LiftLogService";
 import { dialogReducer } from "../store/dialogReducer";
@@ -14,10 +15,8 @@ const rootReducer = combineReducers({
 export const configureStore = (liftLogService: LiftLogService) => {
   return createStore(
     rootReducer,
-    compose(
-      applyMiddleware(thunkMiddleware.withExtraArgument(liftLogService)),
-      (window as any).__REDUX_DEVTOOLS_EXTENSION__ &&
-        (window as any).__REDUX_DEVTOOLS_EXTENSION__()
+    composeWithDevTools(
+      applyMiddleware(thunkMiddleware.withExtraArgument(liftLogService))
     )
   );
 };

@@ -1,13 +1,8 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import { RouteProps } from "react-router-dom";
-import { ThunkDispatch } from "redux-thunk";
 import { addLogEntry } from "../effects/addEntryEffects";
 import { reloadLifts } from "../effects/liftLogEffects";
-import LiftLogService from "../services/LiftLogService";
-import { DialogAction } from "../store/dialogActions";
-import { LiftLogAction } from "../store/liftLogActions";
-import { NewEntryAction } from "../store/newEntryActions";
 import { AppState } from "../store/types";
 import { LiftLogEntry } from "./../types/LiftTypes";
 import "./App.css";
@@ -23,7 +18,7 @@ type StateProps = {
 
 type DispatchProps = {
   reloadLifts: (logName: string) => void;
-  addLogEntry: (logName: string) => Promise<void>;
+  addLogEntry: (logName: string) => void;
 };
 
 type Props = StateProps & DispatchProps & RouteProps;
@@ -84,18 +79,7 @@ const mapStateToProps = (state: AppState): StateProps => ({
   logEntries: state.liftLogState.logEntries
 });
 
-const mapDispatchToProps = (
-  dispatch: ThunkDispatch<
-    AppState,
-    LiftLogService,
-    LiftLogAction | NewEntryAction | DialogAction
-  >
-): DispatchProps => ({
-  reloadLifts: (logName: string) => dispatch(reloadLifts(logName)),
-  addLogEntry: (logName: string) => dispatch(addLogEntry(logName))
-});
-
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  { reloadLifts, addLogEntry }
 )(App);

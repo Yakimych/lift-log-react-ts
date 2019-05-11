@@ -6,7 +6,7 @@ import "./../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import App from "./components/App";
 import "./index.css";
 import { configureStore } from "./redux/store";
-import LiftLogService from "./services/LiftLogService";
+import LiftLogService from "./services/liftLogService";
 
 const baseUrl = `${process.env.REACT_APP_API_BASE_URL}/liftlogs`;
 const store = configureStore(new LiftLogService(baseUrl));

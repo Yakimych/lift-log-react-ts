@@ -1,4 +1,4 @@
-import { LiftLogEntry } from "../types/LiftTypes";
+import { LiftLogEntry } from "../types/liftTypes";
 
 export type LiftLogState = {
   isLoading: boolean;

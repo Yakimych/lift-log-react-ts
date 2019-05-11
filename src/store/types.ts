@@ -1,6 +1,6 @@
 import { Moment } from "moment";
-import { Set } from "../types/LiftTypes";
-import { InputMode, LiftInfoLink } from "../types/LiftTypes";
+import { Set } from "../types/liftTypes";
+import { InputMode, LiftInfoLink } from "../types/liftTypes";
 import { LiftLogState } from "./liftLogState";
 
 export type NewEntryState = {

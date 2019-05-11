@@ -4,12 +4,12 @@ import { RouteProps } from "react-router-dom";
 import { ThunkDispatch } from "redux-thunk";
 import { addLogEntry } from "../effects/addEntryEffects";
 import { reloadLifts } from "../effects/liftLogEffects";
-import LiftLogService from "../services/LiftLogService";
+import LiftLogService from "../services/liftLogService";
 import { DialogAction } from "../store/dialogActions";
 import { LiftLogAction } from "../store/liftLogActions";
 import { NewEntryAction } from "../store/newEntryActions";
 import { AppState } from "../store/types";
-import { LiftLogEntry } from "./../types/LiftTypes";
+import { LiftLogEntry } from "./../types/liftTypes";
 import "./App.css";
 import LiftLogContainer from "./LiftLogContainer";
 

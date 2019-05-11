@@ -1,6 +1,6 @@
 import * as moment from "moment";
 import * as React from "react";
-import { LiftLogEntry } from "./../types/LiftTypes";
+import { LiftLogEntry } from "./../types/liftTypes";
 import AddLogEntry from "./AddLogEntry";
 import "./LiftLog.css";
 import LiftRow from "./LiftRow";

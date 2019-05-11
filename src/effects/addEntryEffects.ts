@@ -1,10 +1,10 @@
 import * as moment from "moment";
 import { ThunkAction, ThunkDispatch } from "redux-thunk";
-import LiftLogService from "../services/LiftLogService";
+import LiftLogService from "../services/liftLogService";
 import { actions as dialogActions, DialogAction } from "../store/dialogActions";
 import { actions, NewEntryAction } from "../store/newEntryActions";
 import { AppState } from "../store/types";
-import { LiftLogEntry, SetsReps } from "../types/LiftTypes";
+import { LiftLogEntry, SetsReps } from "../types/liftTypes";
 import { getSets } from "../utils/liftUtils";
 
 export const addLogEntry = (

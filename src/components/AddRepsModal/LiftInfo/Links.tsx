@@ -9,7 +9,7 @@ import {
   InputGroupAddon
 } from "reactstrap";
 import { MAX_NUMBER_OF_LINKS } from "../../../store/dialogReducer";
-import { LiftInfoLink } from "../../../types/LiftTypes";
+import { LiftInfoLink } from "../../../types/liftTypes";
 
 export type LinksStateProps = {
   links: ReadonlyArray<LiftInfoLink>;

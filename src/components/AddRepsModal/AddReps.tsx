@@ -4,7 +4,7 @@ import { Dispatch } from "redux";
 import { actions as dialogActions } from "../../store/dialogActions";
 import { getCanAddCustomSet, getSetsReps } from "../../store/selectors";
 import { AppState } from "../../store/types";
-import { InputMode, SetsReps } from "../../types/LiftTypes";
+import { InputMode, SetsReps } from "../../types/liftTypes";
 import { formatRepsSets } from "../../utils/liftUtils";
 import CustomSetsInput from "./CustomSetsInput";
 import InputModeSwitch from "./InputModeSwitch";

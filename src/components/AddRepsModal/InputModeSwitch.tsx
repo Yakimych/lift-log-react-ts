@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Button, ButtonGroup, Tooltip } from "reactstrap";
-import { InputMode } from "../../types/LiftTypes";
+import { InputMode } from "../../types/liftTypes";
 
 type Props = {
   mode: InputMode;

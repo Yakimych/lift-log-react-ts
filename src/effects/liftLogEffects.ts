@@ -1,6 +1,6 @@
 import { AxiosError } from "axios";
 import { ThunkAction, ThunkDispatch } from "redux-thunk";
-import LiftLogService from "../services/LiftLogService";
+import LiftLogService from "../services/liftLogService";
 import { fetchLiftLogActions, LiftLogAction } from "../store/liftLogActions";
 import { AppState } from "../store/types";
 

@@ -1,5 +1,5 @@
 import { AnyAction } from "redux";
-import { InputMode } from "../../types/LiftTypes";
+import { InputMode } from "../../types/liftTypes";
 import { actions } from "../dialogActions";
 import { dialogReducer } from "../dialogReducer";
 import { DialogState } from "../types";

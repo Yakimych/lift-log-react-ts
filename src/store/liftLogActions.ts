@@ -1,4 +1,4 @@
-import { LiftLog } from "src/types/LiftTypes";
+import { LiftLog } from "src/types/liftTypes";
 import { ActionType, createAsyncAction } from "typesafe-actions";
 
 export const fetchLiftLogActions = createAsyncAction(

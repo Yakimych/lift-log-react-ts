@@ -1,5 +1,5 @@
 import { getType } from "typesafe-actions";
-import { InputMode, Set } from "../types/LiftTypes";
+import { InputMode, Set } from "../types/liftTypes";
 import {
   DEFAULT_REP_VALUE,
   DEFAULT_SET_VALUE,

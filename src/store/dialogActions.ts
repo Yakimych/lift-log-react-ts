@@ -1,4 +1,4 @@
-import { InputMode } from "src/types/LiftTypes";
+import { InputMode } from "src/types/liftTypes";
 import { ActionType, createStandardAction } from "typesafe-actions";
 
 export const actions = {

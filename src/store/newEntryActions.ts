@@ -1,5 +1,5 @@
 import { Moment } from "moment";
-import { LiftLogEntry } from "src/types/LiftTypes";
+import { LiftLogEntry } from "src/types/liftTypes";
 import {
   ActionType,
   createAsyncAction,

@@ -1,4 +1,4 @@
-import { InputMode, Set, SetsReps } from "../types/LiftTypes";
+import { InputMode, Set, SetsReps } from "../types/liftTypes";
 import { toValidPositiveInteger, toValidRpe } from "./numberUtils";
 
 export const MAX_REP_SET_VALUE = 30;

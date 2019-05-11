@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 import * as moment from "moment";
-import { LiftInfoLink, LiftLog, LiftLogEntry, Set } from "./../types/LiftTypes";
+import { LiftInfoLink, LiftLog, LiftLogEntry, Set } from "./../types/liftTypes";
 
 type ApiSet = {
   numberOfReps: number;

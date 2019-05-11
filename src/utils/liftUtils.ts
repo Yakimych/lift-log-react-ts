@@ -27,18 +27,18 @@ export const allRepsAreEqualAndWithoutRpes = (sets: ReadonlyArray<Set>) =>
     ? sets.every(s => s.reps === sets[0].reps && s.rpe === null)
     : true;
 
-export function formatSets(sets: ReadonlyArray<Set>): string {
+export const formatSets = (sets: ReadonlyArray<Set>): string => {
   if (allRepsAreEqualAndWithoutRpes(sets)) {
     const reps = sets.length > 0 ? sets[0].reps : 0;
     return `${sets.length}x${reps}`;
   }
   return sets.map(s => s.reps).join("-");
-}
+};
 
-export function formatRepsSets(setsReps: SetsReps): string {
+export const formatRepsSets = (setsReps: SetsReps): string => {
   const sets = getSets(setsReps);
   return formatSets(sets);
-}
+};
 
 export const getSets = (setsReps: SetsReps): ReadonlyArray<Set> => {
   const { numberOfSets, numberOfReps, customSetsStrings, mode } = setsReps;

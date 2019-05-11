@@ -1,4 +1,3 @@
-import * as moment from "moment";
 import { ThunkAction, ThunkDispatch } from "redux-thunk";
 import LiftLogService from "../services/liftLogService";
 import { actions as dialogActions, DialogAction } from "../store/dialogActions";
@@ -33,7 +32,7 @@ export const addLogEntry = (
   };
 
   const newEntry: LiftLogEntry = {
-    date: state.newEntryState.date || moment(),
+    date: state.newEntryState.date || new Date(),
     name: state.newEntryState.name,
     weightLifted: state.newEntryState.weightLifted,
     sets: getSets(setsReps),

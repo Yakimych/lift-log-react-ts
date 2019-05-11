@@ -1,4 +1,3 @@
-import * as moment from "moment";
 import * as React from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -16,7 +15,7 @@ import AddRepsModal from "./AddRepsModal";
 
 export type StateProps = {
   name: string;
-  date: moment.Moment | null;
+  date: Date | null;
   weightLifted: number | null;
   weightLiftedStringValue: string;
   addRepsModalIsOpen: boolean;
@@ -25,7 +24,7 @@ export type StateProps = {
 
 export type DispatchProps = {
   changeName: (name: string) => void;
-  changeDate: (dateString: moment.Moment | null) => void;
+  changeDate: (dateString: Date | null) => void;
   changeWeightLifted: (weightLiftedString: string) => void;
   openDialog: () => void;
   closeDialog: () => void;
@@ -47,7 +46,7 @@ const AddLogEntry: React.FunctionComponent<AddLogEntryProps> = props => (
       <div className="col">
         <DatePicker
           disabled={props.disabled}
-          dateFormat="YYYY-MM-DD"
+          dateFormat="yyyy-MM-dd"
           selected={props.date}
           onChange={props.changeDate}
           className="form-control form-control-sm log-entry-input"
@@ -108,7 +107,7 @@ const mapStateToProps = (state: AppState): StateProps => ({
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
   changeName: (newName: string) =>
     dispatch(newEntryActions.changeName(newName)),
-  changeDate: (newDate: moment.Moment | null) =>
+  changeDate: (newDate: Date | null) =>
     dispatch(newEntryActions.changeDate(newDate)),
   changeWeightLifted: (newWeightLiftedString: string) =>
     dispatch(newEntryActions.changeWeightLifted(newWeightLiftedString)),

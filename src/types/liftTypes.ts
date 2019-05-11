@@ -1,5 +1,3 @@
-import * as moment from "moment";
-
 type Set = {
   reps: number;
   rpe: number | null;
@@ -16,7 +14,7 @@ type LiftInfo = {
 };
 
 type LiftLogEntry = {
-  date: moment.Moment;
+  date: Date;
   name: string;
   weightLifted: number | null;
   sets: ReadonlyArray<Set>;

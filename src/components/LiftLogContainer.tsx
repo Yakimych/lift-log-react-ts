@@ -1,4 +1,3 @@
-import * as moment from "moment";
 import * as React from "react";
 import { LiftLogEntry } from "./../types/liftTypes";
 import AddLogEntry from "./AddLogEntry";
@@ -12,7 +11,7 @@ type Props = {
 };
 
 const byDateNewestFirst = (entry: LiftLogEntry, otherEntry: LiftLogEntry) =>
-  moment.utc(otherEntry.date).diff(moment.utc(entry.date));
+  otherEntry.date.getTime() - entry.date.getTime();
 
 const LiftLogContainer: React.FunctionComponent<Props> = props => {
   return (

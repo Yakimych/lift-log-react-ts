@@ -1,10 +1,9 @@
-import { Moment } from "moment";
 import { Set } from "../types/liftTypes";
 import { InputMode, LiftInfoLink } from "../types/liftTypes";
 import { LiftLogState } from "./liftLogState";
 
 export type NewEntryState = {
-  date: Moment | null;
+  date: Date | null;
   name: string;
   weightLiftedString: string;
   weightLifted: number | null;

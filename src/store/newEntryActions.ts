@@ -1,4 +1,3 @@
-import { Moment } from "moment";
 import { LiftLogEntry } from "src/types/liftTypes";
 import {
   ActionType,
@@ -13,7 +12,7 @@ const addLogEntry = createAsyncAction(
 )<LiftLogEntry, void, string>();
 
 export const actions = {
-  changeDate: createStandardAction("liftlogentry/CHANGE_DATE")<Moment | null>(),
+  changeDate: createStandardAction("liftlogentry/CHANGE_DATE")<Date | null>(),
   changeName: createStandardAction("liftlogentry/CHANGE_NAME")<string>(),
   changeWeightLifted: createStandardAction("liftlogentry/CHANGE_WEIGHTLIFTED")<
     string

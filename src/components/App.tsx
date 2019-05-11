@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useEffect } from "react";
 import { connect } from "react-redux";
 import { RouteProps } from "react-router-dom";
 import { ThunkDispatch } from "redux-thunk";
@@ -28,53 +29,43 @@ type DispatchProps = {
 
 type Props = StateProps & DispatchProps & RouteProps;
 
-class App extends React.Component<Props> {
-  private readonly logName: string;
-  private readonly loadingMessage: string;
+const getLogNameFromRoute = (props: RouteProps) =>
+  !!props.location ? props.location.pathname.substr(1) : "";
 
-  constructor(props: Props) {
-    super(props);
-    this.logName = this.getLogNameFromRoute(props);
-    this.loadingMessage = `Loading board ${this.logName}`;
-  }
+const App: React.FC<Props> = props => {
+  const logName = getLogNameFromRoute(props);
+  const loadingMessage = `Loading board ${logName}`;
 
-  public componentDidMount() {
-    this.props.reloadLifts(this.logName);
-  }
-
-  public render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <h1 className="App-title">{this.getHeaderText()}</h1>
-        </header>
-        <LiftLogContainer
-          disabled={this.props.isLoading || this.props.networkErrorOccurred}
-          entries={this.props.logEntries}
-          onAddEntry={() => this.handleAddEntry()}
-        />
-      </div>
-    );
-  }
-
-  private getHeaderText(): string {
-    if (this.props.isLoading) {
-      return this.loadingMessage;
-    } else if (this.props.networkErrorOccurred) {
-      return this.props.errorMessage;
+  const getHeaderText = (): string => {
+    if (props.isLoading) {
+      return loadingMessage;
+    } else if (props.networkErrorOccurred) {
+      return props.errorMessage;
     } else {
-      return this.props.logTitle || "";
+      return props.logTitle || "";
     }
-  }
+  };
 
-  private async handleAddEntry() {
-    await this.props.addLogEntry(this.logName);
-    await this.props.reloadLifts(this.logName);
-  }
+  const handleAddEntry = async () => {
+    await props.addLogEntry(logName);
+    await props.reloadLifts(logName);
+  };
 
-  private getLogNameFromRoute = (props: RouteProps) =>
-    !!props.location ? props.location.pathname.substr(1) : "";
-}
+  useEffect(() => props.reloadLifts(logName), []);
+
+  return (
+    <div className="App">
+      <header className="App-header">
+        <h1 className="App-title">{getHeaderText()}</h1>
+      </header>
+      <LiftLogContainer
+        disabled={props.isLoading || props.networkErrorOccurred}
+        entries={props.logEntries}
+        onAddEntry={() => handleAddEntry()}
+      />
+    </div>
+  );
+};
 
 const mapStateToProps = (state: AppState): StateProps => ({
   isLoading: state.liftLogState.isLoading,

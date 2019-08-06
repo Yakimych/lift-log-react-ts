@@ -12,10 +12,12 @@ const rootReducer = combineReducers({
   dialogState: dialogReducer
 });
 
+const composeEnhancers = composeWithDevTools({ serialize: true });
+
 export const configureStore = (liftLogService: LiftLogService) => {
   return createStore(
     rootReducer,
-    composeWithDevTools(
+    composeEnhancers(
       applyMiddleware(thunkMiddleware.withExtraArgument(liftLogService))
     )
   );

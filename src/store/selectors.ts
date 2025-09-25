@@ -11,5 +11,7 @@ export const getSetsReps = (state: AppState) => ({
   mode: state.dialogState.inputMode,
   numberOfSets: state.dialogState.numberOfSets,
   numberOfReps: state.dialogState.numberOfReps,
+  numberOfSetsString: state.dialogState.numberOfSetsString,
+  numberOfRepsString: state.dialogState.numberOfRepsString,
   customSetsStrings: state.dialogState.customSetsStrings
 });

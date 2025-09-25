@@ -42,8 +42,8 @@ const AddReps: React.FunctionComponent<Props> = props => (
     <div className="my-3">
       {isSetsRepsMode(props) ? (
         <SetsRepsInput
-          numberOfSets={props.setsReps.numberOfSets}
-          numberOfReps={props.setsReps.numberOfReps}
+          numberOfSetsString={props.setsReps.numberOfSetsString}
+          numberOfRepsString={props.setsReps.numberOfRepsString}
           onNumberOfSetsChange={props.onNumberOfSetsChange}
           onNumberOfRepsChange={props.onNumberOfRepsChange}
         />

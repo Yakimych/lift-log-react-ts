@@ -4,6 +4,13 @@ const toInteger = (numericString: string) =>
 export const toValidPositiveInteger = (numericString: string) =>
   Math.max(toInteger(numericString), 1);
 
+export const toValidPositiveIntegerOrEmpty = (numericString: string): number | null => {
+  if (numericString.trim() === "") {
+    return null;
+  }
+  return Math.max(toInteger(numericString), 1);
+};
+
 export const toValidFloatOrNull = (numericString: string): number | null => {
   const parsedValue = parseFloat(numericString.replace(",", "."));
   return !isNaN(parsedValue) && isFinite(parsedValue) ? parsedValue : null;

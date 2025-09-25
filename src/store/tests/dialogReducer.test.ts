@@ -42,6 +42,16 @@ it("numberOfSets should be set to correct numeric value", () => {
   expect(dialogStateWith10Sets.numberOfSets).toEqual(10);
 });
 
+it("numberOfSets should allow empty string input", () => {
+  const openDialogState = dialogReducer(emptyInitialState, actions.open());
+  const dialogStateWithEmptyString = dialogReducer(
+    openDialogState,
+    actions.setNumberOfSets("")
+  );
+  expect(dialogStateWithEmptyString.numberOfSetsString).toEqual("");
+  expect(dialogStateWithEmptyString.numberOfSets).toEqual(3); // DEFAULT_SET_VALUE
+});
+
 it("numberOfReps should be set to correct numeric value", () => {
   const openDialogState = dialogReducer(emptyInitialState, actions.open());
   const dialogStateWith11Reps = dialogReducer(
@@ -50,6 +60,16 @@ it("numberOfReps should be set to correct numeric value", () => {
   );
   expect(dialogStateWith11Reps.numberOfRepsString).toEqual("11");
   expect(dialogStateWith11Reps.numberOfReps).toEqual(11);
+});
+
+it("numberOfReps should allow empty string input", () => {
+  const openDialogState = dialogReducer(emptyInitialState, actions.open());
+  const dialogStateWithEmptyString = dialogReducer(
+    openDialogState,
+    actions.setNumberOfReps("")
+  );
+  expect(dialogStateWithEmptyString.numberOfRepsString).toEqual("");
+  expect(dialogStateWithEmptyString.numberOfReps).toEqual(5); // DEFAULT_REP_VALUE
 });
 
 it("should be possible to enter custom rep with RPE", () => {

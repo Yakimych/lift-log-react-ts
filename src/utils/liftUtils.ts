@@ -1,7 +1,7 @@
 import { InputMode, Set, SetsReps } from "../types/liftTypes";
 import { toValidPositiveInteger, toValidRpe } from "./numberUtils";
 
-export const MAX_REP_SET_VALUE = 30;
+export const MAX_REP_SET_VALUE = 100;
 export const DEFAULT_SET_VALUE = 3;
 export const DEFAULT_REP_VALUE = 5;
 

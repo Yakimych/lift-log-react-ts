@@ -5,6 +5,7 @@ import { actions, NewEntryAction } from "../store/newEntryActions";
 import { AppState } from "../store/types";
 import { LiftLogEntry, SetsReps } from "../types/liftTypes";
 import { getSets } from "../utils/liftUtils";
+import { setLastUsedName } from "../utils/localStorageUtils";
 
 export const addLogEntry = (
   logName: string
@@ -45,6 +46,7 @@ export const addLogEntry = (
   return liftLogService
     .addEntry(logName, newEntry)
     .then(() => {
+      setLastUsedName(newEntry.name);
       dispatch(actions.addLogEntry.success());
       dispatch(dialogActions.reset());
     })

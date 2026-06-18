@@ -1,5 +1,5 @@
 import { InputMode, Set, SetsReps } from "../types/liftTypes";
-import { toValidPositiveInteger, toValidRpe } from "./numberUtils";
+import { toValidPositiveInteger, toValidPositiveIntegerOrEmpty, toValidRpe } from "./numberUtils";
 
 export const MAX_REP_SET_VALUE = 100;
 export const DEFAULT_SET_VALUE = 3;
@@ -8,6 +8,11 @@ export const DEFAULT_REP_VALUE = 5;
 export const toValidNumberOfReps = (numericString: string) => {
   const repSetNumber = toValidPositiveInteger(numericString);
   return Math.min(repSetNumber, MAX_REP_SET_VALUE);
+};
+
+export const toValidNumberOfRepsOrEmpty = (numericString: string): number | null => {
+  const repSetNumber = toValidPositiveIntegerOrEmpty(numericString);
+  return repSetNumber !== null ? Math.min(repSetNumber, MAX_REP_SET_VALUE) : null;
 };
 
 export const toValidSet = (repsWithRpe: string): Set => {

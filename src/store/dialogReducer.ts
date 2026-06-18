@@ -6,6 +6,7 @@ import {
   formatSet,
   MAX_REP_SET_VALUE,
   toValidNumberOfReps,
+  toValidNumberOfRepsOrEmpty,
   toValidSet
 } from "../utils/liftUtils";
 import { actions, DialogAction } from "./dialogActions";
@@ -79,19 +80,19 @@ export const dialogReducer = (
       };
     }
     case getType(actions.setNumberOfSets): {
-      const numberOfSets = toValidNumberOfReps(action.payload);
+      const numberOfSets = toValidNumberOfRepsOrEmpty(action.payload) || DEFAULT_SET_VALUE;
       return {
         ...state,
         numberOfSets,
-        numberOfSetsString: numberOfSets.toString()
+        numberOfSetsString: action.payload
       };
     }
     case getType(actions.setNumberOfReps): {
-      const numberOfReps = toValidNumberOfReps(action.payload);
+      const numberOfReps = toValidNumberOfRepsOrEmpty(action.payload) || DEFAULT_REP_VALUE;
       return {
         ...state,
         numberOfReps,
-        numberOfRepsString: numberOfReps.toString()
+        numberOfRepsString: action.payload
       };
     }
     case getType(actions.addCustomSet): {

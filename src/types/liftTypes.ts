@@ -38,12 +38,5 @@ type LiftLog = {
   entries: LiftLogEntry[];
 };
 
-export {
-  LiftLog,
-  LiftLogEntry,
-  Set,
-  SetsReps,
-  LiftInfo,
-  InputMode,
-  LiftInfoLink
-};
+export { InputMode };
+export type { LiftLog, LiftLogEntry, Set, SetsReps, LiftInfo, LiftInfoLink };

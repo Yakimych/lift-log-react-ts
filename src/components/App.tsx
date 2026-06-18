@@ -30,7 +30,7 @@ type DispatchProps = {
 type Props = StateProps & DispatchProps & RouteProps;
 
 const getLogNameFromRoute = (props: RouteProps) =>
-  !!props.location ? props.location.pathname.substr(1) : "";
+  props.location ? props.location.pathname.substr(1) : "";
 
 const App: React.FC<Props> = props => {
   const logName = getLogNameFromRoute(props);
@@ -51,7 +51,10 @@ const App: React.FC<Props> = props => {
     await props.reloadLifts(logName);
   };
 
-  useEffect(() => props.reloadLifts(logName), []);
+  const { reloadLifts } = props;
+  useEffect(() => {
+    reloadLifts(logName);
+  }, [logName, reloadLifts]);
 
   return (
     <div className="App">

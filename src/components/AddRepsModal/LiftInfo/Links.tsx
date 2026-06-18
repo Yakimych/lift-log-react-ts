@@ -1,6 +1,6 @@
 import Octicon, { getIconByName } from "@githubprimer/octicons-react";
 import * as React from "react";
-import AnimateHeight from "react-animate-height";
+import AnimateHeightImport from "react-animate-height";
 import {
   Button,
   FormText,
@@ -10,6 +10,9 @@ import {
 } from "reactstrap";
 import { MAX_NUMBER_OF_LINKS } from "../../../store/dialogReducer";
 import { LiftInfoLink } from "../../../types/liftTypes";
+import { interopDefault } from "../../../utils/interopDefault";
+
+const AnimateHeight = interopDefault(AnimateHeightImport);
 
 export type LinksStateProps = {
   links: ReadonlyArray<LiftInfoLink>;

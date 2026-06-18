@@ -1,4 +1,3 @@
-import { getLastUsedName } from "src/utils/localStorageUtils";
 import { toValidFloatOrNull } from "src/utils/numberUtils";
 import { getType } from "typesafe-actions";
 import { actions, NewEntryAction } from "./newEntryActions";
@@ -6,7 +5,7 @@ import { NewEntryState } from "./types";
 
 const initialState: NewEntryState = {
   date: new Date(),
-  name: getLastUsedName(),
+  name: "",
   weightLifted: null,
   weightLiftedString: ""
 };

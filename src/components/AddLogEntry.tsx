@@ -1,5 +1,5 @@
 import * as React from "react";
-import DatePicker from "react-datepicker";
+import DatePickerImport from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { connect } from "react-redux";
 import { Button } from "reactstrap";
@@ -10,8 +10,11 @@ import { getSetsReps } from "../store/selectors";
 import { AppState } from "../store/types";
 import { SetsReps } from "../types/liftTypes";
 import { formatRepsSets } from "../utils/liftUtils";
+import { interopDefault } from "../utils/interopDefault";
 import "./AddLogEntry.css";
 import AddRepsModal from "./AddRepsModal";
+
+const DatePicker = interopDefault(DatePickerImport);
 
 export type StateProps = {
   name: string;

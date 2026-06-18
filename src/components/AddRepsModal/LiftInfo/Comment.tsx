@@ -1,6 +1,9 @@
 import * as React from "react";
-import AnimateHeight from "react-animate-height";
+import AnimateHeightImport from "react-animate-height";
 import { Button, Fade, Input } from "reactstrap";
+import { interopDefault } from "../../../utils/interopDefault";
+
+const AnimateHeight = interopDefault(AnimateHeightImport);
 
 export type CommentStateProps = {
   comment: string;

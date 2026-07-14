@@ -7,6 +7,7 @@
     "@githubprimer/octicons-react": "^8.5.0",
     "axios": "^1.18.0",
     "bootstrap": "^4.6.2",
+    "mongodb": "^7.5.0",
     "react": "^16.14.0",
     "react-animate-height": "^2.1.2",
     "react-datepicker": "^2.16.0",
@@ -17,19 +18,26 @@
     "reactstrap": "^8.10.1",
     "redux": "^4.2.1",
     "redux-thunk": "^2.4.2",
-    "typesafe-actions": "^4.4.2"
+    "typesafe-actions": "^4.4.2",
+    "zod": "^4.4.3"
   },
   "scripts": {
     "dev": "vite",
+    "dev:netlify": "npx --yes netlify-cli dev",
     "start": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "lint": "eslint ."
+    "test:integration": "MONGODB_INTEGRATION_URI=mongodb://localhost:27018/?replicaSet=rs0 vitest run netlify/functions/lift-log-api/mongoRepository.integration.test.ts",
+    "typecheck": "tsc --noEmit && tsc -p netlify/functions/tsconfig.json",
+    "lint": "eslint .",
+    "db:start": "bash scripts/start-test-mongodb.sh",
+    "db:stop": "docker compose -p lift-log-test -f docker-compose.mongodb.yml down --volumes"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
+    "@netlify/functions": "^5.3.0",
     "@types/node": "^20.19.43",
     "@types/react": "^16.14.70",
     "@types/react-datepicker": "^2.11.1",

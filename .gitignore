@@ -9,6 +9,8 @@
 # production
 /build
 /dist
+/.netlify
+/deno.lock
 
 # misc
 .DS_Store

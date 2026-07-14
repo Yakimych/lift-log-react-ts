@@ -5,6 +5,18 @@
 [build.environment]
   NODE_VERSION = "22"
 
+[dev]
+  command = "npm run dev -- --port 5177 --strictPort"
+  targetPort = 5177
+  port = 8888
+  autoLaunch = false
+  framework = "#custom"
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+# Function paths declared in code are evaluated before this SPA fallback.
 [[redirects]]
   from = "/*"
   to = "/index.html"

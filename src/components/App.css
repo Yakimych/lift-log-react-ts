@@ -40,6 +40,15 @@
   background-color: #f8f9fa;
 }
 
+.remove-icon-wrapper--disabled,
+.remove-icon-wrapper--disabled:hover {
+  cursor: default;
+  pointer-events: none;
+  opacity: 0.5;
+  color: #dc3545;
+  background-color: transparent;
+}
+
 /* id of the body is used to override bootstrap rules */
 #lift-log-app-body .btn:focus,
 #lift-log-app-body .btn:active {

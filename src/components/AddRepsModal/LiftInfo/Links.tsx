@@ -26,7 +26,11 @@ export type LinksDispatchProps = {
   onChangeLinkUrl: (index: number, newUrlValue: string) => void;
 };
 
-export type LinksProps = LinksStateProps & LinksDispatchProps;
+export type LinksOwnProps = {
+  disabled?: boolean;
+};
+
+export type LinksProps = LinksStateProps & LinksDispatchProps & LinksOwnProps;
 
 const LINK_ELEMENT_HEIGHT = 40;
 
@@ -68,8 +72,12 @@ const Links: React.FunctionComponent<LinksProps> = props => {
               />
               <InputGroupAddon addonType="append">
                 <div
-                  className="input-group-text remove-icon-wrapper"
-                  onClick={() => props.onRemoveLink(index)}
+                  className={`input-group-text remove-icon-wrapper${
+                    props.disabled ? " remove-icon-wrapper--disabled" : ""
+                  }`}
+                  onClick={
+                    props.disabled ? undefined : () => props.onRemoveLink(index)
+                  }
                 >
                   <Octicon icon={getIconByName("x")} />
                 </div>

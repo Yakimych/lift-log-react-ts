@@ -51,8 +51,10 @@ export const addLogEntry = (
       dispatch(dialogActions.reset());
     })
     .catch(() =>
-      actions.addLogEntry.failure(
-        `Error while adding entry for ${newEntry.name}`
+      dispatch(
+        actions.addLogEntry.failure(
+          `Error while adding entry for ${newEntry.name}`
+        )
       )
     );
 };

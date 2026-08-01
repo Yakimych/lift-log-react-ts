@@ -16,6 +16,10 @@ type StateProps = {
   setsReps: SetsReps;
 };
 
+type OwnProps = {
+  disabled: boolean;
+};
+
 type DispatchProps = {
   onInputModeChange: (inputMode: InputMode) => void;
   onLiftLogRepsChange: (index: number, newValue: string) => void;
@@ -25,13 +29,13 @@ type DispatchProps = {
   onNumberOfRepsChange: (newValue: string) => void;
 };
 
-type Props = StateProps & DispatchProps;
+type Props = StateProps & DispatchProps & OwnProps;
 
 const isSetsRepsMode = (props: Props) =>
   props.setsReps.mode === InputMode.SetsReps;
 
 const AddReps: React.FunctionComponent<Props> = props => (
-  <div className="px-1">
+  <fieldset className="px-1 reps-fieldset" disabled={props.disabled}>
     <div className="d-flex">
       <InputModeSwitch
         mode={props.setsReps.mode}
@@ -54,11 +58,12 @@ const AddReps: React.FunctionComponent<Props> = props => (
           onAdd={props.onAddCustomSet}
           onRemove={props.onRemoveCustomSet}
           onChange={props.onLiftLogRepsChange}
+          disabled={props.disabled}
         />
       )}
     </div>
-    <LiftInfoContainer />
-  </div>
+    <LiftInfoContainer disabled={props.disabled} />
+  </fieldset>
 );
 
 const mapStateToProps = (state: AppState): StateProps => ({

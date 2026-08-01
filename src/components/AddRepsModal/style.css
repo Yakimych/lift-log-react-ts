@@ -3,6 +3,13 @@
   width: 40px;
 }
 
+.reps-fieldset {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+
 .custom-sets-input-group {
   display: flex;
   align-items: center;

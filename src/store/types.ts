@@ -7,6 +7,7 @@ export type NewEntryState = {
   name: string;
   weightLiftedString: string;
   weightLifted: number | null;
+  isSaving: boolean;
 };
 
 export type DialogState = {

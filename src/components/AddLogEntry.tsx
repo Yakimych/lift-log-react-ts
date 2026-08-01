@@ -23,6 +23,7 @@ export type StateProps = {
   weightLiftedStringValue: string;
   addRepsModalIsOpen: boolean;
   setsReps: SetsReps;
+  isSaving: boolean;
 };
 
 export type DispatchProps = {
@@ -92,6 +93,7 @@ const AddLogEntry: React.FunctionComponent<AddLogEntryProps> = props => (
     </div>
     <AddRepsModal
       isOpen={props.addRepsModalIsOpen}
+      isSaving={props.isSaving}
       close={props.closeDialog}
       onSave={props.onAddEntry}
     />
@@ -104,7 +106,8 @@ const mapStateToProps = (state: AppState): StateProps => ({
   date: state.newEntryState.date,
   name: state.newEntryState.name,
   weightLifted: state.newEntryState.weightLifted,
-  weightLiftedStringValue: state.newEntryState.weightLiftedString
+  weightLiftedStringValue: state.newEntryState.weightLiftedString,
+  isSaving: state.newEntryState.isSaving
 });
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({

@@ -7,7 +7,8 @@ const initialState: NewEntryState = {
   date: new Date(),
   name: "",
   weightLifted: null,
-  weightLiftedString: ""
+  weightLiftedString: "",
+  isSaving: false
 };
 
 export const newEntryReducer = (
@@ -34,15 +35,18 @@ export const newEntryReducer = (
       };
     case getType(actions.addLogEntry.request):
       return {
-        ...state
+        ...state,
+        isSaving: true
       };
     case getType(actions.addLogEntry.success):
       return {
-        ...state
+        ...state,
+        isSaving: false
       };
     case getType(actions.addLogEntry.failure):
       return {
-        ...state
+        ...state,
+        isSaving: false
       };
   }
   return state;

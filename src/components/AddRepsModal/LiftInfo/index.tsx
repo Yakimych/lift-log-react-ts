@@ -9,8 +9,11 @@ import Links, { LinksDispatchProps, LinksStateProps } from "./Links";
 
 type StateProps = CommentStateProps & LinksStateProps;
 type DispatchProps = CommentDispatchProps & LinksDispatchProps;
+type OwnProps = {
+  disabled?: boolean;
+};
 
-type Props = StateProps & DispatchProps;
+type Props = StateProps & DispatchProps & OwnProps;
 
 const LiftInfoContainer: React.FunctionComponent<Props> = props => {
   return (
@@ -28,6 +31,7 @@ const LiftInfoContainer: React.FunctionComponent<Props> = props => {
         onRemoveLink={props.onRemoveLink}
         onChangeLinkText={props.onChangeLinkText}
         onChangeLinkUrl={props.onChangeLinkUrl}
+        disabled={props.disabled}
       />
     </div>
   );

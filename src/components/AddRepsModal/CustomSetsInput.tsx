@@ -8,6 +8,7 @@ type Props = {
   onChange: (index: number, newValue: string) => void;
   canAddSet: boolean;
   customSetsStrings: ReadonlyArray<string>;
+  disabled?: boolean;
 };
 
 const CustomSetsInput: React.FunctionComponent<Props> = props => (
@@ -25,8 +26,10 @@ const CustomSetsInput: React.FunctionComponent<Props> = props => (
             {index !== 0 && (
               <InputGroupAddon addonType="append">
                 <div
-                  className="input-group-text remove-icon-wrapper p-0"
-                  onClick={() => props.onRemove(index)}
+                  className={`input-group-text remove-icon-wrapper p-0${
+                    props.disabled ? " remove-icon-wrapper--disabled" : ""
+                  }`}
+                  onClick={props.disabled ? undefined : () => props.onRemove(index)}
                 >
                   <Octicon icon={getIconByName("x")} />
                 </div>

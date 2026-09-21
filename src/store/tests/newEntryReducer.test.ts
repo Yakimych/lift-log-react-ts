@@ -1,12 +1,12 @@
-import { AnyAction } from "redux";
 import { StoredLiftLogEntry } from "../../types/liftTypes";
-import { actions } from "../newEntryActions";
+import { actions, NewEntryAction } from "../newEntryActions";
 import { newEntryReducer } from "../newEntryReducer";
 import { NewEntryState } from "../types";
 
 // Let it default to the reducer's initialState
 const emptyInitialState = (undefined as unknown) as NewEntryState;
-const emptyInitialAction = {} as AnyAction;
+// Redux dispatches its own init action before any of ours.
+const emptyInitialAction = ({ type: "@@INIT" } as unknown) as NewEntryAction;
 
 const storedEntry: StoredLiftLogEntry = {
   id: 7,

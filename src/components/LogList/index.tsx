@@ -86,7 +86,7 @@ const LogList: React.FC<Props> = props => {
         </div>
         {props.isLoading ? (
           <div className="p-3 text-muted">
-            <Spinner size="sm" className="mr-2" />
+            <Spinner size="sm" className="me-2" />
             Loading logs...
           </div>
         ) : props.logs.length === 0 ? (

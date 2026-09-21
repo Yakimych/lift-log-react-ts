@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { Link, RouteComponentProps } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { ThunkDispatch } from "redux-thunk";
 import {
   addLogEntry,
@@ -41,14 +41,10 @@ type DispatchProps = {
   cancelEditingEntry: () => void;
 };
 
-type RouteParams = {
-  logName: string;
-};
-
-type Props = StateProps & DispatchProps & RouteComponentProps<RouteParams>;
+type Props = StateProps & DispatchProps;
 
 const App: React.FC<Props> = props => {
-  const logName = props.match.params.logName;
+  const { logName = "" } = useParams<"logName">();
   const loadingMessage = `Loading board ${logName}`;
   const [entryPendingDeletion, setEntryPendingDeletion] = useState<
     StoredLiftLogEntry | undefined

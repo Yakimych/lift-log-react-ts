@@ -1,4 +1,4 @@
-import Octicon, { getIconByName } from "@githubprimer/octicons-react";
+import { DashIcon, PlusIcon, XIcon } from "@primer/octicons-react";
 import * as React from "react";
 import { Button } from "reactstrap";
 import { MAX_REP_SET_VALUE, MIN_REP_SET_VALUE } from "../../utils/liftUtils";
@@ -30,7 +30,7 @@ const NumberStepper: React.FunctionComponent<StepperProps> = props => (
       disabled={props.value <= MIN_REP_SET_VALUE}
       onClick={() => step(props.value, -1, props.onChange)}
     >
-      <Octicon icon={getIconByName("dash")} />
+      <DashIcon />
     </Button>
     <input
       className="form-control form-control-sm set-rep-input mx-1"
@@ -48,7 +48,7 @@ const NumberStepper: React.FunctionComponent<StepperProps> = props => (
       disabled={props.value >= MAX_REP_SET_VALUE}
       onClick={() => step(props.value, 1, props.onChange)}
     >
-      <Octicon icon={getIconByName("plus")} />
+      <PlusIcon />
     </Button>
   </div>
 );
@@ -61,7 +61,7 @@ const SetsRepsInput: React.FunctionComponent<Props> = props => (
       onChange={props.onNumberOfSetsChange}
     />
     <span className="cross-icon-wrapper">
-      <Octicon icon={getIconByName("x")} />
+      <XIcon />
     </span>
     <NumberStepper
       label="Number of reps"

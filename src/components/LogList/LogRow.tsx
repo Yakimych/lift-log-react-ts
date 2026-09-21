@@ -1,4 +1,4 @@
-import Octicon, { getIconByName } from "@githubprimer/octicons-react";
+import { PencilIcon, TrashIcon } from "@primer/octicons-react";
 import * as React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "reactstrap";
@@ -47,7 +47,7 @@ const LogRow: React.FunctionComponent<Props> = props => {
             <Button
               color="primary"
               size="sm"
-              className="mr-1"
+              className="me-1"
               disabled={props.isSaving || props.editedTitle.trim().length === 0}
               onClick={props.onSaveTitle}
             >
@@ -73,7 +73,7 @@ const LogRow: React.FunctionComponent<Props> = props => {
               disabled={props.isSaving}
               onClick={() => props.onStartEdit(log)}
             >
-              <Octicon icon={getIconByName("pencil")} />
+              <PencilIcon />
             </Button>
             <Button
               color="link"
@@ -84,7 +84,7 @@ const LogRow: React.FunctionComponent<Props> = props => {
               disabled={props.isSaving}
               onClick={() => props.onDelete(log)}
             >
-              <Octicon icon={getIconByName("trashcan")} />
+              <TrashIcon />
             </Button>
           </>
         )}

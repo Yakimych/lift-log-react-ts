@@ -58,7 +58,7 @@ const CreateLogForm: React.FunctionComponent<Props> = props => (
         size="sm"
         disabled={!props.canCreate || props.isSaving}
       >
-        {props.isSaving && <Spinner size="sm" className="mr-2" />}
+        {props.isSaving && <Spinner size="sm" className="me-2" />}
         Create log
       </Button>
     </div>

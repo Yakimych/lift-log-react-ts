@@ -1,6 +1,6 @@
-import Octicon, { getIconByName } from "@githubprimer/octicons-react";
+import { PlusIcon, XIcon } from "@primer/octicons-react";
 import * as React from "react";
-import { Button, Input, InputGroup, InputGroupAddon } from "reactstrap";
+import { Button, Input, InputGroup } from "reactstrap";
 
 type Props = {
   onAdd: () => void;
@@ -15,7 +15,7 @@ const CustomSetsInput: React.FunctionComponent<Props> = props => (
   <>
     <div className="d-flex flex-wrap">
       {props.customSetsStrings.map((formattedSet, index) => (
-        <div key={index} className="custom-sets-input-group mr-1 mb-1">
+        <div key={index} className="custom-sets-input-group me-1 mb-1">
           <InputGroup>
             <Input
               className="set-rep-input custom-set-input"
@@ -24,16 +24,14 @@ const CustomSetsInput: React.FunctionComponent<Props> = props => (
               onChange={e => props.onChange(index, e.target.value)}
             />
             {index !== 0 && (
-              <InputGroupAddon addonType="append">
-                <div
-                  className={`input-group-text remove-icon-wrapper p-0${
-                    props.disabled ? " remove-icon-wrapper--disabled" : ""
-                  }`}
-                  onClick={props.disabled ? undefined : () => props.onRemove(index)}
-                >
-                  <Octicon icon={getIconByName("x")} />
-                </div>
-              </InputGroupAddon>
+              <div
+                className={`input-group-text remove-icon-wrapper p-0${
+                  props.disabled ? " remove-icon-wrapper--disabled" : ""
+                }`}
+                onClick={props.disabled ? undefined : () => props.onRemove(index)}
+              >
+                <XIcon />
+              </div>
             )}
           </InputGroup>
         </div>
@@ -47,7 +45,7 @@ const CustomSetsInput: React.FunctionComponent<Props> = props => (
       onClick={props.onAdd}
       disabled={!props.canAddSet}
     >
-      <Octicon icon={getIconByName("plus")} />
+      <PlusIcon />
     </Button>
   </>
 );

@@ -1,12 +1,12 @@
-import { AnyAction } from "redux";
 import { InputMode } from "../../types/liftTypes";
-import { actions } from "../dialogActions";
+import { actions, DialogAction } from "../dialogActions";
 import { dialogReducer } from "../dialogReducer";
 import { DialogState } from "../types";
 
 // Let it default to the reducer's initialState
 const emptyInitialState = (undefined as unknown) as DialogState;
-const emptyInitialAction = {} as AnyAction;
+// Redux dispatches its own init action before any of ours.
+const emptyInitialAction = ({ type: "@@INIT" } as unknown) as DialogAction;
 
 it("should be closed from the start", () => {
   const dialogState = dialogReducer(emptyInitialState, emptyInitialAction);

@@ -1,6 +1,6 @@
 import { applyMiddleware, combineReducers, createStore } from "redux";
-import { composeWithDevTools } from "redux-devtools-extension";
-import thunkMiddleware from "redux-thunk";
+import { composeWithDevTools } from "@redux-devtools/extension";
+import { withExtraArgument } from "redux-thunk";
 import LiftLogService from "../services/liftLogService";
 import { dialogReducer } from "../store/dialogReducer";
 import { liftLogReducer } from "../store/liftLogReducer";
@@ -21,9 +21,7 @@ const composeEnhancers = composeWithDevTools({ serialize: true });
 export const configureStore = (liftLogService: LiftLogService) => {
   const store = createStore(
     rootReducer,
-    composeEnhancers(
-      applyMiddleware(thunkMiddleware.withExtraArgument(liftLogService))
-    )
+    composeEnhancers(applyMiddleware(withExtraArgument(liftLogService)))
   );
 
   // Pre-fill the last used name from a previous session here, at the

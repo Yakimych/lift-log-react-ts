@@ -60,7 +60,7 @@ const EntryModal: React.FunctionComponent<Props> = props => (
         onClick={props.onSave}
         disabled={props.isSaving || !props.canSave}
       >
-        {props.isSaving && <Spinner size="sm" className="mr-2" />}
+        {props.isSaving && <Spinner size="sm" className="me-2" />}
         {props.isSaving ? "Saving..." : "Save"}
       </Button>
       <Button color="secondary" onClick={props.close} disabled={props.isSaving}>

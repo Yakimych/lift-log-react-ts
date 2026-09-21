@@ -1,12 +1,12 @@
-import { AnyAction } from "redux";
 import { LiftLogSummary } from "../../types/liftTypes";
-import { actions } from "../logListActions";
+import { actions, LogListAction } from "../logListActions";
 import { logListReducer } from "../logListReducer";
 import { LogListState } from "../types";
 
 // Let it default to the reducer's initialState
 const emptyInitialState = (undefined as unknown) as LogListState;
-const emptyInitialAction = {} as AnyAction;
+// Redux dispatches its own init action before any of ours.
+const emptyInitialAction = ({ type: "@@INIT" } as unknown) as LogListAction;
 
 const squats: LiftLogSummary = {
   name: "squats",

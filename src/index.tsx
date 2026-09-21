@@ -1,7 +1,7 @@
 import * as React from "react";
-import * as ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import { Provider } from "react-redux";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import App from "./components/App";
 import LogList from "./components/LogList";
@@ -12,14 +12,13 @@ import LiftLogService from "./services/liftLogService";
 const baseUrl = `${import.meta.env.REACT_APP_API_BASE_URL}/liftlogs`;
 const store = configureStore(new LiftLogService(baseUrl));
 
-ReactDOM.render(
+createRoot(document.getElementById("root") as HTMLElement).render(
   <Provider store={store}>
     <BrowserRouter>
-      <Switch>
-        <Route exact={true} path="/" component={LogList} />
-        <Route path="/:logName" component={App} />
-      </Switch>
+      <Routes>
+        <Route path="/" element={<LogList />} />
+        <Route path="/:logName" element={<App />} />
+      </Routes>
     </BrowserRouter>
-  </Provider>,
-  document.getElementById("root") as HTMLElement
+  </Provider>
 );

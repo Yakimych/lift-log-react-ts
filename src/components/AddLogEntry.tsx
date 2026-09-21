@@ -30,7 +30,7 @@ const AddLogEntry: React.FunctionComponent<AddLogEntryProps> = props => (
     <div className="row">
       <EntryFields disabled={props.disabled} />
       <div className="col d-flex align-items-center">
-        <span className="mr-2">{formatRepsSets(props.setsReps)}</span>
+        <span className="me-2">{formatRepsSets(props.setsReps)}</span>
         <Button
           disabled={props.disabled || !props.canAddEntry}
           size="sm"

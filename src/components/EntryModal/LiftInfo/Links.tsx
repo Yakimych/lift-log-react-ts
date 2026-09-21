@@ -1,13 +1,7 @@
-import Octicon, { getIconByName } from "@githubprimer/octicons-react";
+import { XIcon } from "@primer/octicons-react";
 import * as React from "react";
 import AnimateHeightImport from "react-animate-height";
-import {
-  Button,
-  FormText,
-  Input,
-  InputGroup,
-  InputGroupAddon
-} from "reactstrap";
+import { Button, FormText, Input, InputGroup } from "reactstrap";
 import { MAX_NUMBER_OF_LINKS } from "../../../store/dialogReducer";
 import { LiftInfoLink } from "../../../types/liftTypes";
 import { interopDefault } from "../../../utils/interopDefault";
@@ -53,7 +47,7 @@ const Links: React.FunctionComponent<LinksProps> = props => {
             <Input
               bsSize="sm"
               name="text"
-              className="mr-3 w-50"
+              className="me-3 w-50"
               defaultValue={link.text}
               maxLength={20}
               placeholder="Display text"
@@ -70,18 +64,16 @@ const Links: React.FunctionComponent<LinksProps> = props => {
                 type="text"
                 onBlur={e => props.onChangeLinkUrl(index, e.target.value)}
               />
-              <InputGroupAddon addonType="append">
-                <div
-                  className={`input-group-text remove-icon-wrapper${
-                    props.disabled ? " remove-icon-wrapper--disabled" : ""
-                  }`}
-                  onClick={
-                    props.disabled ? undefined : () => props.onRemoveLink(index)
-                  }
-                >
-                  <Octicon icon={getIconByName("x")} />
-                </div>
-              </InputGroupAddon>
+              <div
+                className={`input-group-text remove-icon-wrapper${
+                  props.disabled ? " remove-icon-wrapper--disabled" : ""
+                }`}
+                onClick={
+                  props.disabled ? undefined : () => props.onRemoveLink(index)
+                }
+              >
+                <XIcon />
+              </div>
             </InputGroup>
           </div>
         ))}

@@ -26,7 +26,7 @@
 
 .custom-sets-input-group .remove-icon-wrapper {
   width: 21px;
-  height: 100%;
+  align-self: stretch;
 }
 
 /* negative left and right margins */

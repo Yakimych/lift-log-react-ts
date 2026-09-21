@@ -15,6 +15,7 @@ type Props = {
   confirmLabel?: string;
   onConfirm: () => void;
   onCancel: () => void;
+  children?: React.ReactNode;
 };
 
 const ConfirmModal: React.FunctionComponent<Props> = props => (
@@ -30,7 +31,7 @@ const ConfirmModal: React.FunctionComponent<Props> = props => (
     <ModalBody>{props.children}</ModalBody>
     <ModalFooter>
       <Button color="danger" onClick={props.onConfirm} disabled={props.isBusy}>
-        {props.isBusy && <Spinner size="sm" className="mr-2" />}
+        {props.isBusy && <Spinner size="sm" className="me-2" />}
         {props.confirmLabel || "Delete"}
       </Button>
       <Button color="secondary" onClick={props.onCancel} disabled={props.isBusy}>

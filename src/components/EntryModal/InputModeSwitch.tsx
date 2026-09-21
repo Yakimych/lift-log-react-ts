@@ -13,6 +13,7 @@ type ButtonProps = {
   buttonMode: InputMode;
   currentMode: InputMode;
   onClick: (mode: InputMode) => void;
+  children?: React.ReactNode;
 };
 
 const InputModeButton: React.FC<ButtonProps> = props => {

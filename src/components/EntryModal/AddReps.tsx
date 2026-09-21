@@ -41,7 +41,7 @@ const AddReps: React.FunctionComponent<Props> = props => (
         mode={props.setsReps.mode}
         onChange={props.onInputModeChange}
       />
-      <div className="lead ml-4">{formatRepsSets(props.setsReps)}</div>
+      <div className="lead ms-4">{formatRepsSets(props.setsReps)}</div>
     </div>
     <div className="my-3">
       {isSetsRepsMode(props) ? (

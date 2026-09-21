@@ -1,4 +1,4 @@
-import Octicon, { getIconByName } from "@githubprimer/octicons-react";
+import { PencilIcon, TrashIcon } from "@primer/octicons-react";
 import * as React from "react";
 import { Button } from "reactstrap";
 import { StoredLiftLogEntry } from "../types/liftTypes";
@@ -33,7 +33,7 @@ const LiftRow: React.FunctionComponent<Props> = props => {
             disabled={props.disabled}
             onClick={() => props.onEdit(entry)}
           >
-            <Octicon icon={getIconByName("pencil")} />
+            <PencilIcon />
           </Button>
           <Button
             color="link"
@@ -44,7 +44,7 @@ const LiftRow: React.FunctionComponent<Props> = props => {
             disabled={props.disabled}
             onClick={() => props.onDelete(entry)}
           >
-            <Octicon icon={getIconByName("trashcan")} />
+            <TrashIcon />
           </Button>
         </span>
       </span>

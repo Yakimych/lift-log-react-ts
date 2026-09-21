@@ -1,9 +1,10 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { Provider } from "react-redux";
-import { BrowserRouter, Route } from "react-router-dom";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import App from "./components/App";
+import LogList from "./components/LogList";
 import "./index.css";
 import { configureStore } from "./redux/store";
 import LiftLogService from "./services/liftLogService";
@@ -14,7 +15,10 @@ const store = configureStore(new LiftLogService(baseUrl));
 ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>
-      <Route component={App} />
+      <Switch>
+        <Route exact={true} path="/" component={LogList} />
+        <Route path="/:logName" component={App} />
+      </Switch>
     </BrowserRouter>
   </Provider>,
   document.getElementById("root") as HTMLElement

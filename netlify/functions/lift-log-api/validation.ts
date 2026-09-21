@@ -30,6 +30,10 @@ export const createLiftLogSchema = z.object({
   name: z.string().min(2).max(20),
 });
 
+export const updateLiftLogSchema = z.object({
+  title: z.string().max(50),
+});
+
 export const liftLogEntrySchema = z
   .object({
     name: z.string().max(30),

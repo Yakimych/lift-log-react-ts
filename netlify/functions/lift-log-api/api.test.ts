@@ -9,6 +9,7 @@ import {
   type ApiLiftLogEntry,
   type CreateLiftLog,
   type LiftLogRepository,
+  type UpdateLiftLog,
 } from "./types";
 
 const baseUrl = "https://lift-log.example";
@@ -25,15 +26,19 @@ const sampleEntry = {
 const sampleLog = {
   name: "squats",
   title: "Squats",
-  entries: [sampleEntry],
+  entries: [{ id: 0, ...sampleEntry }],
 };
 
 const makeRequest = (path: string, init?: RequestInit): Request =>
   new Request(`${baseUrl}${path}`, init);
 
-const jsonRequest = (path: string, body: unknown): Request =>
+const jsonRequest = (
+  path: string,
+  body: unknown,
+  method = "POST",
+): Request =>
   makeRequest(path, {
-    method: "POST",
+    method,
     headers: { "content-type": "application/json" },
     body: JSON.stringify(body),
   });
@@ -47,10 +52,38 @@ const createRepository = () => ({
     void logName;
     return sampleLog;
   }),
+  updateLog: vi.fn(async (logName: string, log: UpdateLiftLog) => {
+    void logName;
+    void log;
+    return true;
+  }),
+  deleteLog: vi.fn(async (logName: string) => {
+    void logName;
+    return true;
+  }),
   addEntry: vi.fn(
     async (logName: string, entry: ApiLiftLogEntry): Promise<boolean> => {
       void logName;
       void entry;
+      return true;
+    },
+  ),
+  updateEntry: vi.fn(
+    async (
+      logName: string,
+      entryId: number,
+      entry: ApiLiftLogEntry,
+    ): Promise<boolean> => {
+      void logName;
+      void entryId;
+      void entry;
+      return true;
+    },
+  ),
+  deleteEntry: vi.fn(
+    async (logName: string, entryId: number): Promise<boolean> => {
+      void logName;
+      void entryId;
       return true;
     },
   ),
@@ -385,15 +418,130 @@ describe("Lift Log API handler", () => {
     expect(rejected.status).toBe(403);
   });
 
+
+  it("renames a log title and returns an empty 204", async () => {
+    const response = await handle(
+      jsonRequest("/api/LiftLogs/SqUaTs", { title: "Back Squats" }, "PUT"),
+    );
+
+    expect(response.status).toBe(204);
+    expect(await response.text()).toBe("");
+    expect(repository.updateLog).toHaveBeenCalledWith("squats", {
+      title: "Back Squats",
+    });
+  });
+
+  it("returns 404 when renaming a missing log and 400 for an invalid title", async () => {
+    repository.updateLog.mockResolvedValueOnce(false);
+    const missing = await handle(
+      jsonRequest("/api/LiftLogs/missing", { title: "Nope" }, "PUT"),
+    );
+    expect(missing.status).toBe(404);
+
+    const invalid = await handle(
+      jsonRequest("/api/LiftLogs/squats", { title: "x".repeat(51) }, "PUT"),
+    );
+    expect(invalid.status).toBe(400);
+  });
+
+  it("deletes a log and reports a missing one as 404", async () => {
+    const deleted = await handle(
+      makeRequest("/api/LiftLogs/SqUaTs", { method: "DELETE" }),
+    );
+    expect(deleted.status).toBe(204);
+    expect(repository.deleteLog).toHaveBeenCalledWith("squats");
+
+    repository.deleteLog.mockResolvedValueOnce(false);
+    const missing = await handle(
+      makeRequest("/api/LiftLogs/missing", { method: "DELETE" }),
+    );
+    expect(missing.status).toBe(404);
+  });
+
+  it("updates one entry by its ordinal id with normalized nulls", async () => {
+    const response = await handle(
+      jsonRequest(
+        "/API/LiftLogs/SqUaTs/LiFtS/3",
+        { ...sampleEntry, comment: undefined, links: undefined },
+        "PUT",
+      ),
+    );
+
+    expect(response.status).toBe(204);
+    expect(await response.text()).toBe("");
+    expect(repository.updateEntry).toHaveBeenCalledWith("squats", 3, {
+      name: sampleEntry.name,
+      weightLifted: sampleEntry.weightLifted,
+      date: sampleEntry.date,
+      sets: sampleEntry.sets,
+      comment: null,
+      links: null,
+    });
+  });
+
+  it("returns 404 when updating a missing entry and validates the payload", async () => {
+    repository.updateEntry.mockResolvedValueOnce(false);
+    const missing = await handle(
+      jsonRequest("/api/LiftLogs/squats/Lifts/9", sampleEntry, "PUT"),
+    );
+    expect(missing.status).toBe(404);
+
+    const invalid = await handle(
+      jsonRequest(
+        "/api/LiftLogs/squats/Lifts/9",
+        { ...sampleEntry, weightLifted: 1000 },
+        "PUT",
+      ),
+    );
+    expect(invalid.status).toBe(400);
+  });
+
+  it("deletes one entry and reports a missing one as 404", async () => {
+    const deleted = await handle(
+      makeRequest("/api/LiftLogs/SqUaTs/Lifts/2", { method: "DELETE" }),
+    );
+    expect(deleted.status).toBe(204);
+    expect(repository.deleteEntry).toHaveBeenCalledWith("squats", 2);
+
+    repository.deleteEntry.mockResolvedValueOnce(false);
+    const missing = await handle(
+      makeRequest("/api/LiftLogs/squats/Lifts/2", { method: "DELETE" }),
+    );
+    expect(missing.status).toBe(404);
+  });
+
+  it.each(["abc", "-1", "1.5"])(
+    "rejects the non-ordinal entry id %s before touching the database",
+    async (entryId) => {
+      const response = await handle(
+        makeRequest(`/api/LiftLogs/squats/Lifts/${entryId}`, {
+          method: "DELETE",
+        }),
+      );
+
+      expect(response.status).toBe(400);
+      expect(repository.deleteEntry).not.toHaveBeenCalled();
+    },
+  );
+
+  it("rejects unsupported methods on a single entry", async () => {
+    const response = await handle(
+      makeRequest("/api/LiftLogs/squats/Lifts/1", { method: "GET" }),
+    );
+
+    expect(response.status).toBe(405);
+    expect(response.headers.get("allow")).toBe("PUT, DELETE, OPTIONS");
+  });
+
   it("returns empty 404/405 responses for unsupported routes and methods", async () => {
     const notFound = await handle(makeRequest("/api/unknown"));
     expect(notFound.status).toBe(404);
     expect(await notFound.text()).toBe("");
 
     const notAllowed = await handle(
-      makeRequest("/api/LiftLogs/squats", { method: "DELETE" }),
+      makeRequest("/api/LiftLogs/squats", { method: "PATCH" }),
     );
     expect(notAllowed.status).toBe(405);
-    expect(notAllowed.headers.get("allow")).toBe("GET, OPTIONS");
+    expect(notAllowed.headers.get("allow")).toBe("GET, PUT, DELETE, OPTIONS");
   });
 });

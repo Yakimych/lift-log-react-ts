@@ -68,7 +68,7 @@ integrationDescribe("MongoLiftLogRepository with MongoDB 8", () => {
 
     const aggregate = await repository.getLog("SQUATS");
     expect(aggregate?.entries).toHaveLength(20);
-    expect(aggregate?.entries[0]).toEqual(duplicateEntry);
+    expect(aggregate?.entries[0]).toEqual({ id: 0, ...duplicateEntry });
     expect(JSON.stringify(aggregate)).not.toContain("_id");
   });
 
@@ -91,6 +91,101 @@ integrationDescribe("MongoLiftLogRepository with MongoDB 8", () => {
 
     expect(new Set(ordinals).size).toBe(ordinals.length);
     expect(ordinals).toEqual(Array.from({ length: 13 }, (_, value) => value));
+  });
+
+  it("edits and deletes one entry by its ordinal without shifting the others", async () => {
+    await repository.createLog({ name: "edits", title: "Edits" });
+    for (const weightLifted of [100, 110, 120]) {
+      await repository.addEntry("edits", {
+        name: "Ada",
+        weightLifted,
+        date: "2026-07-12T08:00:00.000Z",
+        sets: [{ numberOfReps: 5, rpe: null }],
+        comment: null,
+        links: null,
+      });
+    }
+
+    expect(
+      await repository.updateEntry("EDITS", 1, {
+        name: "Grace",
+        weightLifted: 115,
+        date: "2026-07-13T08:00:00.000Z",
+        sets: [{ numberOfReps: 3, rpe: 9 }],
+        comment: "Edited",
+        links: [{ text: "Video", url: "https://example.com" }],
+      }),
+    ).toBe(true);
+
+    expect(await repository.deleteEntry("edits", 0)).toBe(true);
+    expect(await repository.deleteEntry("edits", 0)).toBe(false);
+
+    const log = await repository.getLog("edits");
+    expect(log?.entries).toEqual([
+      {
+        id: 1,
+        name: "Grace",
+        weightLifted: 115,
+        date: "2026-07-13T08:00:00.000Z",
+        sets: [{ numberOfReps: 3, rpe: 9 }],
+        comment: "Edited",
+        links: [{ text: "Video", url: "https://example.com" }],
+      },
+      {
+        id: 2,
+        name: "Ada",
+        weightLifted: 120,
+        date: "2026-07-12T08:00:00.000Z",
+        sets: [{ numberOfReps: 5, rpe: null }],
+        comment: null,
+        links: null,
+      },
+    ]);
+
+    // New entries keep taking fresh ordinals, so a deleted id is never reused.
+    await repository.addEntry("edits", {
+      name: "Ada",
+      weightLifted: 130,
+      date: "2026-07-14T08:00:00.000Z",
+      sets: [],
+      comment: null,
+      links: null,
+    });
+    const reloaded = await repository.getLog("edits");
+    expect(reloaded?.entries.map((entry) => entry.id)).toEqual([1, 2, 3]);
+  });
+
+  it("renames a log title and deletes a log together with its entries", async () => {
+    await repository.createLog({ name: "doomed", title: "Doomed" });
+    await repository.addEntry("doomed", {
+      name: "Ada",
+      weightLifted: 100,
+      date: "2026-07-12T08:00:00.000Z",
+      sets: [],
+      comment: null,
+      links: null,
+    });
+
+    expect(await repository.updateLog("DOOMED", { title: "Renamed" })).toBe(
+      true,
+    );
+    expect((await repository.getLog("doomed"))?.title).toBe("Renamed");
+    expect(await repository.updateLog("missing", { title: "Nope" })).toBe(
+      false,
+    );
+
+    const logDocument = await database
+      .collection(COLLECTION_NAMES.logs)
+      .findOne({ name: "doomed" });
+
+    expect(await repository.deleteLog("DoOmEd")).toBe(true);
+    expect(await repository.getLog("doomed")).toBeNull();
+    expect(
+      await database
+        .collection(COLLECTION_NAMES.logEntries)
+        .countDocuments({ logId: logDocument?._id }),
+    ).toBe(0);
+    expect(await repository.deleteLog("doomed")).toBe(false);
   });
 
   it("does not create an entry for a missing log", async () => {

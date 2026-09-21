@@ -17,10 +17,18 @@ export type ApiLiftLogEntry = {
   links: ApiLink[] | null;
 };
 
+/**
+ * Entries are addressable by their per-log ordinal, which is what edit and
+ * delete requests refer to.
+ */
+export type ApiStoredLiftLogEntry = ApiLiftLogEntry & {
+  id: number;
+};
+
 export type ApiLiftLog = {
   name: string;
   title: string;
-  entries: ApiLiftLogEntry[];
+  entries: ApiStoredLiftLogEntry[];
 };
 
 export type CreateLiftLog = {
@@ -28,11 +36,23 @@ export type CreateLiftLog = {
   title: string;
 };
 
+export type UpdateLiftLog = {
+  title: string;
+};
+
 export interface LiftLogRepository {
   createLog(log: CreateLiftLog): Promise<void>;
   getAllLogs(): Promise<ApiLiftLog[]>;
   getLog(logName: string): Promise<ApiLiftLog | null>;
+  updateLog(logName: string, log: UpdateLiftLog): Promise<boolean>;
+  deleteLog(logName: string): Promise<boolean>;
   addEntry(logName: string, entry: ApiLiftLogEntry): Promise<boolean>;
+  updateEntry(
+    logName: string,
+    entryId: number,
+    entry: ApiLiftLogEntry,
+  ): Promise<boolean>;
+  deleteEntry(logName: string, entryId: number): Promise<boolean>;
   ping(): Promise<void>;
 }
 

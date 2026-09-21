@@ -20,6 +20,11 @@ type LiftLogEntry = {
   sets: ReadonlyArray<Set>;
 } & LiftInfo;
 
+/** An entry that has been saved, and can therefore be edited or deleted. */
+type StoredLiftLogEntry = LiftLogEntry & {
+  id: number;
+};
+
 enum InputMode {
   SetsReps,
   CustomReps
@@ -35,8 +40,24 @@ type SetsReps = {
 type LiftLog = {
   name: string;
   title: string;
-  entries: LiftLogEntry[];
+  entries: StoredLiftLogEntry[];
+};
+
+/** A lift log without its entries, as shown on the list of all logs. */
+type LiftLogSummary = {
+  name: string;
+  title: string;
+  entryCount: number;
 };
 
 export { InputMode };
-export type { LiftLog, LiftLogEntry, Set, SetsReps, LiftInfo, LiftInfoLink };
+export type {
+  LiftLog,
+  LiftLogEntry,
+  LiftLogSummary,
+  Set,
+  SetsReps,
+  StoredLiftLogEntry,
+  LiftInfo,
+  LiftInfoLink
+};

@@ -1,88 +1,38 @@
 import * as React from "react";
-import DatePickerImport from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import { connect } from "react-redux";
 import { Button } from "reactstrap";
 import { Dispatch } from "redux";
 import { actions as dialogActions } from "../store/dialogActions";
-import { actions as newEntryActions } from "../store/newEntryActions";
-import { getSetsReps } from "../store/selectors";
+import { getCanSaveEntry, getSetsReps } from "../store/selectors";
 import { AppState } from "../store/types";
 import { SetsReps } from "../types/liftTypes";
 import { formatRepsSets } from "../utils/liftUtils";
-import { interopDefault } from "../utils/interopDefault";
 import "./AddLogEntry.css";
-import AddRepsModal from "./AddRepsModal";
-
-const DatePicker = interopDefault(DatePickerImport);
+import EntryFields from "./EntryFields";
 
 export type StateProps = {
-  name: string;
-  date: Date | null;
-  weightLifted: number | null;
-  weightLiftedStringValue: string;
-  addRepsModalIsOpen: boolean;
+  canAddEntry: boolean;
   setsReps: SetsReps;
-  isSaving: boolean;
 };
 
 export type DispatchProps = {
-  changeName: (name: string) => void;
-  changeDate: (dateString: Date | null) => void;
-  changeWeightLifted: (weightLiftedString: string) => void;
   openDialog: () => void;
-  closeDialog: () => void;
 };
 
 type OwnProps = {
   disabled: boolean;
-  onAddEntry: () => void;
 };
 
 export type AddLogEntryProps = StateProps & DispatchProps & OwnProps;
 
-const canAddEntry = (name: string, weightLifted: number | null): boolean =>
-  name.length > 0 && weightLifted !== null;
-
 const AddLogEntry: React.FunctionComponent<AddLogEntryProps> = props => (
   <div className="add-log-entry">
     <div className="row">
-      <div className="col">
-        <DatePicker
-          disabled={props.disabled}
-          dateFormat="yyyy-MM-dd"
-          selected={props.date}
-          onChange={props.changeDate}
-          className="form-control form-control-sm log-entry-input"
-        />
-      </div>
-      <div className="col">
-        <input
-          disabled={props.disabled}
-          className="form-control form-control-sm log-entry-input"
-          type="text"
-          placeholder="Name"
-          maxLength={50}
-          value={props.name}
-          onChange={e => props.changeName(e.target.value)}
-        />
-      </div>
-      <div className="col">
-        <input
-          disabled={props.disabled}
-          className="form-control form-control-sm log-entry-input"
-          type="text"
-          placeholder="Weight"
-          value={props.weightLiftedStringValue}
-          onChange={e => props.changeWeightLifted(e.target.value)}
-        />
-      </div>
+      <EntryFields disabled={props.disabled} />
       <div className="col d-flex align-items-center">
         <span className="mr-2">{formatRepsSets(props.setsReps)}</span>
         <Button
-          disabled={
-            props.disabled || !canAddEntry(props.name, props.weightLifted)
-          }
+          disabled={props.disabled || !props.canAddEntry}
           size="sm"
           color="primary"
           onClick={props.openDialog}
@@ -91,34 +41,16 @@ const AddLogEntry: React.FunctionComponent<AddLogEntryProps> = props => (
         </Button>
       </div>
     </div>
-    <AddRepsModal
-      isOpen={props.addRepsModalIsOpen}
-      isSaving={props.isSaving}
-      close={props.closeDialog}
-      onSave={props.onAddEntry}
-    />
   </div>
 );
 
 const mapStateToProps = (state: AppState): StateProps => ({
   setsReps: getSetsReps(state),
-  addRepsModalIsOpen: state.dialogState.isOpen,
-  date: state.newEntryState.date,
-  name: state.newEntryState.name,
-  weightLifted: state.newEntryState.weightLifted,
-  weightLiftedStringValue: state.newEntryState.weightLiftedString,
-  isSaving: state.newEntryState.isSaving
+  canAddEntry: getCanSaveEntry(state)
 });
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
-  changeName: (newName: string) =>
-    dispatch(newEntryActions.changeName(newName)),
-  changeDate: (newDate: Date | null) =>
-    dispatch(newEntryActions.changeDate(newDate)),
-  changeWeightLifted: (newWeightLiftedString: string) =>
-    dispatch(newEntryActions.changeWeightLifted(newWeightLiftedString)),
-  openDialog: () => dispatch(dialogActions.open()),
-  closeDialog: () => dispatch(dialogActions.close())
+  openDialog: () => dispatch(dialogActions.open())
 });
 
 export default connect(

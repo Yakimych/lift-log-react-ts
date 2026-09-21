@@ -1,10 +1,13 @@
-import { InputMode } from "src/types/liftTypes";
+import { InputMode, StoredLiftLogEntry } from "src/types/liftTypes";
 import { ActionType, createStandardAction } from "typesafe-actions";
 
 export const actions = {
   reset: createStandardAction("dialog/RESET")(),
   open: createStandardAction("dialog/OPEN")(),
   close: createStandardAction("dialog/CLOSE")(),
+
+  /** Fills the dialog from an existing entry and opens it for editing. */
+  loadEntry: createStandardAction("dialog/LOAD_ENTRY")<StoredLiftLogEntry>(),
 
   setInputMode: createStandardAction("dialog/SET_INPUT_MODE")<InputMode>(),
 

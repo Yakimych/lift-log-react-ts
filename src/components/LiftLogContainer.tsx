@@ -1,17 +1,20 @@
 import * as React from "react";
-import { LiftLogEntry } from "./../types/liftTypes";
+import { StoredLiftLogEntry } from "./../types/liftTypes";
 import AddLogEntry from "./AddLogEntry";
 import "./LiftLog.css";
 import LiftRow from "./LiftRow";
 
 type Props = {
   disabled: boolean;
-  entries: ReadonlyArray<LiftLogEntry>;
-  onAddEntry: () => void;
+  entries: ReadonlyArray<StoredLiftLogEntry>;
+  onEditEntry: (entry: StoredLiftLogEntry) => void;
+  onDeleteEntry: (entry: StoredLiftLogEntry) => void;
 };
 
-const byDateNewestFirst = (entry: LiftLogEntry, otherEntry: LiftLogEntry) =>
-  otherEntry.date.getTime() - entry.date.getTime();
+const byDateNewestFirst = (
+  entry: StoredLiftLogEntry,
+  otherEntry: StoredLiftLogEntry
+) => otherEntry.date.getTime() - entry.date.getTime();
 
 const LiftLogContainer: React.FunctionComponent<Props> = props => {
   return (
@@ -22,13 +25,19 @@ const LiftLogContainer: React.FunctionComponent<Props> = props => {
         <h6 className="col">Weight lifted (kg)</h6>
         <h6 className="col">Sets/Reps</h6>
       </div>
-      <AddLogEntry disabled={props.disabled} onAddEntry={props.onAddEntry} />
+      <AddLogEntry disabled={props.disabled} />
       <div className="lifts">
         {props.entries
           .concat()
           .sort(byDateNewestFirst)
-          .map((liftLogEntry, index) => (
-            <LiftRow {...liftLogEntry} key={index} />
+          .map(liftLogEntry => (
+            <LiftRow
+              key={liftLogEntry.id}
+              entry={liftLogEntry}
+              disabled={props.disabled}
+              onEdit={props.onEditEntry}
+              onDelete={props.onDeleteEntry}
+            />
           ))}
       </div>
     </div>

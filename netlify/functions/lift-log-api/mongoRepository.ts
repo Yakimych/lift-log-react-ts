@@ -11,8 +11,10 @@ import {
   type ApiLiftLogEntry,
   type ApiLink,
   type ApiSet,
+  type ApiStoredLiftLogEntry,
   type CreateLiftLog,
   type LiftLogRepository,
+  type UpdateLiftLog,
 } from "./types";
 
 export const COLLECTION_NAMES = {
@@ -87,7 +89,8 @@ const normalizeLogName = (logName: string): string => logName.toLowerCase();
 const isDuplicateKeyError = (error: unknown): error is MongoServerError =>
   error instanceof MongoServerError && error.code === 11000;
 
-const toApiEntry = (entry: LogEntryDocument): ApiLiftLogEntry => ({
+const toApiEntry = (entry: LogEntryDocument): ApiStoredLiftLogEntry => ({
+  id: entry.ordinal,
   name: entry.name,
   weightLifted: entry.weightLifted,
   date: entry.date.toISOString(),
@@ -165,7 +168,7 @@ export class MongoLiftLogRepository implements LiftLogRepository {
       .find({ logId: { $in: logIds } })
       .sort({ logId: 1, ordinal: 1 })
       .toArray();
-    const entriesByLogId = new Map<string, ApiLiftLogEntry[]>();
+    const entriesByLogId = new Map<string, ApiStoredLiftLogEntry[]>();
 
     for (const entry of entries) {
       const key = entry.logId.toHexString();
@@ -199,6 +202,36 @@ export class MongoLiftLogRepository implements LiftLogRepository {
     };
   }
 
+  public async updateLog(
+    logName: string,
+    log: UpdateLiftLog,
+  ): Promise<boolean> {
+    const result = await this.logs.updateOne(
+      { name: normalizeLogName(logName) },
+      { $set: { title: log.title } },
+    );
+
+    return result.matchedCount > 0;
+  }
+
+  public async deleteLog(logName: string): Promise<boolean> {
+    const log = await this.logs.findOne(
+      { name: normalizeLogName(logName) },
+      { projection: { _id: 1 } },
+    );
+
+    if (!log) {
+      return false;
+    }
+
+    // Entries go first so a failure halfway through never leaves entries
+    // orphaned by a log that is already gone.
+    await this.logEntries.deleteMany({ logId: log._id });
+    await this.logs.deleteOne({ _id: log._id });
+
+    return true;
+  }
+
   public async addEntry(
     logName: string,
     entry: ApiLiftLogEntry,
@@ -230,6 +263,55 @@ export class MongoLiftLogRepository implements LiftLogRepository {
     });
 
     return true;
+  }
+
+  public async updateEntry(
+    logName: string,
+    entryId: number,
+    entry: ApiLiftLogEntry,
+  ): Promise<boolean> {
+    const log = await this.logs.findOne(
+      { name: normalizeLogName(logName) },
+      { projection: { _id: 1 } },
+    );
+
+    if (!log) {
+      return false;
+    }
+
+    const result = await this.logEntries.updateOne(
+      { logId: log._id, ordinal: entryId },
+      {
+        $set: {
+          name: entry.name,
+          weightLifted: entry.weightLifted,
+          date: new Date(entry.date),
+          sets: entry.sets,
+          comment: entry.comment,
+          links: entry.links,
+        },
+      },
+    );
+
+    return result.matchedCount > 0;
+  }
+
+  public async deleteEntry(logName: string, entryId: number): Promise<boolean> {
+    const log = await this.logs.findOne(
+      { name: normalizeLogName(logName) },
+      { projection: { _id: 1 } },
+    );
+
+    if (!log) {
+      return false;
+    }
+
+    const result = await this.logEntries.deleteOne({
+      logId: log._id,
+      ordinal: entryId,
+    });
+
+    return result.deletedCount > 0;
   }
 
   public async ping(): Promise<void> {

@@ -59,3 +59,15 @@
 .btn-primary--lighter:hover {
   background-color: #449eff;
 }
+
+.App-title {
+  margin: 0;
+  font-size: 1.75rem;
+}
+
+.App-nav-link,
+.App-nav-link:hover {
+  color: #ffffff;
+  text-decoration: underline;
+  white-space: nowrap;
+}

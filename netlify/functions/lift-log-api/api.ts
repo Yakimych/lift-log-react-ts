@@ -4,6 +4,7 @@ import {
   createLiftLogSchema,
   liftLogEntrySchema,
   toValidationIssues,
+  updateLiftLogSchema,
   type ValidationIssue,
 } from "./validation";
 
@@ -108,6 +109,11 @@ const decodeLogName = (encodedLogName: string): string | null => {
   }
 };
 
+const parseEntryId = (rawEntryId: string): number | null => {
+  const entryId = Number(rawEntryId);
+  return Number.isInteger(entryId) && entryId >= 0 ? entryId : null;
+};
+
 const normalizedPath = (request: Request): string => {
   const pathname = new URL(request.url).pathname;
   return pathname.length > 1 ? pathname.replace(/\/+$/, "") : pathname;
@@ -130,7 +136,8 @@ export const createApiHandler = (dependencies: ApiDependencies) => {
         "access-control-request-headers",
       );
       const headers = new Headers({
-        "access-control-allow-methods": "GET, POST, OPTIONS",
+        "access-control-allow-methods":
+          "GET, POST, PUT, DELETE, OPTIONS",
         "access-control-max-age": "600",
       });
       if (requestedHeaders) {
@@ -221,6 +228,57 @@ export const createApiHandler = (dependencies: ApiDependencies) => {
         return finish(methodNotAllowed("GET, POST, OPTIONS"));
       }
 
+      const entryMatch = path.match(
+        /^\/api\/liftlogs\/([^/]+)\/lifts\/([^/]+)$/i,
+      );
+      if (entryMatch) {
+        if (request.method !== "PUT" && request.method !== "DELETE") {
+          return finish(methodNotAllowed("PUT, DELETE, OPTIONS"));
+        }
+
+        const logName = decodeLogName(entryMatch[1]);
+        if (logName === null) {
+          return finish(problemResponse(400, "Invalid log name"));
+        }
+
+        const entryId = parseEntryId(entryMatch[2]);
+        if (entryId === null) {
+          return finish(problemResponse(400, "Invalid entry id"));
+        }
+
+        const repository = await dependencies.getRepository();
+
+        if (request.method === "DELETE") {
+          const wasDeleted = await repository.deleteEntry(logName, entryId);
+          return finish(emptyResponse(wasDeleted ? 204 : 404));
+        }
+
+        let body: unknown;
+        try {
+          body = await parseJson(request);
+        } catch {
+          return finish(problemResponse(400, "Invalid JSON request body"));
+        }
+
+        const result = liftLogEntrySchema.safeParse(body);
+        if (!result.success) {
+          return finish(
+            problemResponse(
+              400,
+              "Validation failed",
+              toValidationIssues(result.error.issues),
+            ),
+          );
+        }
+
+        const wasUpdated = await repository.updateEntry(
+          logName,
+          entryId,
+          result.data,
+        );
+        return finish(emptyResponse(wasUpdated ? 204 : 404));
+      }
+
       const addEntryMatch = path.match(/^\/api\/liftlogs\/([^/]+)\/lifts$/i);
       if (addEntryMatch) {
         if (request.method !== "POST") {
@@ -255,20 +313,49 @@ export const createApiHandler = (dependencies: ApiDependencies) => {
         return finish(emptyResponse(wasAdded ? 201 : 404));
       }
 
-      const getLogMatch = path.match(/^\/api\/liftlogs\/([^/]+)$/i);
-      if (getLogMatch) {
-        if (request.method !== "GET") {
-          return finish(methodNotAllowed("GET, OPTIONS"));
-        }
-
-        const logName = decodeLogName(getLogMatch[1]);
+      const logMatch = path.match(/^\/api\/liftlogs\/([^/]+)$/i);
+      if (logMatch) {
+        const logName = decodeLogName(logMatch[1]);
         if (logName === null) {
           return finish(problemResponse(400, "Invalid log name"));
         }
 
         const repository = await dependencies.getRepository();
-        const log = await repository.getLog(logName);
-        return finish(log ? jsonResponse(log) : emptyResponse(404));
+
+        if (request.method === "GET") {
+          const log = await repository.getLog(logName);
+          return finish(log ? jsonResponse(log) : emptyResponse(404));
+        }
+
+        if (request.method === "PUT") {
+          let body: unknown;
+          try {
+            body = await parseJson(request);
+          } catch {
+            return finish(problemResponse(400, "Invalid JSON request body"));
+          }
+
+          const result = updateLiftLogSchema.safeParse(body);
+          if (!result.success) {
+            return finish(
+              problemResponse(
+                400,
+                "Validation failed",
+                toValidationIssues(result.error.issues),
+              ),
+            );
+          }
+
+          const wasUpdated = await repository.updateLog(logName, result.data);
+          return finish(emptyResponse(wasUpdated ? 204 : 404));
+        }
+
+        if (request.method === "DELETE") {
+          const wasDeleted = await repository.deleteLog(logName);
+          return finish(emptyResponse(wasDeleted ? 204 : 404));
+        }
+
+        return finish(methodNotAllowed("GET, PUT, DELETE, OPTIONS"));
       }
 
       return finish(emptyResponse(404));

@@ -1,6 +1,7 @@
 import { getType } from "typesafe-actions";
 import { InputMode, Set } from "../types/liftTypes";
 import {
+  allRepsAreEqualAndWithoutRpes,
   DEFAULT_REP_VALUE,
   DEFAULT_SET_VALUE,
   formatSet,
@@ -58,6 +59,32 @@ export const dialogReducer = (
         ...state,
         isOpen: false
       };
+    case getType(actions.loadEntry): {
+      const entry = action.payload;
+      // Sets that are all the same and carry no RPE round-trip through the
+      // simpler standard input; anything else needs the custom one.
+      const fitsStandardInput =
+        entry.sets.length > 0 && allRepsAreEqualAndWithoutRpes(entry.sets);
+
+      return {
+        ...initialState,
+        isOpen: true,
+        inputMode: fitsStandardInput ? InputMode.SetsReps : InputMode.CustomReps,
+        numberOfSets: fitsStandardInput ? entry.sets.length : DEFAULT_SET_VALUE,
+        numberOfSetsString: fitsStandardInput
+          ? entry.sets.length.toString()
+          : DEFAULT_SET_VALUE.toString(),
+        numberOfReps: fitsStandardInput ? entry.sets[0].reps : DEFAULT_REP_VALUE,
+        numberOfRepsString: fitsStandardInput
+          ? entry.sets[0].reps.toString()
+          : DEFAULT_REP_VALUE.toString(),
+        customSets: entry.sets,
+        customSetsStrings: entry.sets.map(formatSet),
+        commentIsShown: entry.comment.length > 0,
+        comment: entry.comment,
+        links: entry.links
+      };
+    }
     case getType(actions.setInputMode): {
       const switchingToCustom =
         state.inputMode === InputMode.SetsReps &&

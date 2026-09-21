@@ -183,6 +183,7 @@ describe("MongoLiftLogRepository", () => {
       title: "Squats",
       entries: [
         {
+          id: 0,
           name: "Arnold",
           weightLifted: 100,
           date: "2026-07-11T12:00:00.000Z",

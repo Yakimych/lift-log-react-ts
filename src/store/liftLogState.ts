@@ -1,9 +1,9 @@
-import { LiftLogEntry } from "../types/liftTypes";
+import { StoredLiftLogEntry } from "../types/liftTypes";
 
 export type LiftLogState = {
   isLoading: boolean;
   networkErrorOccured: boolean;
   errorMessage?: string;
   logTitle: string;
-  logEntries: ReadonlyArray<LiftLogEntry>;
+  logEntries: ReadonlyArray<StoredLiftLogEntry>;
 };

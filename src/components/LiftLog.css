@@ -3,3 +3,16 @@
   max-width: 800px;
   margin-left: 20px;
 }
+
+.lift-row {
+  min-height: 32px;
+}
+
+.lift-row-actions {
+  white-space: nowrap;
+}
+
+/* id of the body is used to override bootstrap rules */
+#lift-log-app-body .lift-row-actions .btn-link {
+  line-height: 1;
+}

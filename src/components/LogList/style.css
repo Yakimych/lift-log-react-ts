@@ -1,0 +1,11 @@
+.create-log-form {
+  margin: 0;
+}
+
+.log-row {
+  min-height: 40px;
+}
+
+.log-row-actions {
+  white-space: nowrap;
+}

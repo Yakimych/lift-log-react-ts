@@ -13,3 +13,14 @@ export const getSetsReps = (state: AppState) => ({
   numberOfReps: state.dialogState.numberOfReps,
   customSetsStrings: state.dialogState.customSetsStrings
 });
+
+export const getIsEditingEntry = (state: AppState) =>
+  state.newEntryState.editingEntryId !== null;
+
+export const getCanSaveEntry = (state: AppState) =>
+  state.newEntryState.name.length > 0 &&
+  state.newEntryState.weightLifted !== null;
+
+export const getCanCreateLog = (state: AppState) =>
+  state.logListState.newLogName.trim().length >= 2 &&
+  state.logListState.newLogTitle.trim().length > 0;

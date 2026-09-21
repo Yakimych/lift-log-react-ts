@@ -1,5 +1,12 @@
 import axios, { AxiosResponse } from "axios";
-import { LiftInfoLink, LiftLog, LiftLogEntry, Set } from "./../types/liftTypes";
+import {
+  LiftInfoLink,
+  LiftLog,
+  LiftLogEntry,
+  LiftLogSummary,
+  Set,
+  StoredLiftLogEntry
+} from "./../types/liftTypes";
 
 type ApiSet = {
   numberOfReps: number;
@@ -15,10 +22,14 @@ type ApiLiftLogEntry = {
   links: ReadonlyArray<LiftInfoLink>;
 };
 
+type ApiStoredLiftLogEntry = ApiLiftLogEntry & {
+  id: number;
+};
+
 type ApiLiftLog = {
   name: string;
   title: string;
-  entries: ApiLiftLogEntry[];
+  entries: ApiStoredLiftLogEntry[];
 };
 
 class LiftLogService {
@@ -27,23 +38,67 @@ class LiftLogService {
     this.liftLogsUrl = url;
   }
 
+  public getLiftLogs(): Promise<ReadonlyArray<LiftLogSummary>> {
+    return axios
+      .get(this.liftLogsUrl)
+      .then((result: AxiosResponse<ApiLiftLog[]>) =>
+        result.data.map(this.toLiftLogSummary)
+      );
+  }
+
   public getLiftLog(logName: string): Promise<LiftLog> {
     return axios
       .get(this.getLogUrl(logName))
       .then((result: AxiosResponse<ApiLiftLog>) => this.toLiftLog(result.data));
   }
 
-  public addEntry(logName: string, entry: LiftLogEntry): Promise<any> {
-    return axios.post(this.addEntryUrl(logName), this.toApiLiftLogEntry(entry));
+  public createLiftLog(name: string, title: string): Promise<any> {
+    return axios.post(this.liftLogsUrl, { name, title });
   }
 
-  private getLogUrl = (logName: string) => `${this.liftLogsUrl}/${logName}`;
-  private addEntryUrl = (logName: string) => `${this.getLogUrl(logName)}/lifts`;
+  public updateLiftLog(logName: string, title: string): Promise<any> {
+    return axios.put(this.getLogUrl(logName), { title });
+  }
+
+  public deleteLiftLog(logName: string): Promise<any> {
+    return axios.delete(this.getLogUrl(logName));
+  }
+
+  public addEntry(logName: string, entry: LiftLogEntry): Promise<any> {
+    return axios.post(this.entriesUrl(logName), this.toApiLiftLogEntry(entry));
+  }
+
+  public updateEntry(
+    logName: string,
+    entryId: number,
+    entry: LiftLogEntry
+  ): Promise<any> {
+    return axios.put(
+      this.entryUrl(logName, entryId),
+      this.toApiLiftLogEntry(entry)
+    );
+  }
+
+  public deleteEntry(logName: string, entryId: number): Promise<any> {
+    return axios.delete(this.entryUrl(logName, entryId));
+  }
+
+  private getLogUrl = (logName: string) =>
+    `${this.liftLogsUrl}/${encodeURIComponent(logName)}`;
+  private entriesUrl = (logName: string) => `${this.getLogUrl(logName)}/lifts`;
+  private entryUrl = (logName: string, entryId: number) =>
+    `${this.entriesUrl(logName)}/${entryId}`;
 
   private toLiftLog = (apiLiftLog: ApiLiftLog): LiftLog => ({
     name: apiLiftLog.name,
     title: apiLiftLog.title,
     entries: apiLiftLog.entries.map(this.toLiftLogEntry)
+  });
+
+  private toLiftLogSummary = (apiLiftLog: ApiLiftLog): LiftLogSummary => ({
+    name: apiLiftLog.name,
+    title: apiLiftLog.title,
+    entryCount: apiLiftLog.entries.length
   });
 
   private toApiLiftLogEntry = (entry: LiftLogEntry): ApiLiftLogEntry => ({
@@ -61,8 +116,9 @@ class LiftLogService {
   });
 
   private toLiftLogEntry = (
-    apiLiftLogEntry: ApiLiftLogEntry
-  ): LiftLogEntry => ({
+    apiLiftLogEntry: ApiStoredLiftLogEntry
+  ): StoredLiftLogEntry => ({
+    id: apiLiftLogEntry.id,
     date: new Date(apiLiftLogEntry.date),
     name: apiLiftLogEntry.name,
     weightLifted: apiLiftLogEntry.weightLifted,

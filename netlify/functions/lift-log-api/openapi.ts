@@ -6,6 +6,10 @@ const rateLimitedResponse = {
   description: "Rate limit exceeded",
 };
 
+const noContentResponse = {
+  description: "The change was applied",
+};
+
 const internalErrorResponse = {
   description: "Internal server error",
   content: {
@@ -95,6 +99,37 @@ export const openApiDocument = {
           "500": internalErrorResponse,
         },
       },
+      put: {
+        operationId: "updateLiftLog",
+        summary: "Rename a lift log's title",
+        tags: ["LiftLogs"],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/UpdateLiftLog" },
+            },
+          },
+        },
+        responses: {
+          "204": noContentResponse,
+          "400": { description: "Invalid input" },
+          "404": emptyResponse,
+          "429": rateLimitedResponse,
+          "500": internalErrorResponse,
+        },
+      },
+      delete: {
+        operationId: "deleteLiftLog",
+        summary: "Delete a lift log and all of its entries",
+        tags: ["LiftLogs"],
+        responses: {
+          "204": noContentResponse,
+          "404": emptyResponse,
+          "429": rateLimitedResponse,
+          "500": internalErrorResponse,
+        },
+      },
     },
     "/api/LiftLogs/{logName}/Lifts": {
       parameters: [
@@ -126,6 +161,54 @@ export const openApiDocument = {
         },
       },
     },
+    "/api/LiftLogs/{logName}/Lifts/{entryId}": {
+      parameters: [
+        {
+          in: "path",
+          name: "logName",
+          required: true,
+          schema: { type: "string" },
+        },
+        {
+          in: "path",
+          name: "entryId",
+          required: true,
+          description: "The entry's stable per-log ordinal",
+          schema: { type: "integer", minimum: 0 },
+        },
+      ],
+      put: {
+        operationId: "updateLiftLogEntry",
+        summary: "Replace one entry of a lift log",
+        tags: ["LiftLogs"],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/LiftLogEntry" },
+            },
+          },
+        },
+        responses: {
+          "204": noContentResponse,
+          "400": { description: "Invalid input" },
+          "404": emptyResponse,
+          "429": rateLimitedResponse,
+          "500": internalErrorResponse,
+        },
+      },
+      delete: {
+        operationId: "deleteLiftLogEntry",
+        summary: "Delete one entry of a lift log",
+        tags: ["LiftLogs"],
+        responses: {
+          "204": noContentResponse,
+          "404": emptyResponse,
+          "429": rateLimitedResponse,
+          "500": internalErrorResponse,
+        },
+      },
+    },
     "/api/HealthCheck": {
       get: {
         operationId: "healthCheck",
@@ -150,6 +233,14 @@ export const openApiDocument = {
           name: { type: "string", minLength: 2, maxLength: 20 },
         },
       },
+      UpdateLiftLog: {
+        type: "object",
+        additionalProperties: true,
+        required: ["title"],
+        properties: {
+          title: { type: "string", maxLength: 50 },
+        },
+      },
       LiftLog: {
         type: "object",
         required: ["name", "title", "entries"],
@@ -167,6 +258,13 @@ export const openApiDocument = {
         additionalProperties: true,
         required: ["name", "weightLifted", "date", "sets"],
         properties: {
+          id: {
+            type: "integer",
+            minimum: 0,
+            readOnly: true,
+            description:
+              "Stable per-log ordinal; present on responses, ignored on input",
+          },
           name: { type: "string", maxLength: 30 },
           weightLifted: {
             type: "number",

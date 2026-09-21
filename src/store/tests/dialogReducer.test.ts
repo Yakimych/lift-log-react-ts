@@ -151,3 +151,60 @@ it("can change link text and URL", () => {
   expect(finalState.links[0].text).toEqual(expectedLinkText);
   expect(finalState.links[0].url).toEqual(expectedLinkUrl);
 });
+
+const storedEntry = {
+  id: 7,
+  date: new Date("2026-07-11T12:00:00.000Z"),
+  name: "Arnold",
+  weightLifted: 100,
+  sets: [{ reps: 5, rpe: null }, { reps: 5, rpe: null }],
+  comment: "",
+  links: []
+};
+
+it("loads uniform RPE-free sets of an existing entry into the standard input", () => {
+  const dialogState = dialogReducer(
+    emptyInitialState,
+    actions.loadEntry(storedEntry)
+  );
+
+  expect(dialogState.isOpen).toEqual(true);
+  expect(dialogState.inputMode).toEqual(InputMode.SetsReps);
+  expect(dialogState.numberOfSets).toEqual(2);
+  expect(dialogState.numberOfSetsString).toEqual("2");
+  expect(dialogState.numberOfReps).toEqual(5);
+  expect(dialogState.numberOfRepsString).toEqual("5");
+  expect(dialogState.commentIsShown).toEqual(false);
+});
+
+it("loads uneven sets of an existing entry into the custom input", () => {
+  const dialogState = dialogReducer(
+    emptyInitialState,
+    actions.loadEntry({
+      ...storedEntry,
+      sets: [{ reps: 5, rpe: 9 }, { reps: 3, rpe: null }],
+      comment: "Heavy",
+      links: [{ text: "Video", url: "https://example.com" }]
+    })
+  );
+
+  expect(dialogState.inputMode).toEqual(InputMode.CustomReps);
+  expect(dialogState.customSetsStrings).toEqual(["5@9", "3"]);
+  expect(dialogState.comment).toEqual("Heavy");
+  expect(dialogState.commentIsShown).toEqual(true);
+  expect(dialogState.links).toEqual([
+    { text: "Video", url: "https://example.com" }
+  ]);
+});
+
+it("discards any leftover dialog state when loading an entry", () => {
+  const dirtyState = dialogReducer(
+    dialogReducer(emptyInitialState, actions.showComment()),
+    actions.changeComment("Leftover")
+  );
+
+  const dialogState = dialogReducer(dirtyState, actions.loadEntry(storedEntry));
+
+  expect(dialogState.comment).toEqual("");
+  expect(dialogState.commentIsShown).toEqual(false);
+});

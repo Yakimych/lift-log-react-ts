@@ -18,7 +18,7 @@ const CustomSetsInput: React.FunctionComponent<Props> = props => (
         <div key={index} className="custom-sets-input-group mr-1 mb-1">
           <InputGroup>
             <Input
-              className="set-rep-input"
+              className="set-rep-input custom-set-input"
               bsSize="sm"
               value={formattedSet}
               onChange={e => props.onChange(index, e.target.value)}

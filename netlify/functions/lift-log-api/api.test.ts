@@ -7,6 +7,7 @@ import {
   DuplicateLogError,
   type ApiLiftLog,
   type ApiLiftLogEntry,
+  type AuthSession,
   type CreateLiftLog,
   type LiftLogRepository,
   type UpdateLiftLog,
@@ -90,6 +91,37 @@ const createRepository = () => ({
   ping: vi.fn(async () => undefined),
 });
 
+const adminSession: AuthSession = {
+  userId: "admin-1",
+  email: "admin@example.com",
+  name: "Admin",
+  isAdmin: true,
+};
+
+const memberSession: AuthSession = {
+  userId: "member-1",
+  email: "member@example.com",
+  name: "Member",
+  isAdmin: false,
+};
+
+const createAuth = (session: AuthSession | null = adminSession) => ({
+  handleAuthRequest: vi.fn(
+    async (request: Request) =>
+      new Response(JSON.stringify({ ok: true, path: new URL(request.url).pathname }), {
+        status: 200,
+        headers: {
+          "content-type": "application/json",
+          "set-cookie": "better-auth.session_token=abc; Path=/; HttpOnly",
+        },
+      }),
+  ),
+  getSession: vi.fn(async (request: Request) => {
+    void request;
+    return session;
+  }),
+});
+
 describe("Netlify function configuration", () => {
   it("routes API and Swagger through one per-domain/IP rate-limited function", () => {
     expect(config.path).toEqual(["/api/*", "/swagger", "/swagger/*"]);
@@ -105,13 +137,15 @@ describe("Lift Log API handler", () => {
   let repository: ReturnType<typeof createRepository>;
   let logger: { error: ReturnType<typeof vi.fn> };
   let getRepository: ReturnType<typeof vi.fn>;
+  let auth: ReturnType<typeof createAuth>;
   let handle: ReturnType<typeof createApiHandler>;
 
   beforeEach(() => {
     repository = createRepository();
     logger = { error: vi.fn() };
     getRepository = vi.fn(async () => repository as LiftLogRepository);
-    handle = createApiHandler({ getRepository, logger });
+    auth = createAuth();
+    handle = createApiHandler({ getRepository, auth, logger });
   });
 
   it("returns all logs with the legacy aggregate shape and no-store", async () => {
@@ -386,6 +420,7 @@ describe("Lift Log API handler", () => {
   it("handles allowed and rejected CORS preflights without credentials", async () => {
     handle = createApiHandler({
       getRepository,
+      auth,
       logger,
       allowedOrigins: ["https://preview.example"],
     });
@@ -531,6 +566,125 @@ describe("Lift Log API handler", () => {
 
     expect(response.status).toBe(405);
     expect(response.headers.get("allow")).toBe("PUT, DELETE, OPTIONS");
+  });
+
+
+  it("hands every /api/auth route to Better Auth untouched, cookies included", async () => {
+    const response = await handle(
+      makeRequest("/api/auth/callback/google?code=abc"),
+    );
+
+    expect(auth.handleAuthRequest).toHaveBeenCalledOnce();
+    expect(response.status).toBe(200);
+    // finalizeResponse must not rewrite Better Auth's own headers.
+    expect(response.headers.get("set-cookie")).toContain("session_token");
+    expect(response.headers.get("cache-control")).toBeNull();
+    expect(getRepository).not.toHaveBeenCalled();
+  });
+
+  it("serves the health check without a session but nothing else", async () => {
+    handle = createApiHandler({ getRepository, auth: createAuth(null), logger });
+
+    const healthy = await handle(makeRequest("/api/HealthCheck"));
+    expect(healthy.status).toBe(200);
+
+    for (const path of ["/api/LiftLogs", "/api/LiftLogs/squats", "/swagger"]) {
+      const response = await handle(makeRequest(path));
+      expect(response.status).toBe(401);
+    }
+    expect(repository.getAllLogs).not.toHaveBeenCalled();
+    expect(repository.getLog).not.toHaveBeenCalled();
+  });
+
+  it("refuses signed-out writes before reading the request body", async () => {
+    handle = createApiHandler({ getRepository, auth: createAuth(null), logger });
+
+    const added = await handle(
+      jsonRequest("/api/LiftLogs/squats/Lifts", sampleEntry),
+    );
+    expect(added.status).toBe(401);
+
+    const deleted = await handle(
+      makeRequest("/api/LiftLogs/squats/Lifts/0", { method: "DELETE" }),
+    );
+    expect(deleted.status).toBe(401);
+
+    expect(repository.addEntry).not.toHaveBeenCalled();
+    expect(repository.deleteEntry).not.toHaveBeenCalled();
+  });
+
+  it("lets any signed-in user read logs and write entries", async () => {
+    handle = createApiHandler({
+      getRepository,
+      auth: createAuth(memberSession),
+      logger,
+    });
+
+    expect((await handle(makeRequest("/api/LiftLogs/squats"))).status).toBe(200);
+    expect(
+      (await handle(jsonRequest("/api/LiftLogs/squats/Lifts", sampleEntry)))
+        .status,
+    ).toBe(201);
+    expect(
+      (await handle(jsonRequest("/api/LiftLogs/squats/Lifts/0", sampleEntry, "PUT")))
+        .status,
+    ).toBe(204);
+    expect(
+      (await handle(makeRequest("/api/LiftLogs/squats/Lifts/0", { method: "DELETE" })))
+        .status,
+    ).toBe(204);
+  });
+
+  it("reserves creating, renaming and deleting logs for the administrator", async () => {
+    handle = createApiHandler({
+      getRepository,
+      auth: createAuth(memberSession),
+      logger,
+    });
+
+    const created = await handle(
+      jsonRequest("/api/LiftLogs", { title: "Squats", name: "squats" }),
+    );
+    expect(created.status).toBe(403);
+
+    const renamed = await handle(
+      jsonRequest("/api/LiftLogs/squats", { title: "Back Squats" }, "PUT"),
+    );
+    expect(renamed.status).toBe(403);
+
+    const deleted = await handle(
+      makeRequest("/api/LiftLogs/squats", { method: "DELETE" }),
+    );
+    expect(deleted.status).toBe(403);
+
+    expect(repository.createLog).not.toHaveBeenCalled();
+    expect(repository.updateLog).not.toHaveBeenCalled();
+    expect(repository.deleteLog).not.toHaveBeenCalled();
+  });
+
+  it("reports who is signed in and whether they administer logs", async () => {
+    const asAdmin = await handle(makeRequest("/api/me"));
+    expect(asAdmin.status).toBe(200);
+    expect(await asAdmin.json()).toEqual({
+      email: "admin@example.com",
+      name: "Admin",
+      isAdmin: true,
+    });
+
+    handle = createApiHandler({
+      getRepository,
+      auth: createAuth(memberSession),
+      logger,
+    });
+    const asMember = await handle(makeRequest("/api/me"));
+    expect(await asMember.json()).toEqual({
+      email: "member@example.com",
+      name: "Member",
+      isAdmin: false,
+    });
+
+    handle = createApiHandler({ getRepository, auth: createAuth(null), logger });
+    expect((await handle(makeRequest("/api/me"))).status).toBe(401);
   });
 
   it("returns empty 404/405 responses for unsupported routes and methods", async () => {

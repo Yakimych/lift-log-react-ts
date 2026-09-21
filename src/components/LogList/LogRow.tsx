@@ -6,6 +6,8 @@ import { LiftLogSummary } from "../../types/liftTypes";
 
 type Props = {
   log: LiftLogSummary;
+  /** Only the administrator may rename or delete a log. */
+  canManage: boolean;
   isEdited: boolean;
   editedTitle: string;
   isSaving: boolean;
@@ -18,11 +20,12 @@ type Props = {
 
 const LogRow: React.FunctionComponent<Props> = props => {
   const { log } = props;
+  const isEdited = props.canManage && props.isEdited;
 
   return (
     <div className="row align-items-center log-row">
       <div className="col">
-        {props.isEdited ? (
+        {isEdited ? (
           <input
             className="form-control form-control-sm"
             type="text"
@@ -41,54 +44,58 @@ const LogRow: React.FunctionComponent<Props> = props => {
       <div className="col">
         {log.entryCount} {log.entryCount === 1 ? "entry" : "entries"}
       </div>
-      <div className="col-auto log-row-actions">
-        {props.isEdited ? (
-          <>
-            <Button
-              color="primary"
-              size="sm"
-              className="me-1"
-              disabled={props.isSaving || props.editedTitle.trim().length === 0}
-              onClick={props.onSaveTitle}
-            >
-              Save
-            </Button>
-            <Button
-              color="secondary"
-              size="sm"
-              disabled={props.isSaving}
-              onClick={props.onCancelEdit}
-            >
-              Cancel
-            </Button>
-          </>
-        ) : (
-          <>
-            <Button
-              color="link"
-              size="sm"
-              className="p-1"
-              title="Rename log"
-              aria-label={`Rename ${log.name}`}
-              disabled={props.isSaving}
-              onClick={() => props.onStartEdit(log)}
-            >
-              <PencilIcon />
-            </Button>
-            <Button
-              color="link"
-              size="sm"
-              className="p-1 text-danger"
-              title="Delete log"
-              aria-label={`Delete ${log.name}`}
-              disabled={props.isSaving}
-              onClick={() => props.onDelete(log)}
-            >
-              <TrashIcon />
-            </Button>
-          </>
-        )}
-      </div>
+      {props.canManage && (
+        <div className="col-auto log-row-actions">
+          {isEdited ? (
+            <>
+              <Button
+                color="primary"
+                size="sm"
+                className="me-1"
+                disabled={
+                  props.isSaving || props.editedTitle.trim().length === 0
+                }
+                onClick={props.onSaveTitle}
+              >
+                Save
+              </Button>
+              <Button
+                color="secondary"
+                size="sm"
+                disabled={props.isSaving}
+                onClick={props.onCancelEdit}
+              >
+                Cancel
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button
+                color="link"
+                size="sm"
+                className="p-1"
+                title="Rename log"
+                aria-label={`Rename ${log.name}`}
+                disabled={props.isSaving}
+                onClick={() => props.onStartEdit(log)}
+              >
+                <PencilIcon />
+              </Button>
+              <Button
+                color="link"
+                size="sm"
+                className="p-1 text-danger"
+                title="Delete log"
+                aria-label={`Delete ${log.name}`}
+                disabled={props.isSaving}
+                onClick={() => props.onDelete(log)}
+              >
+                <TrashIcon />
+              </Button>
+            </>
+          )}
+        </div>
+      )}
     </div>
   );
 };

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { ThunkDispatch } from "redux-thunk";
 import {
   addLogEntry,
@@ -21,6 +21,7 @@ import "./App.css";
 import ConfirmModal from "./ConfirmModal";
 import EntryModal from "./EntryModal";
 import LiftLogContainer from "./LiftLogContainer";
+import SiteHeader from "./SiteHeader";
 
 type StateProps = {
   isLoading: boolean;
@@ -90,12 +91,7 @@ const App: React.FC<Props> = props => {
 
   return (
     <div className="App">
-      <header className="App-header d-flex align-items-center justify-content-between">
-        <h1 className="App-title">{getHeaderText()}</h1>
-        <Link to="/" className="App-nav-link">
-          All logs
-        </Link>
-      </header>
+      <SiteHeader title={getHeaderText()} showAllLogsLink={true} />
       <LiftLogContainer
         disabled={disabled}
         entries={props.logEntries}

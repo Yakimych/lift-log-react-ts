@@ -6,6 +6,7 @@
   "dependencies": {
     "@primer/octicons-react": "^19.38.0",
     "axios": "^1.18.0",
+    "better-auth": "^1.7.5",
     "bootstrap": "^5.3.8",
     "mongodb": "^7.5.0",
     "react": "^19.3.0",

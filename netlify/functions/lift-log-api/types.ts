@@ -56,6 +56,20 @@ export interface LiftLogRepository {
   ping(): Promise<void>;
 }
 
+export type AuthSession = {
+  userId: string;
+  email: string;
+  name: string;
+  /** True for the master admin, who alone may create, rename or delete logs. */
+  isAdmin: boolean;
+};
+
+export type AuthDependencies = {
+  /** Serves Better Auth's own routes, cookies and all. */
+  handleAuthRequest(request: Request): Promise<Response>;
+  getSession(request: Request): Promise<AuthSession | null>;
+};
+
 export class DuplicateLogError extends Error {
   public readonly logName: string;
 

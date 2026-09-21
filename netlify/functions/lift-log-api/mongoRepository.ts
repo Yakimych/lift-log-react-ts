@@ -327,7 +327,13 @@ const requireEnvironmentVariable = (name: string): string => {
   return value;
 };
 
+export type MongoConnection = {
+  client: MongoClient;
+  database: Db;
+};
+
 let mongoClientPromise: Promise<MongoClient> | undefined;
+let mongoConnectionPromise: Promise<MongoConnection> | undefined;
 let mongoRepositoryPromise: Promise<MongoLiftLogRepository> | undefined;
 
 const getMongoClient = (uri: string): Promise<MongoClient> => {
@@ -349,13 +355,28 @@ const getMongoClient = (uri: string): Promise<MongoClient> => {
   return mongoClientPromise;
 };
 
-export const getMongoRepository = (): Promise<MongoLiftLogRepository> => {
-  if (!mongoRepositoryPromise) {
-    mongoRepositoryPromise = (async () => {
+/** One pooled connection, shared by the lift log data and by Better Auth. */
+export const getMongoConnection = (): Promise<MongoConnection> => {
+  if (!mongoConnectionPromise) {
+    mongoConnectionPromise = (async () => {
       const uri = requireEnvironmentVariable("MONGODB_URI");
       const databaseName = requireEnvironmentVariable("MONGODB_DATABASE");
       const client = await getMongoClient(uri);
-      const repository = new MongoLiftLogRepository(client.db(databaseName));
+      return { client, database: client.db(databaseName) };
+    })().catch((error) => {
+      mongoConnectionPromise = undefined;
+      throw error;
+    });
+  }
+
+  return mongoConnectionPromise;
+};
+
+export const getMongoRepository = (): Promise<MongoLiftLogRepository> => {
+  if (!mongoRepositoryPromise) {
+    mongoRepositoryPromise = (async () => {
+      const { database } = await getMongoConnection();
+      const repository = new MongoLiftLogRepository(database);
       await repository.initialize();
       return repository;
     })().catch((error) => {

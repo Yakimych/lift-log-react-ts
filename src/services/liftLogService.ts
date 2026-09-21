@@ -34,12 +34,16 @@ type ApiLiftLog = {
 
 class LiftLogService {
   private readonly liftLogsUrl: string;
+  // Every route is behind a session cookie, which has to travel even when the
+  // API is served from a different origin than the app.
+  private readonly http = axios.create({ withCredentials: true });
+
   constructor(url: string) {
     this.liftLogsUrl = url;
   }
 
   public getLiftLogs(): Promise<ReadonlyArray<LiftLogSummary>> {
-    return axios
+    return this.http
       .get(this.liftLogsUrl)
       .then((result: AxiosResponse<ApiLiftLog[]>) =>
         result.data.map(this.toLiftLogSummary)
@@ -47,25 +51,25 @@ class LiftLogService {
   }
 
   public getLiftLog(logName: string): Promise<LiftLog> {
-    return axios
+    return this.http
       .get(this.getLogUrl(logName))
       .then((result: AxiosResponse<ApiLiftLog>) => this.toLiftLog(result.data));
   }
 
   public createLiftLog(name: string, title: string): Promise<any> {
-    return axios.post(this.liftLogsUrl, { name, title });
+    return this.http.post(this.liftLogsUrl, { name, title });
   }
 
   public updateLiftLog(logName: string, title: string): Promise<any> {
-    return axios.put(this.getLogUrl(logName), { title });
+    return this.http.put(this.getLogUrl(logName), { title });
   }
 
   public deleteLiftLog(logName: string): Promise<any> {
-    return axios.delete(this.getLogUrl(logName));
+    return this.http.delete(this.getLogUrl(logName));
   }
 
   public addEntry(logName: string, entry: LiftLogEntry): Promise<any> {
-    return axios.post(this.entriesUrl(logName), this.toApiLiftLogEntry(entry));
+    return this.http.post(this.entriesUrl(logName), this.toApiLiftLogEntry(entry));
   }
 
   public updateEntry(
@@ -73,14 +77,14 @@ class LiftLogService {
     entryId: number,
     entry: LiftLogEntry
   ): Promise<any> {
-    return axios.put(
+    return this.http.put(
       this.entryUrl(logName, entryId),
       this.toApiLiftLogEntry(entry)
     );
   }
 
   public deleteEntry(logName: string, entryId: number): Promise<any> {
-    return axios.delete(this.entryUrl(logName, entryId));
+    return this.http.delete(this.entryUrl(logName, entryId));
   }
 
   private getLogUrl = (logName: string) =>

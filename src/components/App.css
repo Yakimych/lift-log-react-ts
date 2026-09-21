@@ -71,3 +71,12 @@
   text-decoration: underline;
   white-space: nowrap;
 }
+
+.App-viewer {
+  color: #e9ecef;
+  white-space: nowrap;
+}
+
+.App-header-actions {
+  white-space: nowrap;
+}

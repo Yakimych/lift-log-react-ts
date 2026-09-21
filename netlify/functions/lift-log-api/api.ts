@@ -1,5 +1,10 @@
 import { openApiDocument, swaggerHtml } from "./openapi";
-import { DuplicateLogError, type LiftLogRepository } from "./types";
+import {
+  DuplicateLogError,
+  type AuthDependencies,
+  type AuthSession,
+  type LiftLogRepository,
+} from "./types";
 import {
   createLiftLogSchema,
   liftLogEntrySchema,
@@ -14,6 +19,7 @@ type Logger = {
 
 export type ApiDependencies = {
   getRepository(): Promise<LiftLogRepository>;
+  auth: AuthDependencies;
   allowedOrigins?: ReadonlyArray<string>;
   logger?: Logger;
 };
@@ -42,6 +48,12 @@ const problemResponse = (
 
 const methodNotAllowed = (allow: string): Response =>
   emptyResponse(405, { allow });
+
+const unauthorized = (): Response =>
+  problemResponse(401, "Sign in to use the Lift Log API");
+
+const forbidden = (): Response =>
+  problemResponse(403, "Only the Lift Log administrator may manage logs");
 
 const addVaryHeader = (headers: Headers, value: string): void => {
   const existingValues = (headers.get("vary") ?? "")
@@ -127,6 +139,17 @@ export const createApiHandler = (dependencies: ApiDependencies) => {
     const finish = (response: Response): Response =>
       finalizeResponse(request, response, allowedOrigins);
 
+    const path = normalizedPath(request);
+
+    if (/^\/api\/auth(?:\/|$)/i.test(path)) {
+      try {
+        return await dependencies.auth.handleAuthRequest(request);
+      } catch (error) {
+        logger.error("Lift Log authentication request failed", error);
+        return finish(problemResponse(500, "Internal Server Error"));
+      }
+    }
+
     if (request.method === "OPTIONS") {
       if (!isAllowedOrigin(request, allowedOrigins)) {
         return finish(emptyResponse(403));
@@ -146,9 +169,44 @@ export const createApiHandler = (dependencies: ApiDependencies) => {
       return finish(emptyResponse(204, headers));
     }
 
-    const path = normalizedPath(request);
-
     try {
+      // The health check stays open: uptime probes need it and it reveals
+      // nothing but whether the database answers.
+      if (/^\/api\/healthcheck$/i.test(path)) {
+        if (request.method !== "GET") {
+          return finish(methodNotAllowed("GET, OPTIONS"));
+        }
+
+        try {
+          const repository = await dependencies.getRepository();
+          await repository.ping();
+          return finish(emptyResponse(200));
+        } catch (error) {
+          logger.error("Lift Log database health check failed", error);
+          return finish(emptyResponse(503));
+        }
+      }
+
+      // Everything past here is private, so resolve the session once.
+      const session: AuthSession | null =
+        await dependencies.auth.getSession(request);
+      if (!session) {
+        return finish(unauthorized());
+      }
+
+      if (/^\/api\/me$/i.test(path)) {
+        if (request.method !== "GET") {
+          return finish(methodNotAllowed("GET, OPTIONS"));
+        }
+        return finish(
+          jsonResponse({
+            email: session.email,
+            name: session.name,
+            isAdmin: session.isAdmin,
+          }),
+        );
+      }
+
       if (/^\/swagger(?:\/index\.html)?$/i.test(path)) {
         if (request.method !== "GET") {
           return finish(methodNotAllowed("GET, OPTIONS"));
@@ -167,21 +225,6 @@ export const createApiHandler = (dependencies: ApiDependencies) => {
         return finish(jsonResponse(openApiDocument));
       }
 
-      if (/^\/api\/healthcheck$/i.test(path)) {
-        if (request.method !== "GET") {
-          return finish(methodNotAllowed("GET, OPTIONS"));
-        }
-
-        try {
-          const repository = await dependencies.getRepository();
-          await repository.ping();
-          return finish(emptyResponse(200));
-        } catch (error) {
-          logger.error("Lift Log database health check failed", error);
-          return finish(emptyResponse(503));
-        }
-      }
-
       if (/^\/api\/liftlogs$/i.test(path)) {
         if (request.method === "GET") {
           const repository = await dependencies.getRepository();
@@ -189,6 +232,10 @@ export const createApiHandler = (dependencies: ApiDependencies) => {
         }
 
         if (request.method === "POST") {
+          if (!session.isAdmin) {
+            return finish(forbidden());
+          }
+
           let body: unknown;
           try {
             body = await parseJson(request);
@@ -328,6 +375,10 @@ export const createApiHandler = (dependencies: ApiDependencies) => {
         }
 
         if (request.method === "PUT") {
+          if (!session.isAdmin) {
+            return finish(forbidden());
+          }
+
           let body: unknown;
           try {
             body = await parseJson(request);
@@ -351,6 +402,10 @@ export const createApiHandler = (dependencies: ApiDependencies) => {
         }
 
         if (request.method === "DELETE") {
+          if (!session.isAdmin) {
+            return finish(forbidden());
+          }
+
           const wasDeleted = await repository.deleteLog(logName);
           return finish(emptyResponse(wasDeleted ? 204 : 404));
         }

@@ -1,5 +1,6 @@
 import type { Config } from "@netlify/functions";
 import { createApiHandler } from "./api";
+import { mongoAuth } from "./auth";
 import { getMongoRepository } from "./mongoRepository";
 
 const configuredOrigins = (process.env.FRONTEND_ORIGIN ?? "")
@@ -9,6 +10,7 @@ const configuredOrigins = (process.env.FRONTEND_ORIGIN ?? "")
 
 const handler = createApiHandler({
   getRepository: getMongoRepository,
+  auth: mongoAuth,
   allowedOrigins: configuredOrigins,
 });
 

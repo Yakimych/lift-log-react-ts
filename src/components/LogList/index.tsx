@@ -9,6 +9,7 @@ import {
   loadLogs,
   saveLogTitle
 } from "../../effects/logListEffects";
+import { useIsAdmin } from "../../auth/viewer";
 import LiftLogService from "../../services/liftLogService";
 import { actions as logListActions } from "../../store/logListActions";
 import { getCanCreateLog } from "../../store/selectors";
@@ -18,6 +19,7 @@ import "../App.css";
 import "../LiftLog.css";
 import ConfirmModal from "../ConfirmModal";
 import CreateLogForm from "./CreateLogForm";
+import SiteHeader from "../SiteHeader";
 import "./style.css";
 import LogRow from "./LogRow";
 
@@ -52,6 +54,7 @@ type DispatchProps = {
 type Props = StateProps & DispatchProps;
 
 const LogList: React.FC<Props> = props => {
+  const isAdmin = useIsAdmin();
   const { loadLogs: load } = props;
   useEffect(() => {
     load();
@@ -59,30 +62,32 @@ const LogList: React.FC<Props> = props => {
 
   return (
     <div className="App">
-      <header className="App-header d-flex align-items-center">
-        <h1 className="App-title">Lift logs</h1>
-      </header>
+      <SiteHeader title="Lift logs" />
       <div className="mt-3 mb-3 p-2 box-shadow lift-log-container">
         {props.errorMessage && (
           <Alert color="danger" toggle={props.dismissError}>
             {props.errorMessage}
           </Alert>
         )}
-        <CreateLogForm
-          name={props.newLogName}
-          title={props.newLogTitle}
-          canCreate={props.canCreateLog}
-          isSaving={props.isSaving}
-          onNameChange={props.changeNewLogName}
-          onTitleChange={props.changeNewLogTitle}
-          onCreate={props.createLog}
-        />
-        <hr />
+        {isAdmin && (
+          <>
+            <CreateLogForm
+              name={props.newLogName}
+              title={props.newLogTitle}
+              canCreate={props.canCreateLog}
+              isSaving={props.isSaving}
+              onNameChange={props.changeNewLogName}
+              onTitleChange={props.changeNewLogTitle}
+              onCreate={props.createLog}
+            />
+            <hr />
+          </>
+        )}
         <div className="row">
           <h6 className="col">Title</h6>
           <h6 className="col">Link</h6>
           <h6 className="col">Entries</h6>
-          <h6 className="col-auto log-row-actions">Actions</h6>
+          {isAdmin && <h6 className="col-auto log-row-actions">Actions</h6>}
         </div>
         {props.isLoading ? (
           <div className="p-3 text-muted">
@@ -98,6 +103,7 @@ const LogList: React.FC<Props> = props => {
             <LogRow
               key={log.name}
               log={log}
+              canManage={isAdmin}
               isEdited={props.editedLogName === log.name}
               editedTitle={props.editedLogTitle}
               isSaving={props.isSaving}
